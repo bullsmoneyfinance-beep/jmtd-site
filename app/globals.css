@@ -3,11 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --amber: #F59E0B;
-  --amber-dark: #D97706;
+  --teal: #0DA9A4;
+  --teal-dark: #0891A0;
+  --pink: #D4197A;
+  --pink-dark: #B01368;
   --emerald: #10B981;
   --navy: #0D1B2A;
-  --navy2: #1a2d4a;
+  --navy2: #0e2235;
   --text: #F8FAFC;
   --text2: #94A3B8;
   --card: rgba(255,255,255,0.04);
@@ -77,8 +79,13 @@ a {
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(245,158,11,0.3); }
-  50%       { box-shadow: 0 0 40px rgba(245,158,11,0.6); }
+  0%, 100% { box-shadow: 0 0 20px rgba(13,169,164,0.35); }
+  50%       { box-shadow: 0 0 40px rgba(13,169,164,0.65); }
+}
+
+@keyframes glowPink {
+  0%, 100% { box-shadow: 0 0 20px rgba(212,25,122,0.3); }
+  50%       { box-shadow: 0 0 40px rgba(212,25,122,0.55); }
 }
 
 /* ── Reveal ── */
@@ -102,13 +109,13 @@ a {
 }
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(245,158,11,0.15);
+  box-shadow: 0 12px 40px rgba(13,169,164,0.18);
 }
 
 /* ── Buttons ── */
 .btn-amber {
-  background: linear-gradient(135deg, #F59E0B, #D97706);
-  color: #0D1B2A;
+  background: linear-gradient(135deg, #0DA9A4, #0891A0);
+  color: #fff;
   font-weight: 700;
   border: none;
   cursor: pointer;
@@ -117,19 +124,33 @@ a {
 }
 .btn-amber:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(245,158,11,0.4);
+  box-shadow: 0 8px 30px rgba(13,169,164,0.45);
+}
+
+.btn-pink {
+  background: linear-gradient(135deg, #D4197A, #B01368);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: glowPink 3s infinite;
+}
+.btn-pink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(212,25,122,0.4);
 }
 
 .btn-outline-amber {
   background: transparent;
-  color: #F59E0B;
+  color: #0DA9A4;
   font-weight: 600;
-  border: 2px solid #F59E0B;
+  border: 2px solid #0DA9A4;
   cursor: pointer;
   transition: all 0.2s;
 }
 .btn-outline-amber:hover {
-  background: rgba(245,158,11,0.1);
+  background: rgba(13,169,164,0.1);
 }
 
 .btn-white {
@@ -168,7 +189,7 @@ a {
   transition: border-color 0.2s;
 }
 .form-input:focus {
-  border-color: #F59E0B;
+  border-color: #0DA9A4;
 }
 
 .form-input-light {
@@ -183,7 +204,7 @@ a {
   transition: border-color 0.2s;
 }
 .form-input-light:focus {
-  border-color: #F59E0B;
+  border-color: #0DA9A4;
 }
 
 /* ── Navbar ── */
@@ -209,15 +230,23 @@ a {
   left: 12px;
   right: 12px;
   height: 2px;
-  background: #F59E0B;
+  background: linear-gradient(90deg, #0DA9A4, #D4197A);
   border-radius: 1px;
 }
 
 /* ── Stars ── */
 .stars {
-  color: #F59E0B;
+  color: #0DA9A4;
   font-size: 14px;
   letter-spacing: 2px;
+}
+
+/* ── Gradient text utility ── */
+.gradient-text {
+  background: linear-gradient(135deg, #0DA9A4, #D4197A);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* ── Responsive ── */

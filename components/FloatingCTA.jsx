@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { PHONE_HREF, AMBER, NAVY } from "../lib/data";
+import { PHONE_HREF, AMBER, PINK, NAVY } from "../lib/data";
 
 export default function FloatingCTA() {
   const [visible, setVisible] = useState(false);
@@ -25,7 +25,7 @@ export default function FloatingCTA() {
       </a>
       {/* Phone */}
       <a href={PHONE_HREF} aria-label="Appeler J'MTD"
-        style={{ width: 52, height: 52, borderRadius: "50%", background: `linear-gradient(135deg, ${AMBER}, #D97706)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, boxShadow: "0 4px 20px rgba(245,158,11,0.4)", transition: "transform 0.2s", textDecoration: "none", animation: "glow 3s infinite" }}
+        style={{ width: 52, height: 52, borderRadius: "50%", background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, boxShadow: "0 4px 20px rgba(13,169,164,0.4)", transition: "transform 0.2s", textDecoration: "none", animation: "glow 3s infinite" }}
         onMouseEnter={e => e.currentTarget.style.transform = "scale(1.1)"}
         onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>
         📞

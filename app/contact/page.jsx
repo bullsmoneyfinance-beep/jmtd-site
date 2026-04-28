@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { PHONE, PHONE_HREF, WHATSAPP, EMAIL, ADDRESS, HORAIRES, SERVICES, AMBER, NAVY, EMERALD } from "../../lib/data";
+import { PHONE, PHONE_HREF, WHATSAPP, EMAIL, ADDRESS, HORAIRES, SERVICES, AMBER, PINK, NAVY, EMERALD } from "../../lib/data";
 
 export default function ContactPage() {
   const [form, setForm] = useState({ nom: "", prenom: "", tel: "", email: "", service: "", message: "", zone: "", rgpd: false });
@@ -44,7 +44,7 @@ export default function ContactPage() {
                 <h2 style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", marginBottom: 12 }}>Demande envoyée !</h2>
                 <p style={{ color: "#94A3B8", marginBottom: 28 }}>Merci {form.prenom || form.nom}. Nous vous contactons sous 24h ouvrées pour discuter de votre projet.</p>
                 <button onClick={() => { setSent(false); setForm({ nom: "", prenom: "", tel: "", email: "", service: "", message: "", zone: "", rgpd: false }); }}
-                  style={{ padding: "12px 28px", borderRadius: 30, border: "2px solid rgba(245,158,11,0.4)", background: "transparent", color: AMBER, fontWeight: 600, cursor: "pointer", fontSize: 15 }}>
+                  style={{ padding: "12px 28px", borderRadius: 30, border: "2px solid rgba(13,169,164,0.4)", background: "transparent", color: AMBER, fontWeight: 600, cursor: "pointer", fontSize: 15 }}>
                   Envoyer une autre demande
                 </button>
               </div>
@@ -125,7 +125,7 @@ export default function ContactPage() {
             <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: "28px 24px" }}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC", marginBottom: 20 }}>Nous contacter directement</h3>
               <a href={PHONE_HREF} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, textDecoration: "none" }}>
-                <div style={{ width: 40, height: 40, borderRadius: "50%", background: `linear-gradient(135deg, ${AMBER}, #D97706)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>📞</div>
+                <div style={{ width: 40, height: 40, borderRadius: "50%", background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>📞</div>
                 <div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: AMBER }}>{PHONE}</div>
                   <div style={{ fontSize: 12, color: "#475569" }}>Appel direct</div>

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { loadSession, clearSession, load, save } from "../../lib/storage";
-import { AMBER, NAVY, EMERALD } from "../../lib/data";
+import { AMBER, PINK, NAVY, EMERALD } from "../../lib/data";
 
 function fmt(ts) {
   return new Date(ts).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
@@ -82,7 +82,7 @@ export default function PointagePage() {
       {/* Header */}
       <div style={{ background: "#0D1B2A", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: `linear-gradient(135deg, ${AMBER}, #D97706)`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 12, color: NAVY }}>J&apos;MTD</div>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 12, color: "#fff" }}>J&apos;MTD</div>
           <div>
             <div style={{ fontWeight: 700, color: "#F8FAFC", fontSize: 15 }}>{emp.name}</div>
             <div style={{ fontSize: 12, color: "#475569" }}>{emp.role} · {emp.zone}</div>
@@ -131,8 +131,8 @@ export default function PointagePage() {
             {/* Main button */}
             <button onClick={active ? pointageOut : pointageIn} disabled={loading}
               style={{ width: "100%", padding: "20px", borderRadius: 16, fontSize: 18, fontWeight: 700, cursor: loading ? "wait" : "pointer", border: "none",
-                background: active ? "rgba(239,68,68,0.9)" : `linear-gradient(135deg, ${AMBER}, #D97706)`,
-                color: active ? "#FFF" : NAVY, boxShadow: active ? "0 8px 30px rgba(239,68,68,0.3)" : "0 8px 30px rgba(245,158,11,0.4)" }}>
+                background: active ? "rgba(239,68,68,0.9)" : `linear-gradient(135deg, ${AMBER}, ${PINK})`,
+                color: active ? "#FFF" : NAVY, boxShadow: active ? "0 8px 30px rgba(239,68,68,0.3)" : "0 8px 30px rgba(13,169,164,0.4)" }}>
               {loading ? "Localisation en cours…" : active ? "🔴 Pointer la sortie" : "🟢 Pointer l'entrée"}
             </button>
 

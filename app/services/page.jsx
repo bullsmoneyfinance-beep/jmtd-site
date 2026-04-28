@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { SERVICES, PHONE, PHONE_HREF, AMBER, NAVY, EMERALD } from "../../lib/data";
+import { SERVICES, PHONE, PHONE_HREF, AMBER, PINK, NAVY, EMERALD } from "../../lib/data";
 
 function useReveal() {
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Credit impot banner */}
-      <section style={{ background: `linear-gradient(135deg, ${AMBER}, #D97706)`, padding: "48px 24px", textAlign: "center" }}>
+      <section style={{ background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, padding: "48px 24px", textAlign: "center" }}>
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 28, fontWeight: 800, color: NAVY, marginBottom: 12 }}>
             💳 Crédit d&apos;impôt : 50% remboursé

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PHONE, PHONE_HREF, SERVICES, TESTIMONIALS, ZONES, AMBER, NAVY, EMERALD } from "../lib/data";
+import { PHONE, PHONE_HREF, SERVICES, TESTIMONIALS, ZONES, AMBER, PINK, NAVY, EMERALD } from "../lib/data";
 
 function useReveal() {
   useEffect(() => {
@@ -23,7 +23,7 @@ const TICKER_ITEMS = [
 function Ticker() {
   const doubled = [...TICKER_ITEMS, ...TICKER_ITEMS];
   return (
-    <div style={{ background: `linear-gradient(135deg, ${AMBER}, #D97706)`, overflow: "hidden", padding: "12px 0" }}>
+    <div style={{ background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, overflow: "hidden", padding: "12px 0" }}>
       <div className="ticker-inner">
         {doubled.map((item, i) => (
           <span key={i} style={{ whiteSpace: "nowrap", padding: "0 32px", fontSize: 13, fontWeight: 600, color: NAVY }}>
@@ -67,7 +67,7 @@ function Calculator() {
       <div style={{ fontSize: 12, color: "#475569", textAlign: "center", marginBottom: 20 }}>
         💡 L&apos;État rembourse <strong style={{ color: "#F8FAFC" }}>50% de vos dépenses</strong> en crédit d&apos;impôt (art. 199 sexdecies CGI)
       </div>
-      <Link href="/contact" style={{ display: "block", textAlign: "center", background: `linear-gradient(135deg, ${AMBER}, #D97706)`, color: NAVY, padding: 14, borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
+      <Link href="/contact" style={{ display: "block", textAlign: "center", background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, color: "#fff", padding: 14, borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
         Obtenir un devis gratuit →
       </Link>
     </div>
@@ -138,7 +138,7 @@ export default function HomePage() {
                 <span style={{ fontSize: 12, color: AMBER, fontWeight: 600 }}>Agréé Services à la Personne (SAP)</span>
               </div>
               <h1 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(36px, 5vw, 60px)", fontWeight: 800, lineHeight: 1.1, color: "#F8FAFC", marginBottom: 20 }}>
-                Des services à la personne <span style={{ background: `linear-gradient(135deg, ${AMBER}, #D97706)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>de confiance</span> en Martinique
+                Des services à la personne <span style={{ background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>de confiance</span> en Martinique
               </h1>
               <p style={{ fontSize: 18, color: "#94A3B8", lineHeight: 1.7, marginBottom: 32, maxWidth: 500 }}>
                 Ménage, repas, courses, coach rangement… L&apos;équipe J&apos;MTD prend soin de votre domicile. <strong style={{ color: "#F8FAFC" }}>50% remboursé</strong> par crédit d&apos;impôt.
@@ -243,7 +243,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Stats ── */}
-      <section style={{ background: `linear-gradient(135deg, ${AMBER}, #D97706)`, padding: "60px 24px" }}>
+      <section style={{ background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, padding: "60px 24px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 24, textAlign: "center" }}>
           {[["200+", "Foyers accompagnés"], ["5", "Prestations"], ["100%", "Clients satisfaits"], ["24h", "Délai intervention"]].map(([n, l]) => (
             <div key={l}>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PHONE, PHONE_HREF, EMAIL, ADDRESS, HORAIRES, FONDATRICE, SIRET, AMBER, NAVY, SERVICES } from "../lib/data";
+import { PHONE, PHONE_HREF, EMAIL, ADDRESS, HORAIRES, FONDATRICE, SIRET, AMBER, PINK, NAVY, SERVICES } from "../lib/data";
 
 export default function Footer() {
   return (
@@ -10,7 +10,7 @@ export default function Footer() {
         {/* Brand */}
         <div style={{ minWidth: 220, maxWidth: 280 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 9, background: `linear-gradient(135deg, ${AMBER}, #D97706)`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 13, color: NAVY }}>J'MTD</div>
+            <div style={{ width: 40, height: 40, borderRadius: 9, background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 13, color: "#fff" }}>J'MTD</div>
             <div>
               <div style={{ fontWeight: 800, color: "#F8FAFC", fontFamily: "Syne, sans-serif" }}>J&apos;MTD</div>
               <div style={{ fontSize: 10, color: "#475569", letterSpacing: 0.5, textTransform: "uppercase" }}>Services à la Personne</div>

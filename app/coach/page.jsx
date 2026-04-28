@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { PHONE_HREF, PHONE, AMBER, NAVY, EMERALD } from "../../lib/data";
+import { PHONE_HREF, PHONE, AMBER, PINK, NAVY, EMERALD } from "../../lib/data";
 
 function useReveal() {
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function CoachPage() {
               <span style={{ fontSize: 12, color: AMBER, fontWeight: 600 }}>⭐ Spécialité J&apos;MTD</span>
             </div>
             <h1 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(32px, 5vw, 56px)", fontWeight: 800, color: "#F8FAFC", lineHeight: 1.1, marginBottom: 20 }}>
-              Coach en rangement <span style={{ background: `linear-gradient(135deg, ${AMBER}, #D97706)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>méthode Marie Kondo</span>
+              Coach en rangement <span style={{ background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>méthode Marie Kondo</span>
             </h1>
             <p style={{ fontSize: 16, color: "#94A3B8", lineHeight: 1.7, marginBottom: 32 }}>
               Fan absolue de Marie Kondo, notre coach du rangement étudie vos besoins, vos habitudes de vie et vos attentes. Un diagnostic initial nous permettra de vous présenter le travail à réaliser et de vous proposer la formule la plus adaptée.
@@ -176,7 +176,7 @@ export default function CoachPage() {
       </section>
 
       {/* CTA */}
-      <section style={{ background: `linear-gradient(135deg, ${AMBER}, #D97706)`, padding: "60px 24px", textAlign: "center" }}>
+      <section style={{ background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, padding: "60px 24px", textAlign: "center" }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
           <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 32, fontWeight: 800, color: NAVY, marginBottom: 12 }}>
             Commencez par le diagnostic gratuit

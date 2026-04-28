@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { DEMO_EMPS, AMBER, NAVY } from "../../lib/data";
+import { DEMO_EMPS, AMBER, PINK, NAVY } from "../../lib/data";
 import { saveSession } from "../../lib/storage";
 
 const ADMIN_PIN = "0000";
@@ -44,7 +44,7 @@ export default function PortailPage() {
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-            <div style={{ width: 52, height: 52, borderRadius: 12, background: `linear-gradient(135deg, ${AMBER}, #D97706)`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 16, color: NAVY }}>
+            <div style={{ width: 52, height: 52, borderRadius: 12, background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 16, color: NAVY }}>
               J&apos;MTD
             </div>
             <div style={{ textAlign: "left" }}>

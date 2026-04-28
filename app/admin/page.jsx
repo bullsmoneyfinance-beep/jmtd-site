@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { loadSession, clearSession, load, save } from "../../lib/storage";
-import { DEMO_EMPS, AMBER, NAVY, EMERALD } from "../../lib/data";
+import { DEMO_EMPS, AMBER, PINK, NAVY, EMERALD } from "../../lib/data";
 
 function fmt(ts) {
   return new Date(ts).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
@@ -39,7 +39,7 @@ export default function AdminPage() {
       {/* Header */}
       <div style={{ background: "#0D1B2A", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: `linear-gradient(135deg, ${AMBER}, #D97706)`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 12, color: NAVY }}>J&apos;MTD</div>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 12, color: "#fff" }}>J&apos;MTD</div>
           <div>
             <div style={{ fontWeight: 700, color: "#F8FAFC", fontSize: 15 }}>Administration</div>
             <div style={{ fontSize: 12, color: "#475569" }}>Tableau de bord</div>

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PHONE, PHONE_HREF, SERVICES, AMBER, NAVY } from "../lib/data";
+import { PHONE, PHONE_HREF, SERVICES, AMBER, AMBER_DARK, PINK, NAVY } from "../lib/data";
 
 export default function Nav() {
   const pathname = usePathname();
@@ -45,7 +45,7 @@ export default function Nav() {
 
           {/* Logo */}
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-            <div style={{ width: 44, height: 44, borderRadius: 10, background: `linear-gradient(135deg, ${AMBER}, #D97706)`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 15, color: NAVY, letterSpacing: -0.5, flexShrink: 0 }}>J'MTD</div>
+            <div style={{ width: 44, height: 44, borderRadius: 10, background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 15, color: "#fff", letterSpacing: -0.5, flexShrink: 0 }}>J'MTD</div>
             <div className="hide-mobile">
               <div style={{ fontSize: 15, fontWeight: 800, color: "#F8FAFC", fontFamily: "Syne, sans-serif", letterSpacing: -0.3 }}>J&apos;MTD</div>
               <div style={{ fontSize: 10, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>Services à la Personne</div>
@@ -103,7 +103,7 @@ export default function Nav() {
             {[["/" , "🏠 Accueil"], ["/services", "🛠 Nos prestations"], ["/coach", "🗂️ Coach rangement"], ["/contact", "✉️ Contact & Devis"]].map(([href, label]) => (
               <Link key={href} href={href} style={{ display: "block", padding: "14px 0", borderBottom: "1px solid rgba(255,255,255,0.06)", fontSize: 15, color: pathname === href ? AMBER : "#94A3B8", fontWeight: pathname === href ? 600 : 400, textDecoration: "none" }}>{label}</Link>
             ))}
-            <a href={PHONE_HREF} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 20, background: `linear-gradient(135deg, ${AMBER}, #D97706)`, color: NAVY, padding: "14px 0", borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>📞 {PHONE}</a>
+            <a href={PHONE_HREF} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 20, background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, color: "#fff", padding: "14px 0", borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>📞 {PHONE}</a>
           </div>
         )}
       </header>

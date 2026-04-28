@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PHONE, PHONE_HREF, SERVICES, TESTIMONIALS, ZONES } from "../lib/data";
+import { PHONE, PHONE_HREF, WHATSAPP, SERVICES, TESTIMONIALS, ZONES } from "../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -125,6 +125,33 @@ function QuickForm() {
         {loading ? "Envoi…" : "Envoyer ma demande de devis →"}
       </button>
     </form>
+  );
+}
+
+// ── FAQ ──
+const FAQ_ITEMS = [
+  { q: "Êtes-vous agréés Services à la Personne ?", a: "Oui, J'MTD est officiellement agréé SAP. Cet agrément vous donne droit au crédit d'impôt de 50% sur toutes nos prestations, quelles qu'elles soient." },
+  { q: "Comment fonctionne le crédit d'impôt ?", a: "L'État rembourse 50% de vos dépenses de services à la personne via votre déclaration d'impôts (art. 199 sexdecies du CGI). Nous vous fournissons une attestation fiscale annuelle. Applicable même si vous n'êtes pas imposable (sous forme de crédit remboursé)." },
+  { q: "Dans quelles communes intervenez-vous ?", a: "J'MTD intervient partout en Martinique : Rivière-Salée (siège), Le Lamentin, Le Diamant, Saint-Esprit, Fort-de-France, Le Vauclin, Sainte-Anne, Le François et toutes les communes environnantes." },
+  { q: "Comment se passe le premier contact ?", a: "C'est simple : remplissez le formulaire ou appelez-nous. Nous vous rappelons sous 24h pour comprendre vos besoins. Nous établissons ensuite un devis gratuit et sans engagement avant toute intervention." },
+  { q: "Le coaching rangement, comment ça marche ?", a: "Inspirée de la méthode Marie Kondo, notre coach en rangement commence par un diagnostic gratuit de votre domicile. Ensemble, on définit un plan d'action. Elle peut intervenir en accompagnement (vous guidez) ou en prestation complète (elle range à votre place)." },
+  { q: "Puis-je choisir mes jours et horaires ?", a: "Absolument. Nos interventions sont planifiées selon vos disponibilités, du lundi au vendredi de 8h à 18h. Des créneaux en dehors de ces horaires peuvent être arrangés sur demande." },
+];
+
+function FAQ() {
+  const [open, setOpen] = useState(null);
+  return (
+    <div style={{ maxWidth: 780, margin: "0 auto" }}>
+      {FAQ_ITEMS.map((item, i) => (
+        <div key={i} className="faq-item">
+          <button className="faq-question" onClick={() => setOpen(open === i ? null : i)}>
+            <span>{item.q}</span>
+            <span style={{ fontSize: 20, color: T, flexShrink: 0, transform: open === i ? "rotate(45deg)" : "none", transition: "transform 0.3s ease" }}>+</span>
+          </button>
+          <div className={`faq-answer ${open === i ? "open" : ""}`}>{item.a}</div>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -331,28 +358,71 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ──── COMMENT ÇA MARCHE ──── */}
+      <section style={{ background: "#F8FAFB", padding: "88px 24px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Simple & rapide</div>
+            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
+              Comment ça marche ?
+            </h2>
+            <div className="section-divider" style={{ margin: "16px auto 0" }} />
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {[
+              { n: "01", icon: "📞", title: "Vous nous contactez", text: "Par téléphone, WhatsApp ou formulaire. Réponse garantie sous 24h ouvrées. Aucun engagement.", color: T },
+              { n: "02", icon: "📋", title: "Devis gratuit sur mesure", text: "Nous analysons vos besoins et vous proposons une formule adaptée à votre quotidien et votre budget.", color: P },
+              { n: "03", icon: "🏠", title: "On s'occupe de tout", text: "Votre intervenant J'MTD intervient chez vous aux jours et heures convenus. Discret, fiable, souriant.", color: T },
+              { n: "04", icon: "💳", title: "50% remboursé par l'État", text: "Attestation fiscale annuelle fournie. Le crédit d'impôt SAP s'applique automatiquement à votre déclaration.", color: P },
+            ].map((step, i) => (
+              <div key={step.n} className={`process-step reveal reveal-delay-${i % 3 + 1}`}>
+                <div style={{ width: 52, height: 52, borderRadius: 14, background: `${step.color}14`, border: `2px solid ${step.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>
+                  {step.icon}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                    <span style={{ fontFamily: "Syne, sans-serif", fontSize: 11, fontWeight: 800, color: step.color, letterSpacing: 1 }}>ÉTAPE {step.n}</span>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: TEXT }}>{step.title}</h3>
+                  </div>
+                  <p style={{ fontSize: 14, color: TEXT2, lineHeight: 1.7 }}>{step.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ──── TÉMOIGNAGES ──── */}
       <section style={{ background: "#fff", padding: "88px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 60 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Témoignages</div>
+          <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Avis clients</div>
             <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
               Ce que disent nos clients
             </h2>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginTop: 14 }}>
+              {"★★★★★".split("").map((s, i) => <span key={i} style={{ color: "#F59E0B", fontSize: 20 }}>{s}</span>)}
+              <span style={{ fontSize: 14, color: TEXT2, marginLeft: 8 }}>5/5 · Tous nos clients recommandent J&apos;MTD</span>
+            </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
             {TESTIMONIALS.map((t, i) => (
-              <div key={t.name} className={`card-zen reveal reveal-delay-${i + 1}`} style={{ padding: "30px 26px" }}>
-                <div style={{ color: T, fontSize: 16, letterSpacing: 3, marginBottom: 16 }}>{"★".repeat(t.stars)}</div>
-                <p style={{ fontSize: 14, color: TEXT2, lineHeight: 1.8, marginBottom: 22, fontStyle: "italic" }}>
+              <div key={t.name} className={`card-zen reveal reveal-delay-${i + 1}`} style={{ padding: "30px 26px", position: "relative", overflow: "hidden" }}>
+                {/* Quote mark décoratif */}
+                <div style={{ position: "absolute", top: 16, right: 20, fontFamily: "Georgia, serif", fontSize: 80, color: `${T}08`, lineHeight: 1, userSelect: "none" }}>&ldquo;</div>
+                <div style={{ display: "flex", gap: 3, marginBottom: 16 }}>
+                  {"★★★★★".split("").map((s, j) => <span key={j} className="star-filled" style={{ animationDelay: `${j * 0.08}s` }}>{s}</span>)}
+                </div>
+                <p style={{ fontSize: 14, color: TEXT2, lineHeight: 1.85, marginBottom: 24, fontStyle: "italic", position: "relative" }}>
                   &ldquo;{t.text}&rdquo;
                 </p>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 38, height: 38, borderRadius: "50%", background: `linear-gradient(135deg, ${T}22, ${P}22)`, border: `2px solid ${T}33`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>👤</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 16, borderTop: "1px solid rgba(13,169,164,0.1)" }}>
+                  <div style={{ width: 42, height: 42, borderRadius: "50%", background: `linear-gradient(135deg, ${T}30, ${P}20)`, border: `2px solid ${T}33`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>👤</div>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: TEXT }}>{t.name}</div>
-                    <div style={{ fontSize: 12, color: "#94A3B8" }}>{t.city}</div>
+                    <div style={{ fontSize: 12, color: "#94A3B8" }}>📍 {t.city} · Client vérifié</div>
                   </div>
+                  <div style={{ marginLeft: "auto", width: 28, height: 28, borderRadius: "50%", background: `${T}10`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>✓</div>
                 </div>
               </div>
             ))}
@@ -361,27 +431,69 @@ export default function HomePage() {
       </section>
 
       {/* ──── ZONES ──── */}
-      <section style={{ background: "#F8FAFB", padding: "64px 24px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", textAlign: "center" }}>
-          <div className="reveal">
-            <h3 style={{ fontFamily: "Syne, sans-serif", fontSize: 26, fontWeight: 700, color: TEXT, marginBottom: 8 }}>Zones d&apos;intervention</h3>
-            <p style={{ fontSize: 14, color: TEXT2, marginBottom: 28 }}>📍 Basée à Rivière-Salée · Toute la Martinique</p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
-              {ZONES.map(z => (
-                <span key={z} style={{ padding: "9px 20px", background: "#fff", border: `1.5px solid ${T}2a`, borderRadius: 30, fontSize: 13, color: TEXT2, boxShadow: "0 2px 8px rgba(13,169,164,0.06)" }}>
-                  📍 {z}
-                </span>
-              ))}
+      <section style={{ background: `linear-gradient(135deg, ${T}08, ${P}06)`, padding: "80px 24px", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: -80, right: -80, width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${T}12, transparent 70%)`, pointerEvents: "none" }} />
+        <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative" }}>
+          <div className="reveal" style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Toute la Martinique</div>
+            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(24px, 3vw, 38px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5, marginBottom: 10 }}>
+              Zones d&apos;intervention
+            </h2>
+            <p style={{ fontSize: 15, color: TEXT2 }}>Basée à Rivière-Salée · Nous nous déplaçons partout en Martinique</p>
+          </div>
+          <div className="reveal reveal-delay-1" style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
+            {[
+              "📍 Rivière-Salée", "📍 Le Lamentin", "📍 Le Diamant", "📍 Saint-Esprit",
+              "📍 Fort-de-France", "📍 Le Vauclin", "📍 Sainte-Anne", "📍 Le François",
+              "📍 Sainte-Luce", "📍 Le Marin", "📍 Trois-Îlets", "📍 et toute la Martinique"
+            ].map(z => (
+              <span key={z} style={{ padding: "10px 22px", background: "rgba(255,255,255,0.85)", backdropFilter: "blur(8px)", border: `1.5px solid ${T}25`, borderRadius: 30, fontSize: 13, color: TEXT2, fontWeight: 500, boxShadow: "0 2px 12px rgba(13,169,164,0.08)", transition: "all 0.2s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = T; e.currentTarget.style.color = T; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = `${T}25`; e.currentTarget.style.color = TEXT2; }}>
+                {z}
+              </span>
+            ))}
+          </div>
+          <div className="reveal" style={{ textAlign: "center", marginTop: 36 }}>
+            <a href="tel:0596631308" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 28px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 6px 24px ${T}44` }}>
+              📞 Vérifier ma zone · Appel gratuit
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ──── FAQ ──── */}
+      <section style={{ background: "#fff", padding: "88px 24px" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Questions fréquentes</div>
+            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
+              Tout ce que vous voulez savoir
+            </h2>
+            <div className="section-divider" style={{ margin: "16px auto 0" }} />
+          </div>
+          <div className="reveal reveal-delay-1">
+            <FAQ />
+          </div>
+          <div className="reveal" style={{ textAlign: "center", marginTop: 44 }}>
+            <p style={{ fontSize: 14, color: TEXT2, marginBottom: 20 }}>Une autre question ? On vous répond en 2 min.</p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+              <a href="tel:0596631308" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 24px", borderRadius: 30, border: `2px solid ${T}40`, color: T, fontWeight: 600, fontSize: 14, textDecoration: "none", background: `${T}08` }}>
+                📞 Appeler
+              </a>
+              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 24px", borderRadius: 30, background: "#25D366", color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", boxShadow: "0 4px 16px rgba(37,211,102,0.3)" }}>
+                💬 WhatsApp
+              </a>
             </div>
           </div>
         </div>
       </section>
 
       {/* ──── CTA FINAL ──── */}
-      <section style={{ background: "#fff", padding: "88px 24px" }}>
+      <section style={{ background: "#F8FAFB", padding: "88px 24px" }}>
         <div style={{ maxWidth: 660, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 44 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Commencez</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Commencez maintenant</div>
             <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(28px, 4vw, 46px)", fontWeight: 700, color: TEXT, marginBottom: 14, letterSpacing: -0.5 }}>
               Prêt à déléguer ?
             </h2>

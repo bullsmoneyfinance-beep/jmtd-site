@@ -288,13 +288,30 @@ export default function AdminPage() {
     await save("jmtd_quotes", updated);
   }
 
+  /* ── Search ── */
+  const [searchQuery, setSearchQuery] = useState("");
+
   /* ── Filtered sessions ── */
   const filteredSessions = sessions.filter(s => {
     if (filterEmp !== "all" && s.empId !== filterEmp) return false;
     if (filterStatus === "done" && !s.end) return false;
     if (filterStatus === "active" && s.end) return false;
+    if (searchQuery && !s.empName?.toLowerCase().includes(searchQuery.toLowerCase()) && !s.clientName?.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
   });
+
+  /* ── Weekly chart data ── */
+  const weeklyData = (() => {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
+      const next = new Date(d); next.setDate(next.getDate() + 1);
+      const daySessions = sessions.filter(s => s.start >= d.getTime() && s.start < next.getTime() && s.end);
+      const hours = daySessions.reduce((a, s) => a + (s.end - s.start) / 3600000, 0);
+      days.push({ label: d.toLocaleDateString("fr-FR", { weekday: "short" }), hours: Math.round(hours * 10) / 10, count: daySessions.length });
+    }
+    return days;
+  })();
 
   if (loading) return (
     <div style={{ minHeight: "100vh", background: "#060E18", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -383,13 +400,20 @@ export default function AdminPage() {
             </div>
 
             {/* KPIs row 1 */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16, marginBottom: 24 }}>
-              <KPI icon="📋" label="Sessions aujourd'hui" value={todaySessions.length} color={T} />
-              <KPI icon="⏱️" label="Heures cette semaine" value={`${weekHours.toFixed(1)}h`} color={EMERALD} />
-              <KPI icon="🔴" label="En cours maintenant" value={activeSessions.length} color={activeSessions.length > 0 ? "#EF4444" : "#475569"} sub={activeSessions.length > 0 ? activeSessions.map(s => s.empName).join(", ") : "Personne"} />
-              <KPI icon="👥" label="Intervenants" value={employees.length} color="#8B5CF6" onClick={() => setTab("employees")} />
-              <KPI icon="📨" label="Nouvelles demandes" value={newQuotes} color={P} onClick={() => setTab("quotes")} />
-            </div>
+            {(() => {
+              const todayStart2 = new Date(); todayStart2.setHours(0,0,0,0);
+              const todayRdvCount = appointments.filter(r => r.date >= todayStart2.getTime() && r.date < todayStart2.getTime() + 86400000).length;
+              const rdvDone = appointments.filter(r => r.date >= todayStart2.getTime() && r.date < todayStart2.getTime() + 86400000 && r.status === "done").length;
+              return (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16, marginBottom: 24 }}>
+                  <KPI icon="📋" label="Sessions aujourd'hui" value={todaySessions.length} color={T} />
+                  <KPI icon="⏱️" label="Heures cette semaine" value={`${weekHours.toFixed(1)}h`} color={EMERALD} />
+                  <KPI icon="🔴" label="En cours" value={activeSessions.length} color={activeSessions.length > 0 ? "#EF4444" : "#475569"} sub={activeSessions.length > 0 ? activeSessions.map(s => s.empName).join(", ") : "Personne"} />
+                  <KPI icon="📅" label="RDV aujourd'hui" value={`${rdvDone}/${todayRdvCount}`} color="#8B5CF6" onClick={() => setTab("agenda")} sub={todayRdvCount === 0 ? "Aucun planifié" : `${todayRdvCount - rdvDone} restant${todayRdvCount - rdvDone !== 1 ? "s" : ""}`} />
+                  <KPI icon="📨" label="Nouvelles demandes" value={newQuotes} color={P} onClick={() => setTab("quotes")} />
+                </div>
+              );
+            })()}
 
             {/* Quick stats */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
@@ -433,6 +457,31 @@ export default function AdminPage() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Weekly chart */}
+            <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16, padding: "22px 24px", marginBottom: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1 }}>Activité — 7 derniers jours</div>
+                <div style={{ fontSize: 12, color: "#475569" }}>{weeklyData.reduce((a, d) => a + d.hours, 0).toFixed(1)}h total</div>
+              </div>
+              {(() => {
+                const maxH = Math.max(...weeklyData.map(d => d.hours), 1);
+                return (
+                  <div style={{ display: "flex", gap: 8, alignItems: "flex-end", height: 100 }}>
+                    {weeklyData.map((d, i) => (
+                      <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, height: "100%" }}>
+                        <div style={{ flex: 1, display: "flex", alignItems: "flex-end", width: "100%" }}>
+                          <div title={`${d.hours}h · ${d.count} session${d.count !== 1 ? "s" : ""}`}
+                            style={{ width: "100%", height: `${Math.max((d.hours / maxH) * 100, d.hours > 0 ? 6 : 0)}%`, background: d.hours > 0 ? `linear-gradient(to top, ${T}, ${T}99)` : "rgba(255,255,255,0.05)", borderRadius: "4px 4px 0 0", transition: "height 0.6s ease", cursor: "default", minHeight: d.hours > 0 ? 4 : 0 }} />
+                        </div>
+                        <div style={{ fontSize: 10, color: "#475569", textTransform: "capitalize" }}>{d.label}</div>
+                        {d.hours > 0 && <div style={{ fontSize: 10, color: T, fontWeight: 700 }}>{d.hours}h</div>}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Recent sessions */}
@@ -595,17 +644,21 @@ export default function AdminPage() {
 
             {/* Filters */}
             <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+              <div style={{ position: "relative", flex: "2 1 200px" }}>
+                <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: "#475569" }}>🔍</span>
+                <input className="admin-search" placeholder="Rechercher intervenant ou client…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+              </div>
               <select value={filterEmp} onChange={e => setFilterEmp(e.target.value)} style={{ ...inputStyle, flex: "1 1 160px" }}>
                 <option value="all">Tous les intervenants</option>
                 {employees.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
               </select>
-              <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={{ ...inputStyle, flex: "1 1 140px" }}>
+              <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={{ ...inputStyle, flex: "1 1 130px" }}>
                 <option value="all">Tous les statuts</option>
                 <option value="done">Terminées</option>
                 <option value="active">En cours</option>
               </select>
-              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", fontSize: 13, color: "#475569" }}>
-                {filteredSessions.length} session{filteredSessions.length !== 1 ? "s" : ""}
+              <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: "#475569", flexShrink: 0 }}>
+                {filteredSessions.length} résultat{filteredSessions.length !== 1 ? "s" : ""}
               </div>
             </div>
 

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { loadSession, clearSession, load, save } from "../../lib/storage";
 import { DEMO_EMPS, AMBER, PINK, NAVY, EMERALD } from "../../lib/data";
 
@@ -45,7 +46,11 @@ export default function AdminPage() {
             <div style={{ fontSize: 12, color: "#475569" }}>Tableau de bord</div>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 12 }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+          <Link href="/admin/veille"
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 8, background: `linear-gradient(135deg, ${AMBER}22, ${PINK}11)`, border: `1px solid ${AMBER}44`, color: AMBER, fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
+            🤖 Veille IA
+          </Link>
           <button onClick={() => router.push("/")}
             style={{ background: "none", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "#64748B", fontSize: 13, cursor: "pointer", padding: "6px 12px" }}>
             ← Site
@@ -64,7 +69,15 @@ export default function AdminPage() {
           { label: "Heures cumulées", value: `${totalHours.toFixed(1)}h`, icon: "⏱", color: EMERALD },
           { label: "Cette semaine", value: thisWeek, icon: "📅", color: "#8B5CF6" },
           { label: "Intervenants", value: employees.length, icon: "👥", color: "#06B6D4" },
-        ].map(s => (
+          { label: "Veille IA", value: "🤖", icon: "📡", color: PINK, link: "/admin/veille" },
+        ].map(s => s.link ? (
+          <Link key={s.label} href={s.link}
+            style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${PINK}33`, borderRadius: 16, padding: "20px 18px", display: "block", textDecoration: "none" }}>
+            <div style={{ fontSize: 24, marginBottom: 8 }}>{s.icon}</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: s.color, fontFamily: "Syne, sans-serif" }}>{s.value}</div>
+            <div style={{ fontSize: 12, color: s.color, fontWeight: 600, marginTop: 4 }}>{s.label} →</div>
+          </Link>
+        ) : (
           <div key={s.label} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: "20px 18px" }}>
             <div style={{ fontSize: 24, marginBottom: 8 }}>{s.icon}</div>
             <div style={{ fontSize: 28, fontWeight: 800, color: s.color, fontFamily: "Syne, sans-serif" }}>{s.value}</div>

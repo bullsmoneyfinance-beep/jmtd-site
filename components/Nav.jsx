@@ -1,128 +1,236 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PHONE, PHONE_HREF, SERVICES, AMBER, AMBER_DARK, PINK, NAVY } from "../lib/data";
+import { PHONE, PHONE_HREF, SERVICES } from "../lib/data";
+
+const T = "#0DA9A4";
+const P = "#D4197A";
+
+const TEAM_LINKS = [
+  { href: "/pointage",     icon: "⏱️", label: "Pointage",           desc: "Démarrer / terminer une session" },
+  { href: "/admin",        icon: "📊", label: "Dashboard admin",     desc: "Suivi des sessions & équipes" },
+  { href: "/admin/veille", icon: "🤖", label: "Agent IA — Veille",   desc: "Actualité juridique & SAP" },
+];
 
 export default function Nav() {
-  const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
+  const pathname      = usePathname();
+  const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [svcOpen, setSvcOpen] = useState(false);
+  const [svcOpen, setSvcOpen]       = useState(false);
+  const [teamOpen, setTeamOpen]     = useState(false);
+  const teamRef = useRef(null);
 
+  /* scroll */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const fn = () => setScrolled(window.scrollY > 24);
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  // Close mobile menu on route change
-  useEffect(() => { setMobileOpen(false); setSvcOpen(false); }, [pathname]);
+  /* ferme tout au changement de route */
+  useEffect(() => { setMobileOpen(false); setSvcOpen(false); setTeamOpen(false); }, [pathname]);
 
-  const isActive = (href) => pathname === href || pathname.startsWith(href + "/");
+  /* ferme le dropdown team si clic en dehors */
+  useEffect(() => {
+    if (!teamOpen) return;
+    const handler = e => { if (teamRef.current && !teamRef.current.contains(e.target)) setTeamOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [teamOpen]);
+
+  const isActive = h => pathname === h || pathname.startsWith(h + "/");
+  const isTeamActive = isActive("/portail") || isActive("/admin") || isActive("/pointage");
+
+  const linkStyle = active => ({
+    position: "relative", background: "none", border: "none", cursor: "pointer",
+    padding: "8px 14px", fontSize: 14, fontWeight: active ? 600 : 500,
+    color: active ? "#1A2D3D" : "#64748B", transition: "color 0.2s",
+    textDecoration: "none", display: "block",
+  });
 
   return (
     <>
-      {/* Top info bar */}
-      <div style={{ background: "#060E18", color: "#64748B", fontSize: 12, padding: "5px 24px", textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-        <span>📍 Quartier Les Digues, 97215 Rivière-Salée, Martinique</span>
-        <span className="hide-mobile">·</span>
-        <span className="hide-mobile">⏰ Lun–Ven 08h–18h</span>
-        <span className="hide-mobile">·</span>
-        <a href={PHONE_HREF} style={{ color: AMBER, fontWeight: 600 }}>📞 {PHONE}</a>
-      </div>
-
-      {/* Main header */}
       <header style={{
-        position: "sticky", top: 0, zIndex: 100,
-        background: scrolled ? "rgba(13,27,42,0.97)" : "rgba(13,27,42,0.95)",
-        backdropFilter: "blur(20px)",
-        borderBottom: `1px solid ${scrolled ? "rgba(245,158,11,0.15)" : "rgba(255,255,255,0.06)"}`,
-        transition: "all 0.3s ease",
-        boxShadow: scrolled ? "0 4px 32px rgba(0,0,0,0.4)" : "none",
+        position: "sticky", top: 0, zIndex: 200,
+        background: scrolled ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0.88)",
+        backdropFilter: "blur(28px)", WebkitBackdropFilter: "blur(28px)",
+        borderBottom: `1px solid ${scrolled ? "rgba(13,169,164,0.18)" : "rgba(13,169,164,0.08)"}`,
+        boxShadow: scrolled ? "0 4px 40px rgba(13,169,164,0.08)" : "none",
+        transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
       }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", height: 68, gap: 12 }}>
+
+        {/* Top info strip */}
+        <div style={{ background: `linear-gradient(90deg, ${T}11, ${P}11)`, borderBottom: "1px solid rgba(13,169,164,0.08)", padding: "5px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 20, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 12, color: "#64748B" }}>📍 Rivière-Salée, Martinique</span>
+          <span className="hide-mobile" style={{ fontSize: 12, color: "#CBD5E1" }}>·</span>
+          <span className="hide-mobile" style={{ fontSize: 12, color: "#64748B" }}>⏰ Lun–Ven 08h–18h</span>
+          <span className="hide-mobile" style={{ fontSize: 12, color: "#CBD5E1" }}>·</span>
+          <a href={PHONE_HREF} style={{ fontSize: 12, color: T, fontWeight: 700 }}>📞 {PHONE}</a>
+        </div>
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", height: 66, gap: 12 }}>
 
           {/* Logo */}
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-            <div style={{ width: 44, height: 44, borderRadius: 10, background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 15, color: "#fff", letterSpacing: -0.5, flexShrink: 0 }}>J'MTD</div>
-            <div className="hide-mobile">
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#F8FAFC", fontFamily: "Syne, sans-serif", letterSpacing: -0.3 }}>J&apos;MTD</div>
-              <div style={{ fontSize: 10, color: "#64748B", letterSpacing: 0.5, textTransform: "uppercase" }}>Services à la Personne</div>
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
+            {/* Logo mark — stacked like original */}
+            <div style={{ position: "relative", width: 72, height: 52, flexShrink: 0 }}>
+              {/* J'm — top-left, script */}
+              <div style={{ position: "absolute", top: 0, left: 0, fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: 26, color: P, lineHeight: 1, zIndex: 2, whiteSpace: "nowrap" }}>
+                J&apos;m
+              </div>
+              {/* TD — bottom-right, large block */}
+              <div style={{ position: "absolute", bottom: 0, right: 0, fontFamily: "Arial,Helvetica,sans-serif", fontWeight: 900, fontSize: 40, color: T, lineHeight: 1, letterSpacing: -2 }}>
+                TD
+              </div>
+            </div>
+            {/* Tagline */}
+            <div className="hide-mobile" style={{ display: "flex", flexDirection: "column", justifyContent: "center", borderLeft: `1px solid ${P}22`, paddingLeft: 10 }}>
+              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: 12, color: P, lineHeight: 1.4, letterSpacing: 0.2 }}>Société de services</span>
+              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: 12, color: P, lineHeight: 1.4, letterSpacing: 0.2 }}>sur mesure</span>
             </div>
           </Link>
 
           {/* Desktop nav */}
           <nav className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Link href="/" className={`nav-link ${pathname === "/" ? "active" : ""}`}>Accueil</Link>
+            <Link href="/" style={linkStyle(pathname === "/")}>Accueil</Link>
 
-            {/* Services dropdown */}
-            <div style={{ position: "relative" }} onMouseEnter={() => setSvcOpen(true)} onMouseLeave={() => setSvcOpen(false)}>
-              <button className={`nav-link ${pathname.startsWith("/services") || pathname.startsWith("/coach") ? "active" : ""}`} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                Nos prestations <span style={{ fontSize: 10 }}>▾</span>
+            {/* Services dropdown — hover, gap comblé par paddingTop transparent */}
+            <div style={{ position: "relative" }}
+              onMouseEnter={() => setSvcOpen(true)}
+              onMouseLeave={() => setSvcOpen(false)}>
+              <button style={{ ...linkStyle(pathname.startsWith("/services") || pathname.startsWith("/coach")), display: "flex", alignItems: "center", gap: 5 }}>
+                Nos prestations <span style={{ fontSize: 9, color: "#94A3B8" }}>▾</span>
               </button>
               {svcOpen && (
-                <div style={{ position: "absolute", top: "100%", left: 0, background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, boxShadow: "0 20px 60px rgba(0,0,0,0.5)", minWidth: 260, padding: "8px 0", animation: "slideDown 0.2s ease", zIndex: 200 }}>
-                  {SERVICES.map(s => (
-                    <Link key={s.id} href={s.id === "rangement" ? "/coach" : `/services#${s.id}`}
-                      style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 18px", fontSize: 13, color: "#94A3B8", transition: "all 0.15s", textDecoration: "none" }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "rgba(245,158,11,0.08)"; e.currentTarget.style.color = "#F8FAFC"; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#94A3B8"; }}>
-                      <span style={{ fontSize: 18 }}>{s.icon}</span>
-                      <span>{s.title}</span>
-                    </Link>
-                  ))}
+                <div style={{ position: "absolute", top: "100%", left: 0, paddingTop: 8, zIndex: 300 }}>
+                  <div style={{ background: "#fff", border: `1px solid rgba(13,169,164,0.12)`, borderRadius: 16, boxShadow: "0 20px 60px rgba(13,169,164,0.12), 0 4px 16px rgba(0,0,0,0.06)", minWidth: 270, padding: "10px 0", animation: "slideDown 0.2s ease" }}>
+                    {SERVICES.map(s => (
+                      <Link key={s.id} href={s.id === "rangement" ? "/coach" : `/services#${s.id}`}
+                        style={{ display: "flex", alignItems: "center", gap: 14, padding: "11px 20px", fontSize: 13, color: "#64748B", textDecoration: "none", transition: "all 0.15s" }}
+                        onMouseEnter={e => { e.currentTarget.style.background = `${T}0a`; e.currentTarget.style.color = T; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#64748B"; }}>
+                        <span style={{ fontSize: 20, width: 28, textAlign: "center" }}>{s.icon}</span>
+                        <div>
+                          <div style={{ fontWeight: 600, color: "#1A2D3D", fontSize: 13 }}>{s.title}</div>
+                          <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 1 }}>{s.short}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
 
-            <Link href="/coach" className={`nav-link ${isActive("/coach") ? "active" : ""}`}>Coach rangement</Link>
-            <Link href="/contact" className={`nav-link ${isActive("/contact") ? "active" : ""}`}>Contact</Link>
+            <Link href="/coach" style={linkStyle(isActive("/coach"))}>Coach rangement</Link>
+            <Link href="/coaching" style={linkStyle(isActive("/coaching"))}>Mon coaching</Link>
+            <Link href="/contact" style={linkStyle(isActive("/contact"))}>Contact</Link>
+
+            {/* Espace Équipe — clic pour ouvrir/fermer */}
+            <div ref={teamRef} style={{ position: "relative", marginLeft: 8 }}>
+              <button
+                onClick={() => setTeamOpen(o => !o)}
+                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 22, background: isTeamActive || teamOpen ? `${T}12` : "rgba(13,169,164,0.06)", border: `1.5px solid ${isTeamActive || teamOpen ? T : "rgba(13,169,164,0.2)"}`, cursor: "pointer", fontSize: 13, fontWeight: 600, color: isTeamActive || teamOpen ? T : "#475569", transition: "all 0.2s" }}>
+                🔐 <span>Espace équipe</span>
+                <span style={{ fontSize: 9, color: "#94A3B8", transform: teamOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>▾</span>
+              </button>
+              {teamOpen && (
+                <div style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, background: "#fff", border: `1px solid rgba(13,169,164,0.14)`, borderRadius: 18, boxShadow: "0 20px 60px rgba(13,169,164,0.14), 0 4px 20px rgba(0,0,0,0.07)", minWidth: 290, padding: "10px 0", animation: "slideDown 0.2s ease", zIndex: 300 }}>
+                  <div style={{ padding: "10px 18px 12px", borderBottom: "1px solid rgba(13,169,164,0.08)" }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1.2 }}>Accès réservé</div>
+                    <div style={{ fontSize: 12, color: "#64748B", marginTop: 3 }}>Connectez-vous via le portail</div>
+                  </div>
+                  {TEAM_LINKS.map(item => (
+                    <Link key={item.href} href={item.href}
+                      style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 18px", textDecoration: "none", transition: "background 0.15s" }}
+                      onMouseEnter={e => { e.currentTarget.style.background = `${T}08`; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "none"; }}>
+                      <div style={{ width: 38, height: 38, borderRadius: 10, background: item.href.includes("veille") ? `linear-gradient(135deg, ${P}22, ${T}11)` : `${T}10`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
+                        {item.icon}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 600, color: "#1A2D3D", fontSize: 13 }}>{item.label}</div>
+                        <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>{item.desc}</div>
+                      </div>
+                    </Link>
+                  ))}
+                  <div style={{ padding: "10px 18px", borderTop: "1px solid rgba(13,169,164,0.08)" }}>
+                    <Link href="/portail" style={{ display: "block", textAlign: "center", padding: "10px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 13, textDecoration: "none" }}>
+                      Se connecter →
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
           </nav>
 
-          {/* CTA + Burger */}
+          {/* CTAs */}
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <a href={PHONE_HREF} className="btn-amber hide-mobile" style={{ padding: "9px 18px", borderRadius: 30, fontSize: 13, display: "flex", alignItems: "center", gap: 7, textDecoration: "none" }}>
+            <a href={PHONE_HREF} className="hide-mobile"
+              style={{ display: "flex", alignItems: "center", gap: 7, padding: "9px 18px", borderRadius: 30, border: `1.5px solid ${T}44`, color: T, fontSize: 13, fontWeight: 600, textDecoration: "none", background: `${T}08` }}>
               📞 {PHONE}
             </a>
-            <Link href="/contact" className="btn-amber" style={{ padding: "9px 18px", borderRadius: 30, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none" }} aria-label="Obtenir un devis gratuit">
+            <Link href="/contact"
+              style={{ padding: "10px 20px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 13, textDecoration: "none", boxShadow: `0 4px 20px ${T}40`, display: "inline-flex", alignItems: "center", gap: 6 }}>
               <span className="hide-mobile">Devis gratuit</span>
               <span className="show-mobile" style={{ display: "none" }}>Devis</span>
             </Link>
-
             {/* Burger */}
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="show-mobile" aria-label="Menu" style={{ background: "none", border: "none", cursor: "pointer", flexDirection: "column", gap: 5, padding: 6 }}>
-              {[0, 1, 2].map(i => <span key={i} style={{ width: 22, height: 2, background: "#F8FAFC", borderRadius: 1, display: "block", transition: "all 0.25s", transform: mobileOpen && i === 0 ? "rotate(45deg) translate(5px,5px)" : mobileOpen && i === 2 ? "rotate(-45deg) translate(5px,-5px)" : "none", opacity: mobileOpen && i === 1 ? 0 : 1 }} />)}
+            <button onClick={() => setMobileOpen(o => !o)} className="show-mobile"
+              aria-label="Menu" style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", gap: 5, padding: 6 }}>
+              {[0,1,2].map(i => (
+                <span key={i} style={{ width: 22, height: 2, borderRadius: 1, display: "block", transition: "all 0.25s", background: "#1A2D3D", transform: mobileOpen && i===0 ? "rotate(45deg) translate(5px,5px)" : mobileOpen && i===2 ? "rotate(-45deg) translate(5px,-5px)" : "none", opacity: mobileOpen && i===1 ? 0 : 1 }} />
+              ))}
             </button>
           </div>
         </div>
 
-        {/* Mobile menu overlay */}
+        {/* Mobile menu */}
         {mobileOpen && (
-          <div style={{ background: "rgba(13,27,42,0.99)", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px 32px", animation: "slideDown 0.25s ease" }}>
-            {[["/" , "🏠 Accueil"], ["/services", "🛠 Nos prestations"], ["/coach", "🗂️ Coach rangement"], ["/contact", "✉️ Contact & Devis"]].map(([href, label]) => (
-              <Link key={href} href={href} style={{ display: "block", padding: "14px 0", borderBottom: "1px solid rgba(255,255,255,0.06)", fontSize: 15, color: pathname === href ? AMBER : "#94A3B8", fontWeight: pathname === href ? 600 : 400, textDecoration: "none" }}>{label}</Link>
+          <div style={{ background: "#fff", borderTop: `1px solid rgba(13,169,164,0.1)`, padding: "16px 24px 28px", animation: "slideDown 0.25s ease" }}>
+            {[["/","🏠 Accueil"],["/services","🛠 Nos prestations"],["/coach","🗂️ Coach rangement"],["/coaching","✨ Mon coaching"],["/contact","✉️ Contact & Devis"]].map(([href, label]) => (
+              <Link key={href} href={href} style={{ display: "block", padding: "14px 0", borderBottom: "1px solid rgba(13,169,164,0.08)", fontSize: 15, color: pathname === href ? T : "#64748B", fontWeight: pathname === href ? 600 : 400, textDecoration: "none" }}>
+                {label}
+              </Link>
             ))}
-            <a href={PHONE_HREF} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 20, background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, color: "#fff", padding: "14px 0", borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>📞 {PHONE}</a>
+            <div style={{ marginTop: 12, background: "rgba(13,169,164,0.04)", border: "1px solid rgba(13,169,164,0.12)", borderRadius: 16, padding: "14px 16px" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 10 }}>🔐 Espace équipe</div>
+              {TEAM_LINKS.map(item => (
+                <Link key={item.href} href={item.href} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: "1px solid rgba(13,169,164,0.06)", textDecoration: "none" }}>
+                  <span style={{ fontSize: 20 }}>{item.icon}</span>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "#1A2D3D" }}>{item.label}</div>
+                    <div style={{ fontSize: 11, color: "#94A3B8" }}>{item.desc}</div>
+                  </div>
+                </Link>
+              ))}
+              <Link href="/portail" style={{ display: "block", textAlign: "center", marginTop: 12, padding: "11px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>
+                Se connecter →
+              </Link>
+            </div>
+            <a href={PHONE_HREF} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 16, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", padding: "14px 0", borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
+              📞 {PHONE}
+            </a>
           </div>
         )}
       </header>
 
       {/* Mobile bottom bar */}
-      <div className="show-mobile" style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(13,27,42,0.98)", borderTop: "1px solid rgba(255,255,255,0.08)", display: "none", zIndex: 99, backdropFilter: "blur(20px)" }}>
+      <div className="show-mobile" style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(255,255,255,0.97)", borderTop: `1px solid rgba(13,169,164,0.12)`, display: "none", zIndex: 199, backdropFilter: "blur(20px)", boxShadow: "0 -4px 24px rgba(13,169,164,0.08)" }}>
         {[
-          { href: "/", icon: "🏠", label: "Accueil" },
-          { href: PHONE_HREF, icon: "📞", label: "Appeler", external: true },
+          { href: "/",        icon: "🏠", label: "Accueil" },
+          { href: PHONE_HREF, icon: "📞", label: "Appeler", ext: true },
+          { href: "/coaching",icon: "✨", label: "Coaching" },
+          { href: "/portail", icon: "🔐", label: "Équipe" },
           { href: "/contact", icon: "✉️", label: "Devis" },
-        ].map(item => item.external ? (
-          <a key={item.label} href={item.href} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "10px 0", color: AMBER, fontSize: 12, fontWeight: 600, textDecoration: "none", gap: 3 }} aria-label={item.label}>
-            <span style={{ fontSize: 20 }}>{item.icon}</span>{item.label}
-          </a>
-        ) : (
-          <Link key={item.label} href={item.href} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "10px 0", color: pathname === item.href ? AMBER : "#64748B", fontSize: 12, fontWeight: 600, textDecoration: "none", gap: 3 }} aria-label={item.label}>
-            <span style={{ fontSize: 20 }}>{item.icon}</span>{item.label}
-          </Link>
-        ))}
+        ].map(item => item.ext
+          ? <a key={item.label} href={item.href} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "10px 0", color: T, fontSize: 10, fontWeight: 700, textDecoration: "none", gap: 3 }}>
+              <span style={{ fontSize: 18 }}>{item.icon}</span>{item.label}
+            </a>
+          : <Link key={item.label} href={item.href} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "10px 0", color: pathname === item.href ? T : "#94A3B8", fontSize: 10, fontWeight: 600, textDecoration: "none", gap: 3 }}>
+              <span style={{ fontSize: 18 }}>{item.icon}</span>{item.label}
+            </Link>
+        )}
       </div>
     </>
   );

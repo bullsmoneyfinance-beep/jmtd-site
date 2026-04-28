@@ -2,14 +2,14 @@ import "./globals.css";
 import ConditionalLayout from "../components/ConditionalLayout";
 
 export const metadata = {
-  title: "J'MTD — Services à la Personne en Martinique",
-  description: "Aide à domicile, ménage, jardinage, garde d'enfants, coach rangement à Rivière-Salée et toute la Martinique. Agrément SAP. Devis gratuit.",
-  keywords: "services à la personne, aide à domicile, ménage, jardinage, Martinique, Rivière-Salée, coach rangement",
+  title: "J'MTD — Société de services sur mesure en Martinique",
+  description: "Entretien, préparation de repas, livraison de courses, assistance administrative, coach rangement à Rivière-Salée et toute la Martinique. Agrément SAP. Devis gratuit.",
+  keywords: "services à la personne, aide à domicile, ménage, coach rangement, Martinique, Rivière-Salée, services sur mesure",
   authors: [{ name: "J'MTD" }],
   metadataBase: new URL("https://jmtd.fr"),
   openGraph: {
-    title: "J'MTD — Services à la Personne en Martinique",
-    description: "Aide à domicile, ménage, jardinage, garde d'enfants à Rivière-Salée et toute la Martinique.",
+    title: "J'MTD — Société de services sur mesure en Martinique",
+    description: "Entretien, préparation de repas, livraison de courses et coach rangement à Rivière-Salée et toute la Martinique.",
     url: "https://jmtd.fr",
     siteName: "J'MTD",
     locale: "fr_FR",
@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
       </head>
       <body>
         <ConditionalLayout>{children}</ConditionalLayout>

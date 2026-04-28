@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 110">
+  <!-- J' italic rose -->
+  <text x="4" y="82"
+    font-family="Georgia,'Times New Roman',serif"
+    font-style="italic"
+    font-weight="700"
+    font-size="78"
+    fill="#D4197A"
+    letter-spacing="-2">J&apos;</text>
+
+  <!-- Cœur (le m stylisé du logo) -->
+  <path d="M92,30 C92,22 98,16 106,16 C112,16 117,20 119,26 C121,20 126,16 132,16 C140,16 146,22 146,30 C146,38 140,46 119,62 C98,46 92,38 92,30 Z"
+    fill="#D4197A"/>
+
+  <!-- TD teal bloc -->
+  <text x="150" y="88"
+    font-family="Arial,Helvetica,sans-serif"
+    font-weight="900"
+    font-size="84"
+    fill="#0DA9A4"
+    letter-spacing="-3">TD</text>
+
+  <!-- Tagline -->
+  <text x="4" y="104"
+    font-family="Georgia,'Times New Roman',serif"
+    font-style="italic"
+    font-size="12.5"
+    fill="#D4197A"
+    letter-spacing="0.3">Société de services sur mesure</text>
+</svg>

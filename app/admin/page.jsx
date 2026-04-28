@@ -90,6 +90,81 @@ function EmpModal({ emp, onSave, onClose }) {
   );
 }
 
+/* ── Modal RDV ── */
+function RdvModalInner({ initial, employees, services, isEdit, onSave, onClose }) {
+  const [form, setForm] = useState(initial);
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+  const T = AMBER; const P = PINK;
+
+  const handleSave = () => {
+    if (!form.clientName || !form.dateStr || !form.empId) return;
+    onSave({ ...form, date: new Date(form.dateStr).getTime(), duration: Number(form.duration) });
+  };
+
+  const fieldStyle = { width: "100%", padding: "10px 13px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#F8FAFC", fontSize: 13, boxSizing: "border-box", outline: "none" };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.72)", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
+      onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0D1B2A", border: `1px solid ${T}33`, borderRadius: 20, padding: "28px 28px", width: "100%", maxWidth: 480, maxHeight: "90vh", overflowY: "auto" }}>
+        <div style={{ fontSize: 17, fontWeight: 700, color: "#F8FAFC", marginBottom: 22 }}>
+          {isEdit ? "Modifier le RDV" : "Planifier un rendez-vous"}
+        </div>
+
+        {[
+          { label: "Nom du client *", key: "clientName", type: "text", placeholder: "Marie Dupont" },
+          { label: "Adresse d'intervention", key: "address", type: "text", placeholder: "12 rue des Fleurs, Rivière-Salée" },
+        ].map(f => (
+          <div key={f.key} style={{ marginBottom: 14 }}>
+            <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#64748B", marginBottom: 5, textTransform: "uppercase", letterSpacing: 0.8 }}>{f.label}</label>
+            <input type={f.type} value={form[f.key]} onChange={set(f.key)} placeholder={f.placeholder} style={fieldStyle} />
+          </div>
+        ))}
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
+          <div>
+            <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#64748B", marginBottom: 5, textTransform: "uppercase", letterSpacing: 0.8 }}>Date et heure *</label>
+            <input type="datetime-local" value={form.dateStr} onChange={set("dateStr")} style={{ ...fieldStyle, colorScheme: "dark" }} />
+          </div>
+          <div>
+            <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#64748B", marginBottom: 5, textTransform: "uppercase", letterSpacing: 0.8 }}>Durée (min)</label>
+            <input type="number" value={form.duration} onChange={set("duration")} min={30} step={30} style={fieldStyle} />
+          </div>
+        </div>
+
+        {[
+          { label: "Intervenant *", key: "empId", options: employees.map(e => ({ value: e.id, label: `${e.name} · ${e.role}` })) },
+          { label: "Prestation", key: "service", options: services.map(s => ({ value: s, label: s })) },
+        ].map(f => (
+          <div key={f.key} style={{ marginBottom: 14 }}>
+            <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#64748B", marginBottom: 5, textTransform: "uppercase", letterSpacing: 0.8 }}>{f.label}</label>
+            <select value={form[f.key]} onChange={set(f.key)} style={{ ...fieldStyle }}>
+              {f.options.map(o => <option key={o.value} value={o.value} style={{ background: "#0D1B2A" }}>{o.label}</option>)}
+            </select>
+          </div>
+        ))}
+
+        <div style={{ marginBottom: 20 }}>
+          <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#64748B", marginBottom: 5, textTransform: "uppercase", letterSpacing: 0.8 }}>Notes pour l'intervenant</label>
+          <textarea value={form.notes} onChange={set("notes")} placeholder="Instructions spécifiques, matériel à apporter…" rows={3}
+            style={{ ...fieldStyle, resize: "vertical", fontFamily: "inherit" }} />
+        </div>
+
+        <div style={{ display: "flex", gap: 10 }}>
+          <button onClick={onClose}
+            style={{ flex: 1, padding: "11px", borderRadius: 10, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#94A3B8", fontSize: 14, cursor: "pointer", fontWeight: 600 }}>
+            Annuler
+          </button>
+          <button onClick={handleSave}
+            style={{ flex: 2, padding: "11px", borderRadius: 10, background: `linear-gradient(135deg, ${T}, ${P})`, border: "none", color: "#fff", fontSize: 14, cursor: "pointer", fontWeight: 700 }}>
+            {isEdit ? "Enregistrer" : "Planifier le RDV"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Composant KPI card ── */
 function KPI({ icon, label, value, sub, color, onClick, link }) {
   const inner = (
@@ -109,6 +184,7 @@ function KPI({ icon, label, value, sub, color, onClick, link }) {
 /* ── Sidebar ── */
 const TABS = [
   { id: "dashboard", icon: "📊", label: "Tableau de bord" },
+  { id: "agenda",    icon: "📅", label: "Agenda" },
   { id: "sessions",  icon: "⏱️", label: "Sessions" },
   { id: "employees", icon: "👥", label: "Équipe" },
   { id: "quotes",    icon: "📨", label: "Demandes" },
@@ -121,8 +197,10 @@ export default function AdminPage() {
   const [sessions, setSessions] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [quotes, setQuotes] = useState([]);
+  const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sideOpen, setSideOpen] = useState(false);
+  const [rdvModal, setRdvModal] = useState(null); // null | { mode: "add"|"edit", rdv? }
 
   /* Employee modal */
   const [empModal, setEmpModal] = useState(null); // null | { mode: "add"|"edit", emp?: {} }
@@ -139,10 +217,12 @@ export default function AdminPage() {
       load("jmtd_sessions", []),
       load("jmtd_employees", DEMO_EMPS),
       load("jmtd_quotes", []),
-    ]).then(([s, e, q]) => {
+      load("jmtd_appointments", []),
+    ]).then(([s, e, q, a]) => {
       setSessions(s.sort((a, b) => b.start - a.start));
       setEmployees(e);
       setQuotes(q.sort((a, b) => b.date - a.date));
+      setAppointments(a.sort((a, b) => a.date - b.date));
       setLoading(false);
     });
   }, []);
@@ -175,6 +255,30 @@ export default function AdminPage() {
     setEmployees(updated);
     await save("jmtd_employees", updated);
     setDeleteConfirm(null);
+  }
+
+  /* ── Appointments CRUD ── */
+  async function saveRdv(form) {
+    let updated;
+    if (rdvModal.mode === "add") {
+      updated = [...appointments, { ...form, id: `rdv_${Date.now()}`, status: "scheduled" }];
+    } else {
+      updated = appointments.map(r => r.id === rdvModal.rdv.id ? { ...rdvModal.rdv, ...form } : r);
+    }
+    updated.sort((a, b) => a.date - b.date);
+    setAppointments(updated);
+    await save("jmtd_appointments", updated);
+    setRdvModal(null);
+  }
+  async function deleteRdv(id) {
+    const updated = appointments.filter(r => r.id !== id);
+    setAppointments(updated);
+    await save("jmtd_appointments", updated);
+  }
+  async function setRdvStatus(id, status) {
+    const updated = appointments.map(r => r.id === id ? { ...r, status } : r);
+    setAppointments(updated);
+    await save("jmtd_appointments", updated);
   }
 
   /* ── Quote status ── */
@@ -362,6 +466,121 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        {/* ═══ AGENDA ═══ */}
+        {tab === "agenda" && (() => {
+          const now = Date.now();
+          const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+          const todayRdv = appointments.filter(r => r.date >= todayStart.getTime() && r.date < todayStart.getTime() + 86400000);
+          const upcomingRdv = appointments.filter(r => r.date >= todayStart.getTime() + 86400000);
+          const pastRdv = appointments.filter(r => r.date < todayStart.getTime()).slice(-5).reverse();
+
+          const statusColor = s => s === "done" ? EMERALD : s === "in-progress" ? T : s === "cancelled" ? "#EF4444" : P;
+          const statusLabel = s => s === "done" ? "Terminé" : s === "in-progress" ? "En cours" : s === "cancelled" ? "Annulé" : "Planifié";
+
+          return (
+            <div style={{ animation: "slideIn 0.25s ease" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
+                <div>
+                  <h1 style={{ fontSize: 22, fontWeight: 800, color: "#F8FAFC", margin: 0 }}>Agenda des interventions</h1>
+                  <p style={{ fontSize: 13, color: "#475569", marginTop: 4 }}>{appointments.length} RDV au total · {todayRdv.length} aujourd&apos;hui</p>
+                </div>
+                <button onClick={() => setRdvModal({ mode: "add" })}
+                  style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 18px", borderRadius: 10, background: `linear-gradient(135deg, ${T}, ${P})`, border: "none", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+                  ➕ Planifier un RDV
+                </button>
+              </div>
+
+              {/* Aujourd'hui */}
+              {todayRdv.length > 0 && (
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>Aujourd&apos;hui</div>
+                  {todayRdv.map(rdv => {
+                    const emp = employees.find(e => e.id === rdv.empId);
+                    return (
+                      <div key={rdv.id} style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${statusColor(rdv.status)}22`, borderRadius: 14, padding: "18px 20px", marginBottom: 10 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                              <span style={{ fontSize: 15, fontWeight: 700, color: "#F8FAFC" }}>{rdv.clientName}</span>
+                              <span style={{ padding: "2px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: statusColor(rdv.status) + "18", color: statusColor(rdv.status) }}>{statusLabel(rdv.status)}</span>
+                            </div>
+                            <div style={{ fontSize: 13, color: T, fontWeight: 600, marginBottom: 4 }}>{rdv.service}</div>
+                            <div style={{ fontSize: 13, color: "#64748B" }}>
+                              ⏰ {new Date(rdv.date).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                              {rdv.duration ? ` (${rdv.duration} min)` : ""}
+                              {emp ? ` · 👤 ${emp.name}` : ""}
+                            </div>
+                            {rdv.address && <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>📍 {rdv.address}</div>}
+                            {rdv.notes && <div style={{ fontSize: 12, color: "#475569", marginTop: 4, fontStyle: "italic" }}>📝 {rdv.notes}</div>}
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6, flexShrink: 0 }}>
+                            <select value={rdv.status} onChange={e => setRdvStatus(rdv.id, e.target.value)}
+                              style={{ padding: "6px 10px", background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "#94A3B8", fontSize: 12, cursor: "pointer" }}>
+                              <option value="scheduled">Planifié</option>
+                              <option value="in-progress">En cours</option>
+                              <option value="done">Terminé</option>
+                              <option value="cancelled">Annulé</option>
+                            </select>
+                            <button onClick={() => setRdvModal({ mode: "edit", rdv })}
+                              style={{ padding: "6px 10px", borderRadius: 8, background: `${T}10`, border: `1px solid ${T}22`, color: T, fontSize: 12, cursor: "pointer" }}>
+                              ✏️ Modifier
+                            </button>
+                            <button onClick={() => deleteRdv(rdv.id)}
+                              style={{ padding: "6px 10px", borderRadius: 8, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#EF4444", fontSize: 12, cursor: "pointer" }}>
+                              🗑
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* À venir */}
+              {upcomingRdv.length > 0 && (
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>À venir</div>
+                  {upcomingRdv.map(rdv => {
+                    const emp = employees.find(e => e.id === rdv.empId);
+                    return (
+                      <div key={rdv.id} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, padding: "16px 20px", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: "#F8FAFC" }}>{rdv.clientName}</span>
+                            <span style={{ fontSize: 12, color: T, fontWeight: 600 }}>{rdv.service}</span>
+                          </div>
+                          <div style={{ fontSize: 12, color: "#475569" }}>
+                            📅 {new Date(rdv.date).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })}
+                            {" · "}⏰ {new Date(rdv.date).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                            {emp ? ` · 👤 ${emp.name}` : ""}
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", gap: 6 }}>
+                          <button onClick={() => setRdvModal({ mode: "edit", rdv })}
+                            style={{ padding: "6px 12px", borderRadius: 8, background: `${T}10`, border: `1px solid ${T}22`, color: T, fontSize: 12, cursor: "pointer" }}>✏️</button>
+                          <button onClick={() => deleteRdv(rdv.id)}
+                            style={{ padding: "6px 10px", borderRadius: 8, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#EF4444", fontSize: 12, cursor: "pointer" }}>🗑</button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {appointments.length === 0 && (
+                <div style={{ textAlign: "center", padding: "80px 32px", color: "#475569" }}>
+                  <div style={{ fontSize: 52, marginBottom: 16 }}>📅</div>
+                  <p style={{ fontSize: 15 }}>Aucun rendez-vous planifié.</p>
+                  <button onClick={() => setRdvModal({ mode: "add" })} style={{ marginTop: 16, padding: "10px 24px", borderRadius: 10, background: T, border: "none", color: "#fff", cursor: "pointer", fontWeight: 700 }}>
+                    Créer le premier RDV
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* ═══ SESSIONS ═══ */}
         {tab === "sessions" && (
@@ -647,6 +866,33 @@ export default function AdminPage() {
           onClose={() => setEmpModal(null)}
         />
       )}
+
+      {/* ── Modal RDV ── */}
+      {rdvModal && (() => {
+        const initial = rdvModal.rdv ? {
+          empId: rdvModal.rdv.empId || "",
+          clientName: rdvModal.rdv.clientName || "",
+          service: rdvModal.rdv.service || "",
+          address: rdvModal.rdv.address || "",
+          dateStr: rdvModal.rdv.date ? new Date(rdvModal.rdv.date).toISOString().slice(0,16) : "",
+          duration: rdvModal.rdv.duration || 120,
+          notes: rdvModal.rdv.notes || "",
+        } : { empId: employees[0]?.id || "", clientName: "", service: "Entretien & Nettoyage", address: "", dateStr: "", duration: 120, notes: "" };
+
+        const SERVICES_LIST = ["Entretien & Nettoyage", "Préparation des repas", "Livraison de courses", "Assistance administrative", "Coach en rangement"];
+
+        return (
+          <RdvModalInner
+            key={rdvModal.rdv?.id || "new"}
+            initial={initial}
+            employees={employees}
+            services={SERVICES_LIST}
+            isEdit={rdvModal.mode === "edit"}
+            onSave={saveRdv}
+            onClose={() => setRdvModal(null)}
+          />
+        );
+      })()}
 
       {deleteConfirm && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}

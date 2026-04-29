@@ -73,11 +73,8 @@ export default function Nav() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", height: 66, gap: 12 }}>
 
           {/* Logo */}
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
+          <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
             <Logo size="sm" />
-            <span className="hide-mobile" style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: 12, color: P, lineHeight: 1.5, borderLeft: `1px solid ${P}22`, paddingLeft: 10, whiteSpace: "nowrap" }}>
-              Société de services<br />sur mesure
-            </span>
           </Link>
 
           {/* Desktop nav */}

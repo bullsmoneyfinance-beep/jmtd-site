@@ -170,7 +170,7 @@ export default function HomePage() {
         <div style={{ position: "absolute", top: "30%", left: "40%", width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${T}0d 0%, transparent 70%)`, animation: "floatOrbSlow 22s ease-in-out infinite", pointerEvents: "none" }} />
 
         {/* ── Logo showcase centré ── */}
-        <div className="logo-showcase" style={{ textAlign: "center", padding: "56px 24px 28px", position: "relative" }}>
+        <div className="logo-showcase" style={{ textAlign: "center", padding: "16px 24px 12px", position: "relative" }}>
           <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center" }}>
             {/* SVG inline — Dancing Script chargé dans <head> s'applique ici */}
             <svg viewBox="0 0 300 240" width={260} height={208} style={{ display: "block", overflow: "visible" }} aria-label="J'MTD">

@@ -344,13 +344,12 @@ export default function AdminPage() {
         display: "flex", flexDirection: "column", position: "sticky", top: 0, height: "100vh", overflowY: "auto",
       }}>
         {/* Logo */}
-        <div style={{ padding: "22px 20px 18px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-            <span style={{ fontFamily: "Georgia,serif", fontStyle: "italic", fontWeight: 700, fontSize: 20, color: P }}>J&apos;m</span>
-            <svg width="16" height="16" viewBox="0 0 74 56"><path d="M10,12 C10,6 14,2 20,2 C24,2 27,5 28,9 C29,5 32,2 36,2 C42,2 46,6 46,12 C46,18 42,24 28,34 C14,24 10,18 10,12 Z" fill={P}/></svg>
-            <span style={{ fontFamily: "Arial,sans-serif", fontWeight: 900, fontSize: 20, color: T }}>TD</span>
-          </div>
-          <div style={{ fontSize: 10, color: "#475569", fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>Administration</div>
+        <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+          <svg viewBox="0 0 200 110" width={120} height={66} style={{ display: "block", overflow: "visible" }}>
+            <text x="2" y="64" fontFamily="'Dancing Script', cursive" fontWeight="700" fontSize="58" fill="#D4197A" letterSpacing="-1">J&apos;m</text>
+            <text x="68" y="107" fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontSize="92" fill="#0DA9A4" letterSpacing="-3">TD</text>
+          </svg>
+          <div style={{ fontSize: 10, color: "#475569", fontWeight: 600, textTransform: "uppercase", letterSpacing: 1, marginTop: 4 }}>Administration</div>
         </div>
 
         {/* Nav */}
@@ -400,20 +399,13 @@ export default function AdminPage() {
             </div>
 
             {/* KPIs row 1 */}
-            {(() => {
-              const todayStart2 = new Date(); todayStart2.setHours(0,0,0,0);
-              const todayRdvCount = appointments.filter(r => r.date >= todayStart2.getTime() && r.date < todayStart2.getTime() + 86400000).length;
-              const rdvDone = appointments.filter(r => r.date >= todayStart2.getTime() && r.date < todayStart2.getTime() + 86400000 && r.status === "done").length;
-              return (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16, marginBottom: 24 }}>
-                  <KPI icon="📋" label="Sessions aujourd'hui" value={todaySessions.length} color={T} />
-                  <KPI icon="⏱️" label="Heures cette semaine" value={`${weekHours.toFixed(1)}h`} color={EMERALD} />
-                  <KPI icon="🔴" label="En cours" value={activeSessions.length} color={activeSessions.length > 0 ? "#EF4444" : "#475569"} sub={activeSessions.length > 0 ? activeSessions.map(s => s.empName).join(", ") : "Personne"} />
-                  <KPI icon="📅" label="RDV aujourd'hui" value={`${rdvDone}/${todayRdvCount}`} color="#8B5CF6" onClick={() => setTab("agenda")} sub={todayRdvCount === 0 ? "Aucun planifié" : `${todayRdvCount - rdvDone} restant${todayRdvCount - rdvDone !== 1 ? "s" : ""}`} />
-                  <KPI icon="📨" label="Nouvelles demandes" value={newQuotes} color={P} onClick={() => setTab("quotes")} />
-                </div>
-              );
-            })()}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16, marginBottom: 24 }}>
+              <KPI icon="📋" label="Sessions aujourd'hui" value={todaySessions.length} color={T} />
+              <KPI icon="⏱️" label="Heures cette semaine" value={`${weekHours.toFixed(1)}h`} color={EMERALD} />
+              <KPI icon="🔴" label="En cours" value={activeSessions.length} color={activeSessions.length > 0 ? "#EF4444" : "#475569"} sub={activeSessions.length > 0 ? activeSessions.map(s => s.empName).join(", ") : "Personne"} />
+              <KPI icon="👥" label="Intervenants" value={employees.length} color="#8B5CF6" onClick={() => setTab("employees")} />
+              <KPI icon="📨" label="Nouvelles demandes" value={newQuotes} color={P} onClick={() => setTab("quotes")} />
+            </div>
 
             {/* Quick stats */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>

@@ -170,25 +170,19 @@ export default function HomePage() {
         <div style={{ position: "absolute", top: "30%", left: "40%", width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${T}0d 0%, transparent 70%)`, animation: "floatOrbSlow 22s ease-in-out infinite", pointerEvents: "none" }} />
 
         {/* ── Logo showcase centré ── */}
-        <div style={{ textAlign: "center", padding: "56px 24px 32px", position: "relative" }}>
-          <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 0 }}>
-            <div style={{ position: "relative", width: 180, height: 120 }}>
-              <div style={{ position: "absolute", top: 0, left: 0, fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: 68, color: P, lineHeight: 1, zIndex: 2 }}>
-                J&apos;m
-              </div>
-              <div style={{ position: "absolute", bottom: 0, right: 0, fontFamily: "Arial,Helvetica,sans-serif", fontWeight: 900, fontSize: 96, color: T, lineHeight: 1, letterSpacing: -4 }}>
-                TD
-              </div>
-            </div>
-            <div style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: 20, color: P, letterSpacing: 0.5, marginTop: 8 }}>
-              Société de services sur mesure
-            </div>
+        <div className="logo-showcase" style={{ textAlign: "center", padding: "56px 24px 28px", position: "relative" }}>
+          <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center" }}>
+            {/* SVG inline — Dancing Script chargé dans <head> s'applique ici */}
+            <svg viewBox="0 0 300 240" width={260} height={208} style={{ display: "block", overflow: "visible" }} aria-label="J'MTD">
+              <text x="2" y="110" fontFamily="'Dancing Script', cursive" fontWeight="700" fontSize="108" fill="#D4197A" letterSpacing="-2">J&apos;m</text>
+              <text x="90" y="220" fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontSize="154" fill="#0DA9A4" letterSpacing="-5">TD</text>
+              <text x="2" y="250" fontFamily="'Dancing Script', cursive" fontWeight="700" fontSize="21" fill="#D4197A" letterSpacing="0.3">Société de services sur mesure</text>
+            </svg>
           </div>
-          {/* Accent line */}
-          <div style={{ width: 60, height: 3, background: `linear-gradient(90deg, ${T}, ${P})`, borderRadius: 10, margin: "20px auto 0" }} />
+          <div style={{ width: 56, height: 3, background: `linear-gradient(90deg, ${T}, ${P})`, borderRadius: 10, margin: "4px auto 0" }} />
         </div>
 
-        <div style={{ maxWidth: 1140, margin: "0 auto", padding: "24px 24px 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center", position: "relative" }}>
+        <div className="hero-grid" style={{ maxWidth: 1140, margin: "0 auto", padding: "24px 24px 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center", position: "relative" }}>
 
           {/* Gauche */}
           <div>
@@ -228,20 +222,38 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Droite — grille de services */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-            {SERVICES.slice(0, 4).map((s, i) => (
-              <Link key={s.id} href={s.id === "rangement" ? "/coach" : `/services#${s.id}`}
-                className="card-zen"
-                style={{ padding: "22px 18px", textDecoration: "none", display: "block", animationDelay: `${i * 0.1}s` }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = `${T}55`; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(13,169,164,0.14)"; }}>
-                <div style={{ fontSize: 30, marginBottom: 12 }}>{s.icon}</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: TEXT, marginBottom: 5 }}>{s.title}</div>
-                <div style={{ fontSize: 12, color: TEXT2, lineHeight: 1.6 }}>{s.short}</div>
-                <div style={{ marginTop: 14, fontSize: 12, color: T, fontWeight: 600 }}>En savoir plus →</div>
-              </Link>
-            ))}
+          {/* Droite — preuves sociales & avantages */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {/* Google 5★ */}
+            <div className="card-zen" style={{ padding: "22px 24px", display: "flex", alignItems: "center", gap: 18 }}>
+              <div style={{ width: 52, height: 52, borderRadius: 14, background: "#FFF9F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>⭐</div>
+              <div>
+                <div style={{ fontFamily: "Syne, sans-serif", fontSize: 22, fontWeight: 800, color: TEXT }}>5 / 5</div>
+                <div style={{ fontSize: 12, color: TEXT2 }}>{"★★★★★"} · Avis Google vérifiés</div>
+              </div>
+            </div>
+            {/* SAP */}
+            <div className="card-zen" style={{ padding: "22px 24px", display: "flex", alignItems: "center", gap: 18, borderColor: `${T}33` }}>
+              <div style={{ width: 52, height: 52, borderRadius: 14, background: `${T}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>🏅</div>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: TEXT }}>Agréé SAP officiel</div>
+                <div style={{ fontSize: 12, color: TEXT2 }}>Crédit d&apos;impôt 50% garanti</div>
+              </div>
+            </div>
+            {/* Intervention */}
+            <div className="card-zen" style={{ padding: "22px 24px", display: "flex", alignItems: "center", gap: 18 }}>
+              <div style={{ width: 52, height: 52, borderRadius: 14, background: `${P}10`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>🏠</div>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: TEXT }}>Toute la Martinique</div>
+                <div style={{ fontSize: 12, color: TEXT2 }}>Intervention sous 24h · Lun–Ven</div>
+              </div>
+            </div>
+            {/* Devis */}
+            <Link href="/contact" className="btn-amber"
+              style={{ padding: "18px 24px", borderRadius: 18, textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", border: "none", fontSize: 15 }}>
+              <span>🎯 Devis gratuit en 2 min</span>
+              <span style={{ fontSize: 22 }}>→</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -256,7 +268,7 @@ export default function HomePage() {
       </div>
 
       {/* ──── POURQUOI J'MTD ──── */}
-      <section style={{ background: "#F8FAFB", padding: "88px 24px" }}>
+      <section className="section-pad" style={{ background: "#F8FAFB", padding: "88px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 60 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Pourquoi nous choisir</div>
@@ -267,7 +279,7 @@ export default function HomePage() {
               J&apos;MTD prend soin de l&apos;essentiel pour que vous puissiez profiter pleinement de ce qui compte vraiment.
             </p>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24 }}>
+          <div className="why-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24 }}>
             {[
               { icon: "🕐", title: "Gagnez du temps", text: "Confiez-nous votre quotidien : ménage, repas, courses. Vous récupérez vos soirées et week-ends.", color: T },
               { icon: "🔒", title: "Personnel de confiance", text: "Chaque intervenant est rigoureusement sélectionné, formé et couvert. Discrétion garantie.", color: P },
@@ -292,7 +304,7 @@ export default function HomePage() {
               Tout ce dont vous avez besoin
             </h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))", gap: 20 }}>
+          <div className="services-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))", gap: 20 }}>
             {SERVICES.map((s, i) => (
               <Link key={s.id} href={s.id === "rangement" ? "/coach" : `/services#${s.id}`}
                 className={`card-zen reveal reveal-delay-${(i % 3) + 1}`}
@@ -324,21 +336,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ──── STATS ──── */}
-      <section style={{ background: `linear-gradient(135deg, ${T}, ${P})`, padding: "56px 24px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 24, textAlign: "center" }}>
-          {[["200+","Foyers accompagnés"],["5","Services disponibles"],["100%","Clients satisfaits"],["24h","Délai intervention"]].map(([n, l]) => (
-            <div key={l}>
-              <div style={{ fontFamily: "Syne, sans-serif", fontSize: 42, fontWeight: 800, color: "#fff" }}>{n}</div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", marginTop: 4 }}>{l}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* ──── CALCULATEUR ──── */}
       <section style={{ background: "#F8FAFB", padding: "88px 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 64, alignItems: "center" }}>
+        <div className="calc-grid" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 64, alignItems: "center" }}>
           <div className="reveal">
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Crédit d&apos;impôt</div>
             <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 18, letterSpacing: -0.5 }}>
@@ -405,7 +405,7 @@ export default function HomePage() {
               <span style={{ fontSize: 14, color: TEXT2, marginLeft: 8 }}>5/5 · Tous nos clients recommandent J&apos;MTD</span>
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
+          <div className="testimonials-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
             {TESTIMONIALS.map((t, i) => (
               <div key={t.name} className={`card-zen reveal reveal-delay-${i + 1}`} style={{ padding: "30px 26px", position: "relative", overflow: "hidden" }}>
                 {/* Quote mark décoratif */}

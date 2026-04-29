@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PHONE, PHONE_HREF, SERVICES } from "../lib/data";
+import Logo from "./Logo";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -73,22 +74,10 @@ export default function Nav() {
 
           {/* Logo */}
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
-            {/* Logo mark — stacked like original */}
-            <div style={{ position: "relative", width: 72, height: 52, flexShrink: 0 }}>
-              {/* J'm — top-left, script */}
-              <div style={{ position: "absolute", top: 0, left: 0, fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: 26, color: P, lineHeight: 1, zIndex: 2, whiteSpace: "nowrap" }}>
-                J&apos;m
-              </div>
-              {/* TD — bottom-right, large block */}
-              <div style={{ position: "absolute", bottom: 0, right: 0, fontFamily: "Arial,Helvetica,sans-serif", fontWeight: 900, fontSize: 40, color: T, lineHeight: 1, letterSpacing: -2 }}>
-                TD
-              </div>
-            </div>
-            {/* Tagline */}
-            <div className="hide-mobile" style={{ display: "flex", flexDirection: "column", justifyContent: "center", borderLeft: `1px solid ${P}22`, paddingLeft: 10 }}>
-              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: 12, color: P, lineHeight: 1.4, letterSpacing: 0.2 }}>Société de services</span>
-              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: 12, color: P, lineHeight: 1.4, letterSpacing: 0.2 }}>sur mesure</span>
-            </div>
+            <Logo size="sm" />
+            <span className="hide-mobile" style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: 12, color: P, lineHeight: 1.5, borderLeft: `1px solid ${P}22`, paddingLeft: 10, whiteSpace: "nowrap" }}>
+              Société de services<br />sur mesure
+            </span>
           </Link>
 
           {/* Desktop nav */}
@@ -216,21 +205,32 @@ export default function Nav() {
       </header>
 
       {/* Mobile bottom bar */}
-      <div className="show-mobile" style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(255,255,255,0.97)", borderTop: `1px solid rgba(13,169,164,0.12)`, display: "none", zIndex: 199, backdropFilter: "blur(20px)", boxShadow: "0 -4px 24px rgba(13,169,164,0.08)" }}>
+      <div className="show-mobile mobile-bottom-bar" style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(255,255,255,0.98)", borderTop: `1px solid rgba(13,169,164,0.12)`, display: "none", zIndex: 199, backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", boxShadow: "0 -2px 20px rgba(13,169,164,0.1)" }}>
         {[
           { href: "/",        icon: "🏠", label: "Accueil" },
+          { href: "/services",icon: "🛠", label: "Services" },
           { href: PHONE_HREF, icon: "📞", label: "Appeler", ext: true },
-          { href: "/coaching",icon: "✨", label: "Coaching" },
-          { href: "/portail", icon: "🔐", label: "Équipe" },
           { href: "/contact", icon: "✉️", label: "Devis" },
-        ].map(item => item.ext
-          ? <a key={item.label} href={item.href} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "10px 0", color: T, fontSize: 10, fontWeight: 700, textDecoration: "none", gap: 3 }}>
-              <span style={{ fontSize: 18 }}>{item.icon}</span>{item.label}
-            </a>
-          : <Link key={item.label} href={item.href} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "10px 0", color: pathname === item.href ? T : "#94A3B8", fontSize: 10, fontWeight: 600, textDecoration: "none", gap: 3 }}>
-              <span style={{ fontSize: 18 }}>{item.icon}</span>{item.label}
-            </Link>
-        )}
+          { href: "/portail", icon: "🔐", label: "Équipe" },
+        ].map(item => {
+          const active = !item.ext && pathname === item.href;
+          const style = {
+            flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+            padding: "10px 0", fontSize: 9.5, fontWeight: active ? 700 : 600,
+            color: active ? T : item.ext ? "#25D366" : "#94A3B8",
+            textDecoration: "none", gap: 4, transition: "color 0.15s", letterSpacing: 0.3,
+          };
+          return item.ext
+            ? <a key={item.label} href={item.href} style={style}>
+                <span style={{ fontSize: 20, filter: item.ext ? "none" : "none" }}>{item.icon}</span>
+                {item.label}
+              </a>
+            : <Link key={item.label} href={item.href} style={style}>
+                {active && <span style={{ position: "absolute", top: 0, width: 28, height: 2.5, background: T, borderRadius: "0 0 3px 3px" }} />}
+                <span style={{ fontSize: 20 }}>{item.icon}</span>
+                {item.label}
+              </Link>;
+        })}
       </div>
     </>
   );

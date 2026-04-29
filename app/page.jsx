@@ -169,20 +169,7 @@ export default function HomePage() {
         <div style={{ position: "absolute", bottom: -80, left: -60, width: 420, height: 420, borderRadius: "50%", background: `radial-gradient(circle, ${P}14 0%, transparent 70%)`, animation: "floatOrb 18s ease-in-out infinite reverse", pointerEvents: "none" }} />
         <div style={{ position: "absolute", top: "30%", left: "40%", width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${T}0d 0%, transparent 70%)`, animation: "floatOrbSlow 22s ease-in-out infinite", pointerEvents: "none" }} />
 
-        {/* ── Logo showcase centré ── */}
-        <div className="logo-showcase" style={{ textAlign: "center", padding: "16px 24px 12px", position: "relative" }}>
-          <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center" }}>
-            {/* SVG inline — Dancing Script chargé dans <head> s'applique ici */}
-            <svg viewBox="0 0 300 240" width={260} height={208} style={{ display: "block", overflow: "visible" }} aria-label="J'MTD">
-              <text x="2" y="110" fontFamily="'Dancing Script', cursive" fontWeight="700" fontSize="108" fill="#D4197A" letterSpacing="-2">J&apos;m</text>
-              <text x="90" y="220" fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontSize="154" fill="#0DA9A4" letterSpacing="-5">TD</text>
-              <text x="2" y="250" fontFamily="'Dancing Script', cursive" fontWeight="700" fontSize="21" fill="#D4197A" letterSpacing="0.3">Société de services sur mesure</text>
-            </svg>
-          </div>
-          <div style={{ width: 56, height: 3, background: `linear-gradient(90deg, ${T}, ${P})`, borderRadius: 10, margin: "4px auto 0" }} />
-        </div>
-
-        <div className="hero-grid" style={{ maxWidth: 1140, margin: "0 auto", padding: "24px 24px 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center", position: "relative" }}>
+        <div className="hero-grid" style={{ maxWidth: 1140, margin: "0 auto", padding: "56px 24px 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center", position: "relative" }}>
 
           {/* Gauche */}
           <div>

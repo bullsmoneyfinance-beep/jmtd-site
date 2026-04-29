@@ -141,7 +141,7 @@ function Quiz() {
     <div style={{ background: "#fff", border: `1.5px solid ${result.color}30`, borderRadius: 24, padding: "40px 36px", boxShadow: `0 8px 48px ${result.color}14`, textAlign: "center" }}>
       <div style={{ fontSize: 64, marginBottom: 12 }}>{result.emoji}</div>
       <div style={{ fontSize: 12, fontWeight: 700, color: result.color, textTransform: "uppercase", letterSpacing: 2, marginBottom: 8 }}>Votre profil</div>
-      <h3 style={{ fontFamily: "Syne, sans-serif", fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 16 }}>{result.name}</h3>
+      <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 16 }}>{result.name}</h3>
       <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8, marginBottom: 20, maxWidth: 480, margin: "0 auto 20px" }}>{result.desc}</p>
       <div style={{ background: `${result.color}0d`, border: `1px solid ${result.color}25`, borderRadius: 16, padding: "18px 20px", marginBottom: 28, textAlign: "left" }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: result.color, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>💡 Notre conseil pour vous</div>
@@ -171,7 +171,7 @@ function Quiz() {
         </div>
         <span style={{ fontSize: 12, color: T, fontWeight: 700 }}>{pct}%</span>
       </div>
-      <h3 style={{ fontFamily: "Syne, sans-serif", fontSize: 20, fontWeight: 700, color: TEXT, marginBottom: 24, lineHeight: 1.4 }}>{q.q}</h3>
+      <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 20, fontWeight: 700, color: TEXT, marginBottom: 24, lineHeight: 1.4 }}>{q.q}</h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {q.opts.map((opt, i) => (
           <button key={i} onClick={() => choose(opt.val)}
@@ -227,7 +227,7 @@ function Checklist() {
             <div style={{ fontSize: 16, fontWeight: 700, color: TEXT }}>Ma progression globale</div>
             <div style={{ fontSize: 13, color: MUTED, marginTop: 2 }}>{totalDone} / {totalTasks} tâches complétées</div>
           </div>
-          <div style={{ fontSize: 32, fontWeight: 700, fontFamily: "Syne, sans-serif", color: T }}>{globalPct}%</div>
+          <div style={{ fontSize: 32, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", color: T }}>{globalPct}%</div>
         </div>
         <div style={{ height: 8, background: "rgba(255,255,255,0.6)", borderRadius: 4, overflow: "hidden" }}>
           <div style={{ height: "100%", width: `${globalPct}%`, background: `linear-gradient(90deg, ${T}, ${P})`, borderRadius: 4, transition: "width 0.5s ease" }} />
@@ -301,7 +301,7 @@ export default function CoachingPage() {
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${P}10`, border: `1px solid ${P}28`, borderRadius: 30, padding: "6px 18px", marginBottom: 24 }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: P, textTransform: "uppercase", letterSpacing: 1.5 }}>✨ Méthode Marie Kondo</span>
           </div>
-          <h1 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(30px, 4.5vw, 52px)", fontWeight: 700, color: TEXT, lineHeight: 1.15, marginBottom: 20 }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(30px, 4.5vw, 52px)", fontWeight: 700, color: TEXT, lineHeight: 1.15, marginBottom: 20 }}>
             Transformez votre espace,<br />
             <span style={{ color: P }}>transformez votre vie</span>
           </h1>
@@ -326,7 +326,7 @@ export default function CoachingPage() {
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>La méthode KonMari</span>
             </div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(24px, 3.5vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
               5 catégories, dans cet ordre précis
             </h2>
             <p style={{ fontSize: 15, color: MUTED, maxWidth: 540, margin: "0 auto" }}>
@@ -355,7 +355,7 @@ export default function CoachingPage() {
                 </div>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: cat.color, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 6 }}>Catégorie {cat.num}</div>
-                  <h3 style={{ fontFamily: "Syne, sans-serif", fontSize: 24, fontWeight: 700, color: TEXT, marginBottom: 20 }}>{cat.label}</h3>
+                  <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 24, fontWeight: 700, color: TEXT, marginBottom: 20 }}>{cat.label}</h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {cat.tips.map((tip, i) => (
                       <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
@@ -378,7 +378,7 @@ export default function CoachingPage() {
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${P}10`, border: `1px solid ${P}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: P, textTransform: "uppercase", letterSpacing: 1.5 }}>Quiz · 5 questions</span>
             </div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
               Quel est votre profil rangement ?
             </h2>
             <p style={{ fontSize: 15, color: MUTED }}>En 2 minutes, découvrez votre style et nos recommandations personnalisées.</p>
@@ -394,7 +394,7 @@ export default function CoachingPage() {
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Suivi de progression</span>
             </div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
               Ma checklist pièce par pièce
             </h2>
             <p style={{ fontSize: 15, color: MUTED }}>Cochez au fur et à mesure. Votre progression est sauvegardée automatiquement.</p>
@@ -408,7 +408,7 @@ export default function CoachingPage() {
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
           <div className="reveal" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "52px 40px", textAlign: "center" }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>🗂️</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 12 }}>
               Prêt·e pour la vraie transformation ?
             </h2>
             <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8, marginBottom: 32 }}>

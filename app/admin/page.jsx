@@ -329,17 +329,45 @@ export default function AdminPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#060E18", display: "flex" }}>
+    <div style={{ minHeight: "100vh", minHeight: "100dvh", background: "#060E18", display: "flex" }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
         .admin-nav-item:hover { background: rgba(13,169,164,0.08) !important; }
         .admin-row:hover td { background: rgba(255,255,255,0.02); }
         select option { background: #0D1B2A; color: #F8FAFC; }
+        .admin-topbar { display: none; }
+        @media (max-width: 768px) {
+          .admin-topbar { display: flex !important; position: fixed; top: 0; left: 0; right: 0; z-index: 60; }
+          .admin-main { padding-top: calc(70px + max(0px, env(safe-area-inset-top))) !important; }
+        }
       `}</style>
 
+      {/* ── Mobile Top Bar ── */}
+      <div className="admin-topbar" style={{
+        background: "rgba(11,21,35,0.97)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255,255,255,0.07)",
+        padding: "10px 16px", paddingTop: "max(10px, env(safe-area-inset-top))",
+        alignItems: "center", justifyContent: "space-between", gap: 12,
+        width: "100%",
+      }}>
+        <svg viewBox="0 0 200 110" width={70} height={39} style={{ display: "block", overflow: "visible", flexShrink: 0 }}>
+          <text x="2" y="64" fontFamily="'Dancing Script', cursive" fontWeight="700" fontSize="58" fill="#D4197A" letterSpacing="-1">J&apos;m</text>
+          <text x="68" y="107" fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontSize="92" fill="#0DA9A4" letterSpacing="-3">TD</text>
+        </svg>
+        <div style={{ flex: 1, textAlign: "center" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#F8FAFC" }}>
+            {TABS.find(t => t.id === tab)?.icon} {TABS.find(t => t.id === tab)?.label}
+          </div>
+          <div style={{ fontSize: 10, color: "#475569", fontWeight: 500 }}>Administration</div>
+        </div>
+        <button onClick={logout} style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#EF4444", borderRadius: 8, padding: "6px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer", WebkitTapHighlightColor: "transparent", flexShrink: 0 }}>
+          ⬅
+        </button>
+      </div>
+
       {/* ── Sidebar ── */}
-      <aside style={{
+      <aside className="admin-sidebar" style={{
         width: 230, flexShrink: 0, background: "#0B1523", borderRight: "1px solid rgba(255,255,255,0.05)",
         display: "flex", flexDirection: "column", position: "sticky", top: 0, height: "100vh", overflowY: "auto",
       }}>
@@ -388,7 +416,7 @@ export default function AdminPage() {
       </aside>
 
       {/* ── Main content ── */}
-      <main style={{ flex: 1, overflowY: "auto", padding: "32px 32px 64px", minWidth: 0 }}>
+      <main className="admin-main" style={{ flex: 1, overflowY: "auto", padding: "32px 32px 64px", minWidth: 0 }}>
 
         {/* ═══ DASHBOARD ═══ */}
         {tab === "dashboard" && (
@@ -902,6 +930,26 @@ export default function AdminPage() {
           </div>
         )}
       </main>
+
+      {/* ── Mobile Bottom Tab Bar ── */}
+      <nav style={{
+        position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
+        background: "rgba(11,21,35,0.97)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+        borderTop: "1px solid rgba(255,255,255,0.08)",
+        display: "flex", justifyContent: "space-around", alignItems: "center",
+        padding: "8px 4px", paddingBottom: "max(8px, env(safe-area-inset-bottom))",
+        boxShadow: "0 -4px 24px rgba(0,0,0,0.4)",
+      }} className="admin-mobile-bar">
+        {TABS.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)}
+            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, background: "none", border: "none", cursor: "pointer", padding: "6px 2px", position: "relative", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+            <span style={{ fontSize: 20, lineHeight: 1 }}>{t.icon}</span>
+            <span style={{ fontSize: 9, fontWeight: tab === t.id ? 700 : 500, color: tab === t.id ? T : "#475569", transition: "color 0.15s", letterSpacing: 0.3 }}>{t.label.split(" ")[0]}</span>
+            {tab === t.id && <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 28, height: 2, borderRadius: 1, background: T }} />}
+            {t.id === "quotes" && newQuotes > 0 && <div style={{ position: "absolute", top: 2, right: "calc(50% - 18px)", width: 16, height: 16, borderRadius: "50%", background: P, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#fff" }}>{newQuotes}</div>}
+          </button>
+        ))}
+      </nav>
 
       {/* ── Modals ── */}
       {empModal && (

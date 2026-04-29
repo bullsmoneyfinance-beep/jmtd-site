@@ -92,7 +92,7 @@ export default function CoachPage() {
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 24 }}>
               <span style={{ fontSize: 12, color: T, fontWeight: 700 }}>⭐ Spécialité J&apos;MTD</span>
             </div>
-            <h1 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 700, color: TEXT, lineHeight: 1.2, marginBottom: 20 }}>
+            <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 700, color: TEXT, lineHeight: 1.2, marginBottom: 20 }}>
               Coach en rangement{" "}
               <span style={{ color: P }}>méthode Marie Kondo</span>
             </h1>
@@ -131,7 +131,7 @@ export default function CoachPage() {
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>La méthode</span>
             </div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 16 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 16 }}>
               Un intérieur ordonné transforme votre vie
             </h2>
             <p style={{ fontSize: 16, color: MUTED, maxWidth: 580, margin: "0 auto", lineHeight: 1.8 }}>
@@ -159,7 +159,7 @@ export default function CoachPage() {
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Nos formules</span>
             </div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 700, color: TEXT }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 700, color: TEXT }}>
               Choisissez votre formule
             </h2>
           </div>
@@ -174,7 +174,7 @@ export default function CoachPage() {
                 )}
                 <div style={{ marginBottom: 8 }}>
                   <div style={{ fontSize: 11, fontWeight: 700, color: f.color, textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 10 }}>{f.name}</div>
-                  <div style={{ fontSize: 34, fontWeight: 700, color: TEXT, fontFamily: "Syne, sans-serif" }}>{f.price}</div>
+                  <div style={{ fontSize: 34, fontWeight: 700, color: TEXT, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{f.price}</div>
                   <div style={{ fontSize: 13, color: MUTED, marginTop: 4 }}>{f.priceNote}</div>
                 </div>
                 <hr style={{ border: "none", borderTop: `1px solid ${f.color}20`, margin: "20px 0" }} />
@@ -203,7 +203,7 @@ export default function CoachPage() {
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
           <div className="reveal" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "52px 40px", textAlign: "center" }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>🗂️</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 32, fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 32, fontWeight: 700, color: TEXT, marginBottom: 12 }}>
               Commencez par le diagnostic gratuit
             </h2>
             <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.8, marginBottom: 32 }}>

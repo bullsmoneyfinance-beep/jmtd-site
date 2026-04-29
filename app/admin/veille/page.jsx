@@ -116,7 +116,7 @@ export default function VeillePage() {
         {!data && !loading && !error && (
           <div style={{ textAlign: "center", padding: "80px 24px" }}>
             <div style={{ fontSize: 64, marginBottom: 24, opacity: 0.6 }}>🤖</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 24, fontWeight: 800, color: "#F8FAFC", marginBottom: 12 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 24, fontWeight: 800, color: "#F8FAFC", marginBottom: 12 }}>
               Veille réglementaire SAP
             </h2>
             <p style={{ fontSize: 16, color: "#64748B", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>

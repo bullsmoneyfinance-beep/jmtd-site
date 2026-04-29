@@ -47,7 +47,7 @@ export default function ContactPage() {
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}30`, borderRadius: 30, padding: "6px 16px", marginBottom: 20 }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Contact & Devis</span>
           </div>
-          <h1 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(28px, 4vw, 46px)", fontWeight: 700, color: TEXT, marginBottom: 16, lineHeight: 1.2 }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 4vw, 46px)", fontWeight: 700, color: TEXT, marginBottom: 16, lineHeight: 1.2 }}>
             Obtenez votre <span style={{ color: P }}>devis gratuit</span>
           </h1>
           <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.8 }}>
@@ -74,7 +74,7 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={submit} style={{ background: "#fff", border: `1px solid rgba(13,169,164,0.12)`, borderRadius: 24, padding: "40px 36px", boxShadow: `0 4px 32px ${T}08` }}>
-                <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 22, fontWeight: 700, color: TEXT, marginBottom: 8 }}>Formulaire de devis</h2>
+                <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, fontWeight: 700, color: TEXT, marginBottom: 8 }}>Formulaire de devis</h2>
                 <p style={{ fontSize: 13, color: MUTED, marginBottom: 28 }}>Tous les champs marqués * sont obligatoires.</p>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>

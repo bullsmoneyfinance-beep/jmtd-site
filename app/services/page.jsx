@@ -33,7 +33,7 @@ export default function ServicesPage() {
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 20 }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Nos prestations</span>
           </div>
-          <h1 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 700, color: TEXT, marginBottom: 20, lineHeight: 1.2 }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 700, color: TEXT, marginBottom: 20, lineHeight: 1.2 }}>
             Des services à la personne{" "}
             <span style={{ color: T }}>complets en Martinique</span>
           </h1>
@@ -75,7 +75,7 @@ export default function ServicesPage() {
                 <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 56, height: 56, borderRadius: 16, background: `${T}12`, marginBottom: 16, fontSize: 28 }}>
                   {s.icon}
                 </div>
-                <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 8 }}>{s.title}</h2>
+                <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 8 }}>{s.title}</h2>
                 <p style={{ fontSize: 15, fontWeight: 600, color: T, marginBottom: 16 }}>{s.headline}</p>
                 <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8, marginBottom: 24 }}>{s.desc}</p>
                 <ul style={{ listStyle: "none", marginBottom: 32 }}>
@@ -100,7 +100,7 @@ export default function ServicesPage() {
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           <div className="reveal" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "48px 40px", textAlign: "center" }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>💳</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(24px, 3vw, 36px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3vw, 36px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
               50% de vos dépenses remboursées
             </h2>
             <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.8, marginBottom: 32, maxWidth: 560, margin: "0 auto 32px" }}>

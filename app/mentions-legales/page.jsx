@@ -81,7 +81,7 @@ export default function MentionsLegalesPage() {
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "5px 14px", marginBottom: 16 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Légal</span>
           </div>
-          <h1 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>Mentions légales</h1>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>Mentions légales</h1>
           <p style={{ fontSize: 14, color: MUTED }}>Dernière mise à jour : avril 2025</p>
         </div>
 

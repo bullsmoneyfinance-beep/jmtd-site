@@ -42,7 +42,7 @@ function Calculator() {
       <div style={{ marginBottom: 28 }}>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
           <span style={{ fontSize: 14, color: TEXT2 }}>Heures / mois</span>
-          <span style={{ fontSize: 20, fontWeight: 800, color: T, fontFamily: "Syne, sans-serif" }}>{h}h</span>
+          <span style={{ fontSize: 20, fontWeight: 800, color: T, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{h}h</span>
         </div>
         <input type="range" min={1} max={40} value={h} onChange={e => setH(+e.target.value)}
           style={{ width: "100%", accentColor: T, cursor: "pointer", height: 4 }} />
@@ -53,11 +53,11 @@ function Calculator() {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
         <div style={{ background: "#F8FAFB", borderRadius: 14, padding: "18px 14px", textAlign: "center" }}>
           <div style={{ fontSize: 11, color: "#94A3B8", marginBottom: 6 }}>Coût brut</div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: TEXT, fontFamily: "Syne, sans-serif" }}>{gross}€</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: TEXT, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{gross}€</div>
         </div>
         <div style={{ background: `${T}0d`, border: `1.5px solid ${T}33`, borderRadius: 14, padding: "18px 14px", textAlign: "center" }}>
           <div style={{ fontSize: 11, color: T, fontWeight: 600, marginBottom: 6 }}>Votre coût réel</div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: T, fontFamily: "Syne, sans-serif" }}>{net}€</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: T, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{net}€</div>
         </div>
       </div>
       <p style={{ fontSize: 12, color: "#94A3B8", textAlign: "center", marginBottom: 20, lineHeight: 1.6 }}>
@@ -191,7 +191,7 @@ export default function HomePage() {
               <span style={{ fontSize: 12, color: T, fontWeight: 600, letterSpacing: 0.3 }}>Agréé Services à la Personne · SAP</span>
             </div>
 
-            <h1 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(34px, 4.5vw, 58px)", fontWeight: 700, lineHeight: 1.12, color: TEXT, marginBottom: 22, letterSpacing: -1 }}>
+            <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(34px, 4.5vw, 58px)", fontWeight: 700, lineHeight: 1.12, color: TEXT, marginBottom: 22, letterSpacing: -1 }}>
               La sérénité<br />
               à domicile, <span style={{ background: `linear-gradient(135deg, ${T}, ${P})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>enfin.</span>
             </h1>
@@ -215,7 +215,7 @@ export default function HomePage() {
             <div style={{ display: "flex", gap: 36 }}>
               {[["200+", "Foyers accompagnés"], ["5★", "Note Google"], ["50%", "Crédit d'impôt"]].map(([n, l]) => (
                 <div key={l}>
-                  <div style={{ fontFamily: "Syne, sans-serif", fontSize: 24, fontWeight: 800, color: T }}>{n}</div>
+                  <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 24, fontWeight: 800, color: T }}>{n}</div>
                   <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 2 }}>{l}</div>
                 </div>
               ))}
@@ -228,7 +228,7 @@ export default function HomePage() {
             <div className="card-zen" style={{ padding: "22px 24px", display: "flex", alignItems: "center", gap: 18 }}>
               <div style={{ width: 52, height: 52, borderRadius: 14, background: "#FFF9F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>⭐</div>
               <div>
-                <div style={{ fontFamily: "Syne, sans-serif", fontSize: 22, fontWeight: 800, color: TEXT }}>5 / 5</div>
+                <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, fontWeight: 800, color: TEXT }}>5 / 5</div>
                 <div style={{ fontSize: 12, color: TEXT2 }}>{"★★★★★"} · Avis Google vérifiés</div>
               </div>
             </div>
@@ -272,7 +272,7 @@ export default function HomePage() {
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 60 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Pourquoi nous choisir</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 14, letterSpacing: -0.5 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 14, letterSpacing: -0.5 }}>
               Votre temps est précieux
             </h2>
             <p style={{ fontSize: 16, color: TEXT2, maxWidth: 540, margin: "0 auto", lineHeight: 1.75 }}>
@@ -300,7 +300,7 @@ export default function HomePage() {
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 60 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Nos prestations</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
               Tout ce dont vous avez besoin
             </h2>
           </div>
@@ -341,7 +341,7 @@ export default function HomePage() {
         <div className="calc-grid" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 64, alignItems: "center" }}>
           <div className="reveal">
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Crédit d&apos;impôt</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 18, letterSpacing: -0.5 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 18, letterSpacing: -0.5 }}>
               Moins cher que<br />vous ne le pensez
             </h2>
             <p style={{ fontSize: 16, color: TEXT2, lineHeight: 1.75, marginBottom: 28 }}>
@@ -363,7 +363,7 @@ export default function HomePage() {
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Simple & rapide</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
               Comment ça marche ?
             </h2>
             <div className="section-divider" style={{ margin: "16px auto 0" }} />
@@ -381,7 +381,7 @@ export default function HomePage() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                    <span style={{ fontFamily: "Syne, sans-serif", fontSize: 11, fontWeight: 800, color: step.color, letterSpacing: 1 }}>ÉTAPE {step.n}</span>
+                    <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 11, fontWeight: 800, color: step.color, letterSpacing: 1 }}>ÉTAPE {step.n}</span>
                     <h3 style={{ fontSize: 16, fontWeight: 700, color: TEXT }}>{step.title}</h3>
                   </div>
                   <p style={{ fontSize: 14, color: TEXT2, lineHeight: 1.7 }}>{step.text}</p>
@@ -397,7 +397,7 @@ export default function HomePage() {
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Avis clients</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
               Ce que disent nos clients
             </h2>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginTop: 14 }}>
@@ -436,7 +436,7 @@ export default function HomePage() {
         <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 48 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Toute la Martinique</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(24px, 3vw, 38px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5, marginBottom: 10 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3vw, 38px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5, marginBottom: 10 }}>
               Zones d&apos;intervention
             </h2>
             <p style={{ fontSize: 15, color: TEXT2 }}>Basée à Rivière-Salée · Nous nous déplaçons partout en Martinique</p>
@@ -467,7 +467,7 @@ export default function HomePage() {
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Questions fréquentes</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
               Tout ce que vous voulez savoir
             </h2>
             <div className="section-divider" style={{ margin: "16px auto 0" }} />
@@ -494,7 +494,7 @@ export default function HomePage() {
         <div style={{ maxWidth: 660, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 44 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Commencez maintenant</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(28px, 4vw, 46px)", fontWeight: 700, color: TEXT, marginBottom: 14, letterSpacing: -0.5 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 4vw, 46px)", fontWeight: 700, color: TEXT, marginBottom: 14, letterSpacing: -0.5 }}>
               Prêt à déléguer ?
             </h2>
             <p style={{ fontSize: 16, color: TEXT2 }}>Devis gratuit · Rappel sous 24h · Sans engagement</p>

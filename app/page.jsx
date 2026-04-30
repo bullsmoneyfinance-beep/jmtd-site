@@ -443,7 +443,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="reveal" style={{ textAlign: "center", marginTop: 36 }}>
-            <a href="tel:0596631308" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 28px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 6px 24px ${T}44` }}>
+            <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 28px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 6px 24px ${T}44` }}>
               📞 Vérifier ma zone · Appel gratuit
             </a>
           </div>
@@ -466,7 +466,7 @@ export default function HomePage() {
           <div className="reveal" style={{ textAlign: "center", marginTop: 44 }}>
             <p style={{ fontSize: 14, color: TEXT2, marginBottom: 20 }}>Une autre question ? On vous répond en 2 min.</p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-              <a href="tel:0596631308" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 24px", borderRadius: 30, border: `2px solid ${T}40`, color: T, fontWeight: 600, fontSize: 14, textDecoration: "none", background: `${T}08` }}>
+              <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 24px", borderRadius: 30, border: `2px solid ${T}40`, color: T, fontWeight: 600, fontSize: 14, textDecoration: "none", background: `${T}08` }}>
                 📞 Appeler
               </a>
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 24px", borderRadius: 30, background: "#25D366", color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", boxShadow: "0 4px 16px rgba(37,211,102,0.3)" }}>

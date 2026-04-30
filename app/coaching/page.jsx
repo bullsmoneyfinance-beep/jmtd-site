@@ -234,9 +234,9 @@ function Checklist() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "200px 1fr" }}>
+      <div className="checklist-layout" style={{ display: "grid", gridTemplateColumns: "200px 1fr" }}>
         {/* Rooms list */}
-        <div style={{ borderRight: `1px solid rgba(13,169,164,0.1)`, padding: "12px 0" }}>
+        <div className="checklist-rooms" style={{ borderRight: `1px solid rgba(13,169,164,0.1)`, padding: "12px 0" }}>
           {ROOMS.map(r => {
             const pct = roomPct(r);
             const isActive = r.id === activeRoom;
@@ -294,7 +294,7 @@ export default function CoachingPage() {
   return (
     <>
       {/* Hero */}
-      <section style={{ background: "#fff", padding: "88px 24px 72px", position: "relative", overflow: "hidden" }}>
+      <section className="inner-hero" style={{ background: "#fff", padding: "88px 24px 72px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -80, right: "5%",  width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${T}12, transparent 70%)`, filter: "blur(70px)", animation: "floatOrb 14s ease-in-out infinite", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: -60, left: "8%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${P}09, transparent 70%)`,  filter: "blur(70px)", animation: "floatOrbSlow 18s ease-in-out infinite", pointerEvents: "none" }} />
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative" }}>
@@ -320,7 +320,7 @@ export default function CoachingPage() {
       </section>
 
       {/* Les 5 catégories KonMari */}
-      <section style={{ background: "#F8FAFB", padding: "80px 24px" }}>
+      <section className="main-section" style={{ background: "#F8FAFB", padding: "80px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 48 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
@@ -372,7 +372,7 @@ export default function CoachingPage() {
       </section>
 
       {/* Quiz */}
-      <section id="quiz" style={{ background: "#fff", padding: "80px 24px" }}>
+      <section id="quiz" className="main-section" style={{ background: "#fff", padding: "80px 24px" }}>
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 40 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${P}10`, border: `1px solid ${P}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
@@ -388,7 +388,7 @@ export default function CoachingPage() {
       </section>
 
       {/* Checklist */}
-      <section id="checklist" style={{ background: "#F8FAFB", padding: "80px 24px" }}>
+      <section id="checklist" className="main-section" style={{ background: "#F8FAFB", padding: "80px 24px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 40 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
@@ -404,7 +404,7 @@ export default function CoachingPage() {
       </section>
 
       {/* CTA final */}
-      <section style={{ background: "#fff", padding: "80px 24px" }}>
+      <section className="main-section" style={{ background: "#fff", padding: "80px 24px" }}>
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
           <div className="reveal" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "52px 40px", textAlign: "center" }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>🗂️</div>

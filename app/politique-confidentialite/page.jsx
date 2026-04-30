@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function PolitiqueConfidentialitePage() {
   return (
-    <section style={{ background: "#F8FAFB", padding: "80px 24px", minHeight: "80vh" }}>
+    <section className="main-section" style={{ background: "#F8FAFB", padding: "80px 24px", minHeight: "80vh" }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
         <div style={{ marginBottom: 48 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "5px 14px", marginBottom: 16 }}>

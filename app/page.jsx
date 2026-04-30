@@ -95,7 +95,7 @@ function QuickForm() {
 
   return (
     <form onSubmit={submit} style={{ background: "#fff", border: `1.5px solid rgba(13,169,164,0.15)`, borderRadius: 24, padding: "36px 32px", boxShadow: "0 8px 48px rgba(13,169,164,0.08)" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+      <div className="quick-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
         <div>
           <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: TEXT2, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Nom *</label>
           <input className="form-input" placeholder="Marie Dupont" value={form.nom} onChange={e => setForm(f => ({ ...f, nom: e.target.value }))} required />
@@ -284,7 +284,7 @@ export default function HomePage() {
       </section>
 
       {/* ──── NOS SERVICES ──── */}
-      <section style={{ background: "#fff", padding: "88px 24px" }}>
+      <section className="main-section" style={{ background: "#fff", padding: "88px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 60 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Nos prestations</div>
@@ -325,7 +325,7 @@ export default function HomePage() {
       </section>
 
       {/* ──── CALCULATEUR ──── */}
-      <section style={{ background: "#F8FAFB", padding: "88px 24px" }}>
+      <section className="main-section" style={{ background: "#F8FAFB", padding: "88px 24px" }}>
         <div className="calc-grid" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 64, alignItems: "center" }}>
           <div className="reveal">
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Crédit d&apos;impôt</div>
@@ -347,7 +347,7 @@ export default function HomePage() {
       </section>
 
       {/* ──── COMMENT ÇA MARCHE ──── */}
-      <section style={{ background: "#F8FAFB", padding: "88px 24px" }}>
+      <section className="main-section" style={{ background: "#F8FAFB", padding: "88px 24px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Simple & rapide</div>
@@ -381,7 +381,7 @@ export default function HomePage() {
       </section>
 
       {/* ──── TÉMOIGNAGES ──── */}
-      <section style={{ background: "#fff", padding: "88px 24px" }}>
+      <section className="main-section" style={{ background: "#fff", padding: "88px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Avis clients</div>
@@ -451,7 +451,7 @@ export default function HomePage() {
       </section>
 
       {/* ──── FAQ ──── */}
-      <section style={{ background: "#fff", padding: "88px 24px" }}>
+      <section className="main-section" style={{ background: "#fff", padding: "88px 24px" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Questions fréquentes</div>
@@ -478,7 +478,7 @@ export default function HomePage() {
       </section>
 
       {/* ──── CTA FINAL ──── */}
-      <section style={{ background: "#F8FAFB", padding: "88px 24px" }}>
+      <section className="main-section" style={{ background: "#F8FAFB", padding: "88px 24px" }}>
         <div style={{ maxWidth: 660, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 44 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Commencez maintenant</div>

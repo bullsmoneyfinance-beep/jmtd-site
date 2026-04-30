@@ -83,7 +83,7 @@ export default function CoachPage() {
   return (
     <>
       {/* Hero */}
-      <section style={{ background: "#fff", padding: "88px 24px 72px", position: "relative", overflow: "hidden" }}>
+      <section className="inner-hero" style={{ background: "#fff", padding: "88px 24px 72px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -80, right: "5%", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${T}14, transparent 70%)`, filter: "blur(60px)", animation: "floatOrb 14s ease-in-out infinite", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: -40, left: "8%", width: 350, height: 350, borderRadius: "50%", background: `radial-gradient(circle, ${P}10, transparent 70%)`, filter: "blur(60px)", animation: "floatOrbSlow 18s ease-in-out infinite", pointerEvents: "none" }} />
 
@@ -113,7 +113,7 @@ export default function CoachPage() {
               alt="Coach rangement méthode Marie Kondo Martinique"
               style={{ width: "100%", borderRadius: 24, boxShadow: `0 24px 80px ${T}20` }} />
             {/* Floating badge */}
-            <div style={{ position: "absolute", bottom: 24, left: -16, background: "#fff", border: `1px solid ${T}20`, borderRadius: 16, padding: "12px 18px", boxShadow: `0 8px 32px ${T}18`, display: "flex", alignItems: "center", gap: 10 }}>
+            <div className="coach-float-badge" style={{ position: "absolute", bottom: 24, left: -16, background: "#fff", border: `1px solid ${T}20`, borderRadius: 16, padding: "12px 18px", boxShadow: `0 8px 32px ${T}18`, display: "flex", alignItems: "center", gap: 10 }}>
               <span style={{ fontSize: 24 }}>🗂️</span>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: TEXT }}>Diagnostic gratuit</div>
@@ -125,7 +125,7 @@ export default function CoachPage() {
       </section>
 
       {/* Méthode */}
-      <section style={{ background: "#F8FAFB", padding: "88px 24px" }}>
+      <section className="main-section" style={{ background: "#F8FAFB", padding: "88px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
@@ -153,7 +153,7 @@ export default function CoachPage() {
       </section>
 
       {/* Formules */}
-      <section style={{ background: "#fff", padding: "88px 24px" }}>
+      <section className="main-section" style={{ background: "#fff", padding: "88px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
@@ -201,7 +201,7 @@ export default function CoachPage() {
       {/* CTA final */}
       <section style={{ background: "#F8FAFB", padding: "72px 24px" }}>
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
-          <div className="reveal" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "52px 40px", textAlign: "center" }}>
+          <div className="reveal coach-cta-inner" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "52px 40px", textAlign: "center" }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>🗂️</div>
             <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 32, fontWeight: 700, color: TEXT, marginBottom: 12 }}>
               Commencez par le diagnostic gratuit

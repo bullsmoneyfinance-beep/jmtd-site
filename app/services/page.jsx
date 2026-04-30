@@ -25,7 +25,7 @@ export default function ServicesPage() {
   return (
     <>
       {/* Hero */}
-      <section style={{ background: "#fff", padding: "88px 24px 64px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+      <section className="inner-hero" style={{ background: "#fff", padding: "88px 24px 64px", textAlign: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -80, right: "8%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${T}14, transparent 70%)`, filter: "blur(60px)", animation: "floatOrb 14s ease-in-out infinite", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: -60, left: "5%", width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${P}10, transparent 70%)`, filter: "blur(60px)", animation: "floatOrbSlow 16s ease-in-out infinite", pointerEvents: "none" }} />
 
@@ -48,7 +48,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Services list */}
-      <section style={{ background: "#F8FAFB", padding: "80px 24px" }}>
+      <section className="main-section" style={{ background: "#F8FAFB", padding: "80px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", flexDirection: "column", gap: 80 }}>
           {SERVICES.map((s, i) => (
             <div key={s.id} id={s.id} className="reveal"

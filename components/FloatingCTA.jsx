@@ -34,9 +34,9 @@ export default function FloatingCTA() {
         .fcta-btn:hover .fcta-label { opacity: 1; }
       `}</style>
 
-      {/* Stack de boutons flottants */}
-      <div style={{
-        position: "fixed", bottom: 24, right: 20, zIndex: 500,
+      {/* Stack de boutons flottants — masqué sur mobile (conflit avec barre de nav) */}
+      <div className="hide-mobile" style={{
+        position: "fixed", bottom: 28, right: 24, zIndex: 500,
         display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-end",
         transform: visible ? "translateY(0)" : "translateY(120px)",
         opacity: visible ? 1 : 0,

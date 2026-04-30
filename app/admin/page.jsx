@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { loadSession, clearSession, load, save } from "../../lib/storage";
@@ -186,6 +186,7 @@ const TABS = [
   { id: "dashboard", icon: "📊", label: "Tableau de bord" },
   { id: "agenda",    icon: "📅", label: "Agenda" },
   { id: "sessions",  icon: "⏱️", label: "Sessions" },
+  { id: "messages",  icon: "💬", label: "Messages" },
   { id: "employees", icon: "👥", label: "Équipe" },
   { id: "quotes",    icon: "📨", label: "Demandes" },
   { id: "settings",  icon: "⚙️", label: "Paramètres" },
@@ -198,6 +199,7 @@ export default function AdminPage() {
   const [employees, setEmployees] = useState([]);
   const [quotes, setQuotes] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sideOpen, setSideOpen] = useState(false);
   const [rdvModal, setRdvModal] = useState(null); // null | { mode: "add"|"edit", rdv? }
@@ -210,22 +212,30 @@ export default function AdminPage() {
   const [filterEmp, setFilterEmp] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
 
-  useEffect(() => {
-    const isAdmin = loadSession("jmtd_admin");
-    if (!isAdmin) { router.replace("/portail"); return; }
-    Promise.all([
+  const refreshData = useCallback(async (initial = false) => {
+    const [s, e, q, a, m] = await Promise.all([
       load("jmtd_sessions", []),
       load("jmtd_employees", DEMO_EMPS),
       load("jmtd_quotes", []),
       load("jmtd_appointments", []),
-    ]).then(([s, e, q, a]) => {
-      setSessions(s.sort((a, b) => b.start - a.start));
-      setEmployees(e);
-      setQuotes(q.sort((a, b) => b.date - a.date));
-      setAppointments(a.sort((a, b) => a.date - b.date));
-      setLoading(false);
-    });
+      load("jmtd_messages", []),
+    ]);
+    setSessions(s.sort((a, b) => b.start - a.start));
+    setEmployees(e);
+    setQuotes(q.sort((a, b) => b.date - a.date));
+    setAppointments(a.sort((a, b) => a.date - b.date));
+    setMessages(m.sort((a, b) => b.sentAt - a.sentAt));
+    if (initial) setLoading(false);
   }, []);
+
+  useEffect(() => {
+    const isAdmin = loadSession("jmtd_admin");
+    if (!isAdmin) { router.replace("/portail"); return; }
+    refreshData(true);
+    // Rafraîchissement automatique toutes les 30 s pour voir les sessions en temps réel
+    const interval = setInterval(() => refreshData(false), 30000);
+    return () => clearInterval(interval);
+  }, [refreshData]);
 
   const logout = () => { clearSession("jmtd_admin"); router.push("/portail"); };
 
@@ -286,6 +296,94 @@ export default function AdminPage() {
     const updated = quotes.map(q => q.id === id ? { ...q, status } : q);
     setQuotes(updated);
     await save("jmtd_quotes", updated);
+  }
+
+  /* ── Messages ── */
+  const [msgForm, setMsgForm] = useState({ toId: "all", text: "", priority: "normal" });
+  const [msgSending, setMsgSending] = useState(false);
+  const unreadMessages = messages.filter(m => !m.readAt).length;
+
+  async function sendMessage() {
+    if (!msgForm.text.trim()) return;
+    setMsgSending(true);
+    const msg = {
+      id: `msg_${Date.now()}`,
+      toId: msgForm.toId,  // "all" ou empId
+      toName: msgForm.toId === "all" ? "Toute l'équipe" : employees.find(e => e.id === msgForm.toId)?.name || msgForm.toId,
+      text: msgForm.text.trim(),
+      priority: msgForm.priority,
+      sentAt: Date.now(),
+      readAt: null,
+      readBy: [],
+    };
+    const updated = [msg, ...messages];
+    setMessages(updated);
+    await save("jmtd_messages", updated);
+    setMsgForm(f => ({ ...f, text: "" }));
+    setMsgSending(false);
+  }
+
+  async function deleteMessage(id) {
+    const updated = messages.filter(m => m.id !== id);
+    setMessages(updated);
+    await save("jmtd_messages", updated);
+  }
+
+  /* ── Planning export ── */
+  function exportICS() {
+    const lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//JMTD//Planning//FR",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH",
+    ];
+    appointments.filter(r => r.status !== "cancelled").forEach(rdv => {
+      const emp = employees.find(e => e.id === rdv.empId);
+      const start = new Date(rdv.date);
+      const end = new Date(rdv.date + (rdv.duration || 120) * 60000);
+      const fmt = d => d.toISOString().replace(/[-:]/g,"").split(".")[0] + "Z";
+      lines.push("BEGIN:VEVENT");
+      lines.push(`UID:${rdv.id}@jmtd.fr`);
+      lines.push(`DTSTART:${fmt(start)}`);
+      lines.push(`DTEND:${fmt(end)}`);
+      lines.push(`SUMMARY:${rdv.clientName} — ${rdv.service || ""}`);
+      if (rdv.address) lines.push(`LOCATION:${rdv.address}`);
+      if (emp) lines.push(`DESCRIPTION:Intervenant·e : ${emp.name}${rdv.notes ? "\\n" + rdv.notes : ""}`);
+      lines.push(`STATUS:${rdv.status === "done" ? "CONFIRMED" : rdv.status === "cancelled" ? "CANCELLED" : "TENTATIVE"}`);
+      lines.push("END:VEVENT");
+    });
+    lines.push("END:VCALENDAR");
+    const blob = new Blob([lines.join("\r\n")], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url;
+    a.download = `planning-jmtd-${new Date().toISOString().slice(0,10)}.ics`;
+    a.click(); URL.revokeObjectURL(url);
+  }
+
+  function exportPlanningCSV() {
+    const rows = [["Date","Heure","Durée (min)","Client","Service","Intervenant·e","Adresse","Statut","Notes"]];
+    appointments.forEach(rdv => {
+      const emp = employees.find(e => e.id === rdv.empId);
+      const d = new Date(rdv.date);
+      rows.push([
+        d.toLocaleDateString("fr-FR"),
+        d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+        rdv.duration || 120,
+        rdv.clientName,
+        rdv.service || "",
+        emp?.name || "",
+        rdv.address || "",
+        rdv.status,
+        rdv.notes || "",
+      ]);
+    });
+    const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url;
+    a.download = `planning-jmtd-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click(); URL.revokeObjectURL(url);
   }
 
   /* ── Search ── */
@@ -389,6 +487,9 @@ export default function AdminPage() {
               {t.label}
               {t.id === "quotes" && newQuotes > 0 && (
                 <span style={{ marginLeft: "auto", background: P, color: "#fff", borderRadius: 20, fontSize: 10, fontWeight: 700, padding: "2px 7px", minWidth: 18, textAlign: "center" }}>{newQuotes}</span>
+              )}
+              {t.id === "messages" && unreadMessages > 0 && (
+                <span style={{ marginLeft: "auto", background: T, color: "#fff", borderRadius: 20, fontSize: 10, fontWeight: 700, padding: "2px 7px", minWidth: 18, textAlign: "center" }}>{unreadMessages}</span>
               )}
             </button>
           ))}
@@ -554,10 +655,21 @@ export default function AdminPage() {
                   <h1 style={{ fontSize: 22, fontWeight: 800, color: "#F8FAFC", margin: 0 }}>Agenda des interventions</h1>
                   <p style={{ fontSize: 13, color: "#475569", marginTop: 4 }}>{appointments.length} RDV au total · {todayRdv.length} aujourd&apos;hui</p>
                 </div>
-                <button onClick={() => setRdvModal({ mode: "add" })}
-                  style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 18px", borderRadius: 10, background: `linear-gradient(135deg, ${T}, ${P})`, border: "none", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
-                  ➕ Planifier un RDV
-                </button>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <button onClick={exportICS}
+                    style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 16px", borderRadius: 10, background: "rgba(139,92,246,0.12)", border: "1px solid rgba(139,92,246,0.3)", color: "#A78BFA", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+                    title="Exporter au format iCal — compatible XIMI, Google Calendar, Outlook…">
+                    📅 Export iCal (XIMI)
+                  </button>
+                  <button onClick={exportPlanningCSV}
+                    style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 16px", borderRadius: 10, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: EMERALD, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
+                    📊 Export CSV
+                  </button>
+                  <button onClick={() => setRdvModal({ mode: "add" })}
+                    style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 18px", borderRadius: 10, background: `linear-gradient(135deg, ${T}, ${P})`, border: "none", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+                    ➕ Planifier un RDV
+                  </button>
+                </div>
               </div>
 
               {/* Aujourd'hui */}
@@ -875,6 +987,93 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* ═══ MESSAGES ═══ */}
+        {tab === "messages" && (
+          <div style={{ animation: "slideIn 0.25s ease", maxWidth: 720 }}>
+            <div style={{ marginBottom: 28 }}>
+              <h1 style={{ fontSize: 22, fontWeight: 800, color: "#F8FAFC", margin: 0 }}>Messages aux intervenantes</h1>
+              <p style={{ fontSize: 13, color: "#475569", marginTop: 6 }}>Les messages apparaissent dans l&apos;app de pointage de chaque intervenante.</p>
+            </div>
+
+            {/* Composer */}
+            <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${T}22`, borderRadius: 18, padding: 24, marginBottom: 28 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1, marginBottom: 18 }}>✍️ Nouveau message</div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
+                <div>
+                  <label style={{ fontSize: 12, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 6 }}>Destinataire</label>
+                  <select value={msgForm.toId} onChange={e => setMsgForm(f => ({ ...f, toId: e.target.value }))}
+                    style={{ width: "100%", padding: "9px 12px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#F8FAFC", fontSize: 13, outline: "none" }}>
+                    <option value="all">📢 Toute l&apos;équipe</option>
+                    {employees.map(e => <option key={e.id} value={e.id}>👤 {e.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 6 }}>Priorité</label>
+                  <select value={msgForm.priority} onChange={e => setMsgForm(f => ({ ...f, priority: e.target.value }))}
+                    style={{ width: "100%", padding: "9px 12px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#F8FAFC", fontSize: 13, outline: "none" }}>
+                    <option value="normal">🔵 Normal</option>
+                    <option value="urgent">🔴 Urgent</option>
+                    <option value="info">🟢 Info</option>
+                  </select>
+                </div>
+              </div>
+
+              <textarea
+                value={msgForm.text}
+                onChange={e => setMsgForm(f => ({ ...f, text: e.target.value }))}
+                placeholder="Écrivez votre message ici…"
+                rows={4}
+                style={{ width: "100%", padding: "12px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, color: "#F8FAFC", fontSize: 14, outline: "none", resize: "vertical", fontFamily: "inherit", lineHeight: 1.6, marginBottom: 14 }}
+              />
+
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button onClick={sendMessage} disabled={msgSending || !msgForm.text.trim()}
+                  style={{ padding: "11px 24px", borderRadius: 10, background: msgForm.text.trim() ? `linear-gradient(135deg, ${T}, ${P})` : "rgba(255,255,255,0.06)", border: "none", color: "#fff", fontWeight: 700, fontSize: 14, cursor: msgForm.text.trim() ? "pointer" : "not-allowed", opacity: msgSending ? 0.7 : 1, display: "flex", alignItems: "center", gap: 8 }}>
+                  {msgSending ? "⏳ Envoi…" : "📤 Envoyer"}
+                </button>
+              </div>
+            </div>
+
+            {/* Messages list */}
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1, marginBottom: 14 }}>Historique — {messages.length} message{messages.length !== 1 ? "s" : ""}</div>
+
+            {messages.length === 0 && (
+              <div style={{ textAlign: "center", padding: "48px 24px", background: "rgba(255,255,255,0.02)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.06)" }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>💬</div>
+                <div style={{ color: "#475569", fontSize: 14 }}>Aucun message envoyé pour l&apos;instant</div>
+              </div>
+            )}
+
+            {messages.map(msg => {
+              const priorityColors = { urgent: "#EF4444", info: EMERALD, normal: T };
+              const priorityLabels = { urgent: "🔴 Urgent", info: "🟢 Info", normal: "🔵 Normal" };
+              const col = priorityColors[msg.priority] || T;
+              return (
+                <div key={msg.id} style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${col}22`, borderRadius: 16, padding: "18px 20px", marginBottom: 12, borderLeft: `4px solid ${col}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 10 }}>
+                    <div style={{ display: "flex", align: "center", gap: 10, flexWrap: "wrap" }}>
+                      <span style={{ padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: col + "18", color: col }}>{priorityLabels[msg.priority] || "🔵 Normal"}</span>
+                      <span style={{ fontSize: 13, color: "#94A3B8", fontWeight: 600 }}>→ {msg.toName}</span>
+                      <span style={{ fontSize: 12, color: "#475569" }}>{new Date(msg.sentAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
+                    </div>
+                    <button onClick={() => deleteMessage(msg.id)}
+                      style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#EF4444", borderRadius: 8, padding: "4px 10px", fontSize: 12, cursor: "pointer", flexShrink: 0 }}>
+                      🗑
+                    </button>
+                  </div>
+                  <div style={{ fontSize: 14, color: "#F8FAFC", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{msg.text}</div>
+                  {msg.readBy?.length > 0 && (
+                    <div style={{ marginTop: 10, fontSize: 12, color: "#475569" }}>
+                      ✅ Lu par : {msg.readBy.join(", ")}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* ═══ PARAMÈTRES ═══ */}
         {tab === "settings" && (
           <div style={{ animation: "slideIn 0.25s ease", maxWidth: 660 }}>
@@ -920,7 +1119,7 @@ export default function AdminPage() {
               <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.8 }}>
                 <div>• Mot de passe admin : défini dans <code style={{ background: "rgba(255,255,255,0.06)", padding: "2px 6px", borderRadius: 4, color: T }}>/portail</code></div>
                 <div>• Sessions employés : gestion des PINs dans l&apos;onglet Équipe</div>
-                <div>• Données stockées localement (localStorage + sessionStorage)</div>
+                <div>• Données synchronisées via API (partagé entre appareils) + localStorage de secours</div>
               </div>
               <button onClick={logout}
                 style={{ marginTop: 20, display: "flex", alignItems: "center", gap: 8, padding: "10px 20px", borderRadius: 10, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", color: "#EF4444", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
@@ -947,6 +1146,7 @@ export default function AdminPage() {
             <span style={{ fontSize: 9, fontWeight: tab === t.id ? 700 : 500, color: tab === t.id ? T : "#475569", transition: "color 0.15s", letterSpacing: 0.3 }}>{t.label.split(" ")[0]}</span>
             {tab === t.id && <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 28, height: 2, borderRadius: 1, background: T }} />}
             {t.id === "quotes" && newQuotes > 0 && <div style={{ position: "absolute", top: 2, right: "calc(50% - 18px)", width: 16, height: 16, borderRadius: "50%", background: P, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#fff" }}>{newQuotes}</div>}
+            {t.id === "messages" && unreadMessages > 0 && <div style={{ position: "absolute", top: 2, right: "calc(50% - 18px)", width: 16, height: 16, borderRadius: "50%", background: T, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#fff" }}>{unreadMessages}</div>}
           </button>
         ))}
       </nav>

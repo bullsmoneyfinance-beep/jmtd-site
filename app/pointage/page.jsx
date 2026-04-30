@@ -120,6 +120,7 @@ export default function PointagePage() {
   const [gpsError, setGpsError]   = useState(null);
   const [loading, setLoading]     = useState(false);
   const [tab, setTab]             = useState("pointage");
+  const [myMessages, setMyMessages] = useState([]);
 
   useEffect(() => {
     const e = loadSession("jmtd_emp");
@@ -129,11 +130,23 @@ export default function PointagePage() {
       load("jmtd_sessions", []),
       load("jmtd_appointments", []),
       load(`jmtd_active_${e.id}`, null),
-    ]).then(([s, a, act]) => {
+      load("jmtd_messages", []),
+    ]).then(([s, a, act, msgs]) => {
       setSessions(s.filter(x => x.empId === e.id).sort((a,b) => b.start - a.start));
       setApts(a.filter(x => x.empId === e.id).sort((a,b) => a.date - b.date));
       setActive(act);
       if (act) setTab("pointage");
+      // Messages destinés à cette intervenante ou à toute l'équipe
+      const mine = msgs.filter(m => m.toId === "all" || m.toId === e.id).sort((a,b) => b.sentAt - a.sentAt);
+      setMyMessages(mine);
+      // Marquer comme lus
+      const updated = msgs.map(m => {
+        if ((m.toId === "all" || m.toId === e.id) && !m.readBy?.includes(e.name)) {
+          return { ...m, readAt: Date.now(), readBy: [...(m.readBy||[]), e.name] };
+        }
+        return m;
+      });
+      if (updated.some((m,i) => m !== msgs[i])) save("jmtd_messages", updated);
     });
   }, []);
 
@@ -144,6 +157,9 @@ export default function PointagePage() {
       const session = { id: Date.now(), empId: emp.id, empName: emp.name, start: Date.now(), startGps: pos, end: null, endGps: null, appointmentId: rdv.id, clientName: rdv.clientName, service: rdv.service };
       setActive(session);
       await save(`jmtd_active_${emp.id}`, session);
+      // Ajoute immédiatement la session (active) à jmtd_sessions → visible dans l'admin en temps réel
+      const allS = await load("jmtd_sessions", []);
+      await save("jmtd_sessions", [...allS.filter(s => s.id !== session.id), session]);
       const allRdv = await load("jmtd_appointments", []);
       const upd = allRdv.map(r => r.id === rdv.id ? { ...r, status: "in-progress" } : r);
       await save("jmtd_appointments", upd);
@@ -160,6 +176,9 @@ export default function PointagePage() {
       const session = { id: Date.now(), empId: emp.id, empName: emp.name, start: Date.now(), startGps: pos, end: null, endGps: null };
       setActive(session);
       await save(`jmtd_active_${emp.id}`, session);
+      // Ajoute immédiatement la session (active) à jmtd_sessions → visible dans l'admin en temps réel
+      const allS = await load("jmtd_sessions", []);
+      await save("jmtd_sessions", [...allS.filter(s => s.id !== session.id), session]);
     } catch(e) { setGpsError(String(e)); }
     setLoading(false);
   }, [emp]);
@@ -203,9 +222,12 @@ export default function PointagePage() {
   const totalH      = doneSessions.reduce((a,s) => a + (s.end-s.start)/3600000, 0);
   const pendingToday= todayRdv.filter(r => r.status === "scheduled").length;
 
+  const unreadMsgCount = myMessages.filter(m => !m.readBy?.includes(emp?.name)).length;
+
   const TABS = [
     { id: "agenda",     icon: "📅", label: "Agenda",    badge: pendingToday },
     { id: "pointage",   icon: "⏱️", label: "Pointage",  badge: active ? 1 : 0 },
+    { id: "messages",   icon: "💬", label: "Messages",  badge: myMessages.length },
     { id: "historique", icon: "📋", label: "Historique", badge: 0 },
   ];
 
@@ -395,6 +417,37 @@ export default function PointagePage() {
               <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 12, padding: "14px 16px", fontSize: 13, color: "#EF4444", marginTop: 16, lineHeight: 1.6 }}>
                 ⚠️ {gpsError}
               </div>
+            )}
+          </div>
+        )}
+
+        {/* ═══ MESSAGES ═══ */}
+        {tab === "messages" && (
+          <div style={{ padding: "20px 0", animation: "slideUp 0.25s ease" }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1, marginBottom: 16 }}>
+              💬 Messages de l&apos;administration
+            </div>
+
+            {myMessages.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "56px 24px", color: "#475569" }}>
+                <div style={{ fontSize: 52, marginBottom: 12 }}>💬</div>
+                <p style={{ fontSize: 15 }}>Aucun message pour l&apos;instant</p>
+              </div>
+            ) : (
+              myMessages.map(msg => {
+                const priorityColors = { urgent: "#EF4444", info: G, normal: T };
+                const priorityLabels = { urgent: "🔴 Urgent", info: "🟢 Info", normal: "🔵 Normal" };
+                const col = priorityColors[msg.priority] || T;
+                return (
+                  <div key={msg.id} style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${col}33`, borderRadius: 16, padding: "16px 18px", marginBottom: 12, borderLeft: `4px solid ${col}` }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, flexWrap: "wrap", gap: 8 }}>
+                      <span style={{ padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: col + "18", color: col }}>{priorityLabels[msg.priority] || "🔵 Normal"}</span>
+                      <span style={{ fontSize: 11, color: "#475569" }}>{new Date(msg.sentAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
+                    </div>
+                    <p style={{ fontSize: 14, color: "#F8FAFC", lineHeight: 1.7, margin: 0, whiteSpace: "pre-wrap" }}>{msg.text}</p>
+                  </div>
+                );
+              })
             )}
           </div>
         )}

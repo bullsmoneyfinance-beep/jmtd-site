@@ -14,6 +14,20 @@ export const metadata = {
     siteName: "J'MTD",
     locale: "fr_FR",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "J'MTD — Société de services sur mesure en Martinique",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "J'MTD — Société de services sur mesure en Martinique",
+    description: "Ménage, repas, courses, coach rangement en Martinique. Agrément SAP — 50% crédit d'impôt.",
+    images: ["/opengraph-image"],
   },
   robots: { index: true, follow: true },
 };

@@ -8,9 +8,8 @@ const T = "#0DA9A4";
 const P = "#D4197A";
 
 const TEAM_LINKS = [
-  { href: "/pointage",     icon: "⏱️", label: "Pointage",           desc: "Démarrer / terminer une session" },
-  { href: "/admin",        icon: "📊", label: "Dashboard admin",     desc: "Suivi des sessions & équipes" },
-  { href: "/admin/veille", icon: "🤖", label: "Agent IA — Veille",   desc: "Actualité juridique & SAP" },
+  { href: "/pointage", icon: "⏱️", label: "Pointage",           desc: "Démarrer / terminer une session" },
+  { href: "/admin",    icon: "📊", label: "Dashboard admin",     desc: "Suivi des sessions & équipes" },
 ];
 
 /* ── Logo inline — s'adapte à la hauteur du nav ── */

@@ -70,7 +70,7 @@ export default function Nav() {
           <a href={PHONE_HREF} style={{ fontSize: 12, color: T, fontWeight: 700 }}>📞 {PHONE}</a>
         </div>
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", height: 66, gap: 12 }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", height: 88, gap: 12 }}>
 
           {/* Logo */}
           <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>

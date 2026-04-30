@@ -12,7 +12,7 @@ import { useState } from "react";
  */
 
 const SIZES = {
-  sm:  { img: { width: 90,  height: 80  }, svg: { vw: 130, vh: 72,  jmS: 38, tdS: 60,  jmX: 2, jmY: 42, tdX: 44, tdY: 70  } },
+  sm:  { img: { width: 140, height: 124 }, svg: { vw: 130, vh: 72,  jmS: 38, tdS: 60,  jmX: 2, jmY: 42, tdX: 44, tdY: 70  } },
   md:  { img: { width: 130, height: 115 }, svg: { vw: 200, vh: 110, jmS: 58, tdS: 92,  jmX: 2, jmY: 64, tdX: 68, tdY: 107 } },
   lg:  { img: { width: 180, height: 160 }, svg: { vw: 280, vh: 154, jmS: 80, tdS: 128, jmX: 2, jmY: 90, tdX: 94, tdY: 150 } },
 };

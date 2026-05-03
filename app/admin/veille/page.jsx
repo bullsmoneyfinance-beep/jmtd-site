@@ -70,11 +70,11 @@ export default function VeillePage() {
   return (
     <div style={{ minHeight: "100vh", background: "#060E18" }}>
       {/* Header */}
-      <div style={{ background: "#0D1B2A", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+      <div className="veille-header" style={{ background: "#0D1B2A", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <Link href="/admin" style={{ fontSize: 13, color: "#64748B", textDecoration: "none" }}>← Admin</Link>
+          <Link href="/admin" style={{ fontSize: 13, color: "#64748B", textDecoration: "none", whiteSpace: "nowrap" }}>← Admin</Link>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 9, background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🤖</div>
+            <div style={{ width: 36, height: 36, borderRadius: 9, background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🤖</div>
             <div>
               <div style={{ fontWeight: 700, color: "#F8FAFC", fontSize: 16 }}>Veille réglementaire IA</div>
               <div style={{ fontSize: 12, color: "#475569" }}>
@@ -83,9 +83,9 @@ export default function VeillePage() {
             </div>
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="veille-header-right" style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {lastFetch && <span style={{ fontSize: 12, color: "#475569" }}>Analysé le {fmtDate(lastFetch)}</span>}
-          <button onClick={scan} disabled={loading}
+          <button className="veille-scan-btn" onClick={scan} disabled={loading}
             style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 20px", borderRadius: 30, background: loading ? "rgba(255,255,255,0.06)" : `linear-gradient(135deg, ${AMBER}, ${PINK})`, color: loading ? "#64748B" : "#fff", border: "none", fontWeight: 700, fontSize: 14, cursor: loading ? "wait" : "pointer", transition: "all 0.2s" }}>
             <span style={{ display: "inline-block", animation: loading ? "spin 1s linear infinite" : "none" }}>⚡</span>
             {loading ? "Analyse en cours…" : "Scanner maintenant"}
@@ -93,7 +93,7 @@ export default function VeillePage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 24px 64px" }}>
+      <div className="veille-content" style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 24px 64px" }}>
 
         {/* Error */}
         {error && (
@@ -186,7 +186,7 @@ export default function VeillePage() {
             </div>
 
             {/* Cards grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
+            <div className="veille-cards" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
               {filtered.map(item => {
                 const cat = CAT_CONFIG[item.categorie] || CAT_CONFIG.general;
                 const imp = IMP_CONFIG[item.importance] || IMP_CONFIG.faible;
@@ -237,7 +237,7 @@ export default function VeillePage() {
             )}
 
             {/* Footer info */}
-            <div style={{ marginTop: 40, padding: "20px 24px", background: "rgba(255,255,255,0.02)", borderRadius: 12, display: "flex", gap: 24, flexWrap: "wrap", justifyContent: "space-between" }}>
+            <div className="veille-footer" style={{ marginTop: 40, padding: "20px 24px", background: "rgba(255,255,255,0.02)", borderRadius: 12, display: "flex", gap: 24, flexWrap: "wrap", justifyContent: "space-between" }}>
               <div style={{ fontSize: 12, color: "#334155" }}>
                 🤖 Analyse générée par Claude (Anthropic) · Données issues de servicesalapersonne.gouv.fr<br />
                 Vérifiez toujours l&apos;information auprès de sources officielles avant toute décision juridique.
@@ -252,6 +252,14 @@ export default function VeillePage() {
 
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @media (max-width: 768px) {
+          .veille-header { flex-direction: column !important; align-items: flex-start !important; gap: 14px !important; padding: 14px 16px !important; }
+          .veille-header-right { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+          .veille-scan-btn { flex: 1; justify-content: center !important; }
+          .veille-content { padding: 20px 16px 80px !important; }
+          .veille-cards { grid-template-columns: 1fr !important; }
+          .veille-footer { flex-direction: column !important; gap: 10px !important; }
+        }
       `}</style>
     </div>
   );

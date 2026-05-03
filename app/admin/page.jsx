@@ -435,9 +435,60 @@ export default function AdminPage() {
         .admin-row:hover td { background: rgba(255,255,255,0.02); }
         select option { background: #0D1B2A; color: #F8FAFC; }
         .admin-topbar { display: none; }
+
+        /* ── Sessions table → scroll horizontal mobile ── */
+        .sessions-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 16px; }
+        .sessions-table { min-width: 640px; }
+
+        /* ── Veille IA sticky btn (mobile only) ── */
+        .veille-fab { display: none; }
+
         @media (max-width: 768px) {
           .admin-topbar { display: flex !important; position: fixed; top: 0; left: 0; right: 0; z-index: 60; }
-          .admin-main { padding-top: calc(70px + max(0px, env(safe-area-inset-top))) !important; }
+          .admin-main {
+            padding: calc(62px + max(0px, env(safe-area-inset-top))) 14px calc(80px + env(safe-area-inset-bottom)) !important;
+          }
+
+          /* 2-col grids → 1-col */
+          .admin-2col  { grid-template-columns: 1fr !important; }
+          .msg-form-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+
+          /* Tab bar compacte */
+          .admin-tab-label { display: none !important; }
+          .admin-tab-icon  { font-size: 22px !important; }
+
+          /* Sections h1 */
+          .admin-section-title { font-size: 18px !important; }
+
+          /* Veille FAB */
+          .veille-fab {
+            display: flex !important;
+            align-items: center; gap: 6px;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(13,169,164,0.2), rgba(212,25,122,0.12));
+            border: 1px solid rgba(13,169,164,0.35);
+            color: #0DA9A4;
+            font-size: 12px; font-weight: 700;
+            text-decoration: none;
+            flex-shrink: 0;
+            white-space: nowrap;
+          }
+
+          /* Agenda header wrap */
+          .agenda-header { flex-direction: column !important; align-items: flex-start !important; }
+          .agenda-header-btns { width: 100% !important; }
+          .agenda-header-btns button { flex: 1 !important; justify-content: center !important; }
+
+          /* Sessions header */
+          .sessions-header { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+
+          /* KPI font */
+          .kpi-value { font-size: 26px !important; }
+        }
+
+        @media (min-width: 769px) {
+          .admin-tab-label { display: inline !important; }
         }
       `}</style>
 
@@ -459,9 +510,12 @@ export default function AdminPage() {
           </div>
           <div style={{ fontSize: 10, color: "#475569", fontWeight: 500 }}>Administration</div>
         </div>
-        <button onClick={logout} style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#EF4444", borderRadius: 8, padding: "6px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer", WebkitTapHighlightColor: "transparent", flexShrink: 0 }}>
-          ⬅
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <Link href="/admin/veille" className="veille-fab">🤖 IA</Link>
+          <button onClick={logout} style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#EF4444", borderRadius: 8, padding: "6px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>
+            ⬅
+          </button>
+        </div>
       </div>
 
       {/* ── Sidebar ── */}
@@ -537,7 +591,7 @@ export default function AdminPage() {
             </div>
 
             {/* Quick stats */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+            <div className="admin-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
               <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16, padding: "22px 24px" }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1, marginBottom: 16 }}>Répartition par intervenant</div>
                 {employees.map(emp => {
@@ -766,8 +820,8 @@ export default function AdminPage() {
         {/* ═══ SESSIONS ═══ */}
         {tab === "sessions" && (
           <div style={{ animation: "slideIn 0.25s ease" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
-              <h1 style={{ fontSize: 22, fontWeight: 800, color: "#F8FAFC", margin: 0 }}>Sessions de pointage</h1>
+            <div className="sessions-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
+              <h1 className="admin-section-title" style={{ fontSize: 22, fontWeight: 800, color: "#F8FAFC", margin: 0 }}>Sessions de pointage</h1>
               <button onClick={() => exportCSV(filteredSessions)}
                 style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 18px", borderRadius: 10, background: `${T}15`, border: `1px solid ${T}33`, color: T, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
                 ⬇ Exporter CSV
@@ -800,8 +854,8 @@ export default function AdminPage() {
                 <p style={{ fontSize: 15 }}>Aucune session ne correspond à ces filtres.</p>
               </div>
             ) : (
-              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16, overflow: "hidden" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+              <div className="sessions-table-wrap" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16, overflow: "hidden" }}>
+                <table className="sessions-table" style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                   <thead>
                     <tr style={{ background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                       {["Intervenant", "Date", "Début", "Fin", "Durée", "GPS", "Statut"].map(h => (
@@ -999,7 +1053,7 @@ export default function AdminPage() {
             <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${T}22`, borderRadius: 18, padding: 24, marginBottom: 28 }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1, marginBottom: 18 }}>✍️ Nouveau message</div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
+              <div className="msg-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
                 <div>
                   <label style={{ fontSize: 12, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 6 }}>Destinataire</label>
                   <select value={msgForm.toId} onChange={e => setMsgForm(f => ({ ...f, toId: e.target.value }))}
@@ -1141,12 +1195,12 @@ export default function AdminPage() {
       }} className="admin-mobile-bar">
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
-            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, background: "none", border: "none", cursor: "pointer", padding: "6px 2px", position: "relative", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
-            <span style={{ fontSize: 20, lineHeight: 1 }}>{t.icon}</span>
-            <span style={{ fontSize: 9, fontWeight: tab === t.id ? 700 : 500, color: tab === t.id ? T : "#475569", transition: "color 0.15s", letterSpacing: 0.3 }}>{t.label.split(" ")[0]}</span>
-            {tab === t.id && <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 28, height: 2, borderRadius: 1, background: T }} />}
-            {t.id === "quotes" && newQuotes > 0 && <div style={{ position: "absolute", top: 2, right: "calc(50% - 18px)", width: 16, height: 16, borderRadius: "50%", background: P, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#fff" }}>{newQuotes}</div>}
-            {t.id === "messages" && unreadMessages > 0 && <div style={{ position: "absolute", top: 2, right: "calc(50% - 18px)", width: 16, height: 16, borderRadius: "50%", background: T, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#fff" }}>{unreadMessages}</div>}
+            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2, background: "none", border: "none", cursor: "pointer", padding: "8px 1px 6px", position: "relative", WebkitTapHighlightColor: "transparent", touchAction: "manipulation", minWidth: 0 }}>
+            {tab === t.id && <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 24, height: 2, borderRadius: 1, background: T }} />}
+            <span className="admin-tab-icon" style={{ fontSize: 20, lineHeight: 1, filter: tab === t.id ? "none" : "grayscale(0.3)" }}>{t.icon}</span>
+            <span className="admin-tab-label" style={{ fontSize: 9, fontWeight: tab === t.id ? 700 : 500, color: tab === t.id ? T : "#475569", transition: "color 0.15s", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{t.label.split(" ")[0]}</span>
+            {t.id === "quotes" && newQuotes > 0 && <div style={{ position: "absolute", top: 4, right: "calc(50% - 16px)", width: 14, height: 14, borderRadius: "50%", background: P, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 700, color: "#fff" }}>{newQuotes}</div>}
+            {t.id === "messages" && unreadMessages > 0 && <div style={{ position: "absolute", top: 4, right: "calc(50% - 16px)", width: 14, height: 14, borderRadius: "50%", background: T, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 700, color: "#fff" }}>{unreadMessages}</div>}
           </button>
         ))}
       </nav>

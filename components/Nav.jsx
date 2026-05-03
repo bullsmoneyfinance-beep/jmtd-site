@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PHONE, PHONE_HREF, SERVICES } from "../lib/data";
+import { PHONE, PHONE_HREF, SERVICES, YOUTUBE } from "../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -145,6 +145,7 @@ export default function Nav() {
 
             <Link href="/coach"    className="nav-link-hover" style={linkStyle(isActive("/coach"))}>Coach rangement</Link>
             <Link href="/coaching" className="nav-link-hover" style={linkStyle(isActive("/coaching"))}>Mon coaching</Link>
+            <Link href="/conseils" className="nav-link-hover" style={linkStyle(isActive("/conseils"))}>💡 Conseils</Link>
             <Link href="/contact"  className="nav-link-hover" style={linkStyle(isActive("/contact"))}>Contact</Link>
 
             {/* Espace Équipe */}
@@ -209,7 +210,7 @@ export default function Nav() {
         {/* ── Menu mobile déroulant ── */}
         {mobileOpen && (
           <div style={{ background: "#fff", borderTop: `1px solid rgba(13,169,164,0.1)`, padding: "16px 24px 24px", animation: "slideDown 0.22s ease" }}>
-            {[["/","🏠 Accueil"],["/services","🛠 Nos prestations"],["/coach","🗂️ Coach rangement"],["/coaching","✨ Mon coaching"],["/contact","✉️ Contact & Devis"]].map(([href, label]) => (
+            {[["/","🏠 Accueil"],["/services","🛠 Nos prestations"],["/coach","🗂️ Coach rangement"],["/coaching","✨ Mon coaching"],["/conseils","💡 Conseils & astuces"],["/contact","✉️ Contact & Devis"]].map(([href, label]) => (
               <Link key={href} href={href} style={{ display: "block", padding: "13px 0", borderBottom: "1px solid rgba(13,169,164,0.07)", fontSize: 15, color: pathname === href ? T : "#475569", fontWeight: pathname === href ? 600 : 400, textDecoration: "none" }}>
                 {label}
               </Link>
@@ -245,7 +246,7 @@ export default function Nav() {
       }}>
         {[
           { href: "/",         icon: "🏠", label: "Accueil"  },
-          { href: "/services", icon: "🛠", label: "Services" },
+          { href: "/conseils", icon: "💡", label: "Conseils" },
           { href: PHONE_HREF,  icon: "📞", label: "Appeler",  ext: true, color: T },
           { href: "/contact",  icon: "✉️", label: "Devis"    },
           { href: "/portail",  icon: "🔐", label: "Équipe"   },

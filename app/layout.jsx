@@ -39,6 +39,13 @@ export const metadata = {
     images: [`${SITE_URL}/opengraph-image`],
   },
   robots: { index: true, follow: true },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/logo.png", sizes: "any" },
+    ],
+    apple: [{ url: "/logo.png" }],
+  },
 };
 
 export default function RootLayout({ children }) {

@@ -25,36 +25,46 @@ function fmtDate(iso) {
 }
 
 const CACHE_KEY = "jmtd_veille_cache";
-const CACHE_TTL = 6 * 3600 * 1000; // 6h
+const CACHE_TTL = 24 * 3600 * 1000; // 24h — synchronisé avec le cache serveur
 
 export default function VeillePage() {
   const router = useRouter();
-  const [data, setData]       = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState(null);
-  const [filter, setFilter]   = useState("all");
+  const [data, setData]           = useState(null);
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState(null);
+  const [filter, setFilter]       = useState("all");
   const [lastFetch, setLastFetch] = useState(null);
+  const [fromCache, setFromCache] = useState(false);
 
   useEffect(() => {
     if (!loadSession("jmtd_admin")) { router.replace("/portail"); return; }
-    const cached = (() => {
+
+    // 1. Essai localStorage d'abord (instantané, pas de réseau)
+    const lsCached = (() => {
       try { return JSON.parse(localStorage.getItem(CACHE_KEY)); } catch { return null; }
     })();
-    if (cached && Date.now() - new Date(cached.fetched_at).getTime() < CACHE_TTL) {
-      setData(cached);
-      setLastFetch(new Date(cached.fetched_at));
+    if (lsCached && Date.now() - new Date(lsCached.fetched_at).getTime() < CACHE_TTL) {
+      setData(lsCached);
+      setLastFetch(new Date(lsCached.fetched_at));
+      setFromCache(true);
+      return; // Pas besoin d'appeler le serveur, le cache local est frais
     }
-  }, []);
 
-  const scan = useCallback(async () => {
+    // 2. Sinon, appel API (qui renvoie son propre cache serveur si disponible)
+    scan(false);
+  }, [scan]);
+
+  const scan = useCallback(async (force = false) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/veille");
+      const url = force ? "/api/veille?force=1" : "/api/veille";
+      const res = await fetch(url);
       const json = await res.json();
       if (!json.success) throw new Error(json.error || "Erreur inconnue");
       setData(json);
       setLastFetch(new Date(json.fetched_at));
+      setFromCache(!!json.from_cache);
       localStorage.setItem(CACHE_KEY, JSON.stringify(json));
     } catch (e) {
       setError(e.message);
@@ -83,12 +93,29 @@ export default function VeillePage() {
             </div>
           </div>
         </div>
-        <div className="veille-header-right" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {lastFetch && <span style={{ fontSize: 12, color: "#475569" }}>Analysé le {fmtDate(lastFetch)}</span>}
-          <button className="veille-scan-btn" onClick={scan} disabled={loading}
-            style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 20px", borderRadius: 30, background: loading ? "rgba(255,255,255,0.06)" : `linear-gradient(135deg, ${AMBER}, ${PINK})`, color: loading ? "#64748B" : "#fff", border: "none", fontWeight: 700, fontSize: 14, cursor: loading ? "wait" : "pointer", transition: "all 0.2s" }}>
+        <div className="veille-header-right" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          {lastFetch && (
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 12, color: "#475569" }}>
+                {fromCache ? "🗂️ Cache" : "⚡ Frais"} · {fmtDate(lastFetch)}
+              </div>
+              {fromCache && (
+                <div style={{ fontSize: 11, color: "#334155" }}>
+                  Prochain scan possible dans {Math.max(0, Math.ceil((CACHE_TTL - (Date.now() - lastFetch.getTime())) / 3600000))}h
+                </div>
+              )}
+            </div>
+          )}
+          {fromCache && !loading && (
+            <button onClick={() => scan(true)}
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 20, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#64748B", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+              🔄 Forcer
+            </button>
+          )}
+          <button className="veille-scan-btn" onClick={() => scan(false)} disabled={loading}
+            style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 20px", borderRadius: 30, background: loading ? "rgba(255,255,255,0.06)" : fromCache ? "rgba(255,255,255,0.08)" : `linear-gradient(135deg, ${AMBER}, ${PINK})`, color: loading ? "#64748B" : fromCache ? "#64748B" : "#fff", border: fromCache ? "1px solid rgba(255,255,255,0.1)" : "none", fontWeight: 700, fontSize: 14, cursor: loading ? "wait" : "pointer", transition: "all 0.2s" }}>
             <span style={{ display: "inline-block", animation: loading ? "spin 1s linear infinite" : "none" }}>⚡</span>
-            {loading ? "Analyse en cours…" : "Scanner maintenant"}
+            {loading ? "Analyse en cours…" : fromCache ? "Depuis le cache" : "Scanner maintenant"}
           </button>
         </div>
       </div>
@@ -160,10 +187,14 @@ export default function VeillePage() {
                 <div style={{ fontSize: 13, fontWeight: 700, color: AMBER, textTransform: "uppercase", letterSpacing: 1 }}>Synthèse de l&apos;agent IA</div>
               </div>
               <p style={{ fontSize: 15, color: "#94A3B8", lineHeight: 1.7, margin: 0 }}>{data.synthese}</p>
-              <div style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}>
+              <div style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
                 <span style={{ fontSize: 13, color: "#475569" }}>📊 {items.length} points analysés</span>
                 {hautes > 0 && <span style={{ fontSize: 13, color: "#EF4444", fontWeight: 600 }}>🔴 {hautes} prioritaire{hautes > 1 ? "s" : ""}</span>}
                 {data.tokens_used && <span style={{ fontSize: 12, color: "#334155" }}>~{data.tokens_used} tokens</span>}
+                {fromCache
+                  ? <span style={{ fontSize: 11, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)", color: EMERALD, borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>🗂️ Cache 24h — crédits préservés</span>
+                  : <span style={{ fontSize: 11, background: `rgba(13,169,164,0.1)`, border: `1px solid rgba(13,169,164,0.2)`, color: AMBER, borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>⚡ Analyse fraîche</span>
+                }
               </div>
             </div>
 
@@ -243,7 +274,10 @@ export default function VeillePage() {
                 Vérifiez toujours l&apos;information auprès de sources officielles avant toute décision juridique.
               </div>
               <div style={{ fontSize: 12, color: "#334155" }}>
-                Prochaine actualisation possible dans {Math.max(0, Math.ceil((CACHE_TTL - (Date.now() - new Date(data.fetched_at).getTime())) / 3600000))}h
+                {fromCache
+                  ? `🗂️ Cache serveur actif · Prochain scan dans ${Math.max(0, Math.ceil((CACHE_TTL - (Date.now() - new Date(data.fetched_at).getTime())) / 3600000))}h`
+                  : "⚡ Résultat frais · Cache serveur mis à jour"
+                }
               </div>
             </div>
           </>

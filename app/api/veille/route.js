@@ -1,6 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { serverGet, serverSet } from "../../../lib/server-store";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const CACHE_KEY = "jmtd_veille_result";
+const CACHE_TTL_MS = 24 * 3600 * 1000; // 24h — une seule analyse par jour
 
 const SOURCES = [
   "https://www.servicesalapersonne.gouv.fr/",
@@ -41,12 +45,22 @@ async function fetchSource(url) {
   }
 }
 
-export async function GET() {
+export async function GET(request) {
   if (!process.env.ANTHROPIC_API_KEY) {
     return Response.json(
       { success: false, error: "ANTHROPIC_API_KEY manquante. Configurez-la dans les variables d'environnement Vercel." },
       { status: 500 }
     );
+  }
+
+  // ── Vérification du cache serveur (partagé entre tous les appareils) ──
+  const forceRefresh = new URL(request.url).searchParams.get("force") === "1";
+  const cached = serverGet(CACHE_KEY, null);
+  if (cached && !forceRefresh) {
+    const age = Date.now() - new Date(cached.fetched_at).getTime();
+    if (age < CACHE_TTL_MS) {
+      return Response.json({ ...cached, from_cache: true, cache_age_h: Math.round(age / 3600000 * 10) / 10 });
+    }
   }
 
   const results = await Promise.allSettled(SOURCES.map(fetchSource));
@@ -105,14 +119,25 @@ Le champ "alerte" doit être null ou une string courte signalant une urgence ré
     const jsonStr = rawText.substring(jsonStart, jsonEnd + 1);
     const data = JSON.parse(jsonStr);
 
-    return Response.json({
+    const result = {
       success: true,
       ...data,
       fetched_at: new Date().toISOString(),
       sources: SOURCES,
       tokens_used: message.usage?.input_tokens + message.usage?.output_tokens,
-    });
+      from_cache: false,
+    };
+
+    // ── Mise en cache serveur (24h, partagé tous appareils) ──
+    serverSet(CACHE_KEY, result);
+
+    return Response.json(result);
   } catch (err) {
+    // En cas d'erreur Anthropic, retourner le cache même expiré s'il existe
+    const staleCache = serverGet(CACHE_KEY, null);
+    if (staleCache) {
+      return Response.json({ ...staleCache, from_cache: true, stale: true, cache_error: err.message });
+    }
     return Response.json({ success: false, error: `Erreur analyse IA : ${err.message}` }, { status: 500 });
   }
 }

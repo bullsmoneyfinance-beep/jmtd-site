@@ -187,10 +187,6 @@ export default function Nav() {
 
           {/* CTAs desktop */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-            <a href={PHONE_HREF} className="hide-mobile"
-              style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 16px", borderRadius: 30, border: `1.5px solid ${T}44`, color: T, fontSize: 13, fontWeight: 600, textDecoration: "none", background: `${T}07`, whiteSpace: "nowrap", transition: "all 0.2s" }}>
-              📞 {PHONE}
-            </a>
             <Link href="/contact"
               style={{ padding: "10px 20px", borderRadius: 30, background: `linear-gradient(135deg,${T},${P})`, color: "#fff", fontWeight: 700, fontSize: 13, textDecoration: "none", boxShadow: `0 4px 18px ${T}40`, whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6, transition: "transform 0.2s, box-shadow 0.2s" }}>
               <span className="hide-mobile">Devis gratuit</span>

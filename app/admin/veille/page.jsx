@@ -36,24 +36,6 @@ export default function VeillePage() {
   const [lastFetch, setLastFetch] = useState(null);
   const [fromCache, setFromCache] = useState(false);
 
-  useEffect(() => {
-    if (!loadSession("jmtd_admin")) { router.replace("/portail"); return; }
-
-    // 1. Essai localStorage d'abord (instantané, pas de réseau)
-    const lsCached = (() => {
-      try { return JSON.parse(localStorage.getItem(CACHE_KEY)); } catch { return null; }
-    })();
-    if (lsCached && Date.now() - new Date(lsCached.fetched_at).getTime() < CACHE_TTL) {
-      setData(lsCached);
-      setLastFetch(new Date(lsCached.fetched_at));
-      setFromCache(true);
-      return; // Pas besoin d'appeler le serveur, le cache local est frais
-    }
-
-    // 2. Sinon, appel API (qui renvoie son propre cache serveur si disponible)
-    scan(false);
-  }, [scan]);
-
   const scan = useCallback(async (force = false) => {
     setLoading(true);
     setError(null);
@@ -71,6 +53,24 @@ export default function VeillePage() {
     }
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (!loadSession("jmtd_admin")) { router.replace("/portail"); return; }
+
+    // 1. Essai localStorage d'abord (instantané, pas de réseau)
+    const lsCached = (() => {
+      try { return JSON.parse(localStorage.getItem(CACHE_KEY)); } catch { return null; }
+    })();
+    if (lsCached && Date.now() - new Date(lsCached.fetched_at).getTime() < CACHE_TTL) {
+      setData(lsCached);
+      setLastFetch(new Date(lsCached.fetched_at));
+      setFromCache(true);
+      return; // Cache local frais, pas besoin d'appeler le serveur
+    }
+
+    // 2. Sinon, appel API (qui renvoie son propre cache serveur si disponible)
+    scan(false);
+  }, [scan, router]);
 
   const items = data?.items ?? [];
   const filtered = filter === "all" ? items : items.filter(i => i.categorie === filter);

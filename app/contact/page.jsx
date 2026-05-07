@@ -37,8 +37,18 @@ export default function ContactPage() {
     e.preventDefault();
     if (!form.rgpd) { alert("Veuillez accepter la politique de confidentialité."); return; }
     setLoading(true);
-    const existing = await load("jmtd_quotes", []);
-    await save("jmtd_quotes", [{ id: `q${Date.now()}`, date: Date.now(), status: "nouveau", name: `${form.prenom} ${form.nom}`.trim(), phone: form.tel, email: form.email, service: form.service, zone: form.zone, message: form.message }, ...existing]);
+    try {
+      // Appel API → sauvegarde serveur + email de notification
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+    } catch {
+      // Fallback localStorage si l'API échoue
+      const existing = await load("jmtd_quotes", []);
+      await save("jmtd_quotes", [{ id: `q${Date.now()}`, date: Date.now(), status: "nouveau", name: `${form.prenom} ${form.nom}`.trim(), phone: form.tel, email: form.email, service: form.service, zone: form.zone, message: form.message }, ...existing]);
+    }
     setLoading(false);
     setSent(true);
   };

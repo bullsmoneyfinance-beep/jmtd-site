@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import Nav from "./Nav";
 import Footer from "./Footer";
 import FloatingCTA from "./FloatingCTA";
+import CookieBanner from "./CookieBanner";
 
 const PRIVATE = ["/portail", "/pointage", "/admin"];
 
@@ -15,6 +16,7 @@ export default function ConditionalLayout({ children }) {
       <main>{children}</main>
       {!isPrivate && <FloatingCTA />}
       {!isPrivate && <Footer />}
+      {!isPrivate && <CookieBanner />}
     </>
   );
 }

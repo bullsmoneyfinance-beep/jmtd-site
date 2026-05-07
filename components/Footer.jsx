@@ -44,7 +44,10 @@ export default function Footer() {
           {[
             ["/", "Accueil"],
             ["/services", "Nos prestations"],
+            ["/tarifs", "💰 Tarifs"],
             ["/coach", "Coach rangement"],
+            ["/conseils", "💡 Conseils & astuces"],
+            ["/faq", "❓ FAQ"],
             ["/contact", "Contact & Devis"],
             ["/mentions-legales", "Mentions légales"],
             ["/politique-confidentialite", "Politique de confidentialité"],

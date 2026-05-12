@@ -183,13 +183,14 @@ function KPI({ icon, label, value, sub, color, onClick, link }) {
 
 /* ── Sidebar ── */
 const TABS = [
-  { id: "dashboard", icon: "📊", label: "Tableau de bord" },
-  { id: "agenda",    icon: "📅", label: "Agenda" },
-  { id: "sessions",  icon: "⏱️", label: "Sessions" },
-  { id: "messages",  icon: "💬", label: "Messages" },
-  { id: "employees", icon: "👥", label: "Équipe" },
-  { id: "quotes",    icon: "📨", label: "Demandes" },
-  { id: "settings",  icon: "⚙️", label: "Paramètres" },
+  { id: "dashboard",    icon: "📊", label: "Tableau de bord" },
+  { id: "agenda",       icon: "📅", label: "Agenda" },
+  { id: "sessions",     icon: "⏱️", label: "Sessions" },
+  { id: "messages",     icon: "💬", label: "Messages" },
+  { id: "employees",    icon: "👥", label: "Équipe" },
+  { id: "quotes",       icon: "📨", label: "Demandes" },
+  { id: "candidatures", icon: "🎯", label: "Candidatures" },
+  { id: "settings",     icon: "⚙️", label: "Paramètres" },
 ];
 
 export default function AdminPage() {
@@ -200,6 +201,7 @@ export default function AdminPage() {
   const [quotes, setQuotes] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [candidatures, setCandidatures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sideOpen, setSideOpen] = useState(false);
   const [rdvModal, setRdvModal] = useState(null); // null | { mode: "add"|"edit", rdv? }
@@ -225,6 +227,12 @@ export default function AdminPage() {
     setQuotes(q.sort((a, b) => b.date - a.date));
     setAppointments(a.sort((a, b) => a.date - b.date));
     setMessages(m.sort((a, b) => b.sentAt - a.sentAt));
+    // Candidatures via API route (server-side store)
+    try {
+      const res = await fetch("/api/recrutement");
+      const json = await res.json();
+      if (json.ok) setCandidatures(json.data.sort((a, b) => b.date - a.date));
+    } catch { /* ignore */ }
     if (initial) setLoading(false);
   }, []);
 
@@ -247,6 +255,7 @@ export default function AdminPage() {
   const totalHours = sessions.filter(s => s.end).reduce((a, s) => a + (s.end - s.start) / 3600000, 0);
   const weekHours = weekSessions.filter(s => s.end).reduce((a, s) => a + (s.end - s.start) / 3600000, 0);
   const newQuotes = quotes.filter(q => q.status === "nouveau" || !q.status).length;
+  const newCandidatures = candidatures.filter(c => c.status === "nouveau").length;
 
   /* ── Employees CRUD ── */
   async function saveEmployee(form) {
@@ -296,6 +305,20 @@ export default function AdminPage() {
     const updated = quotes.map(q => q.id === id ? { ...q, status } : q);
     setQuotes(updated);
     await save("jmtd_quotes", updated);
+  }
+
+  /* ── Candidature status ── */
+  async function setCandidatureStatus(id, status) {
+    const updated = candidatures.map(c => c.id === id ? { ...c, status } : c);
+    setCandidatures(updated);
+    // Sync via API (server-side store)
+    try {
+      await fetch("/api/data/jmtd_candidatures", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: updated }),
+      });
+    } catch { /* ignore */ }
   }
 
   /* ── Messages ── */
@@ -545,6 +568,9 @@ export default function AdminPage() {
               {t.id === "messages" && unreadMessages > 0 && (
                 <span style={{ marginLeft: "auto", background: T, color: "#fff", borderRadius: 20, fontSize: 10, fontWeight: 700, padding: "2px 7px", minWidth: 18, textAlign: "center" }}>{unreadMessages}</span>
               )}
+              {t.id === "candidatures" && newCandidatures > 0 && (
+                <span style={{ marginLeft: "auto", background: "#F59E0B", color: "#fff", borderRadius: 20, fontSize: 10, fontWeight: 700, padding: "2px 7px", minWidth: 18, textAlign: "center" }}>{newCandidatures}</span>
+              )}
             </button>
           ))}
         </nav>
@@ -588,6 +614,7 @@ export default function AdminPage() {
               <KPI icon="🔴" label="En cours" value={activeSessions.length} color={activeSessions.length > 0 ? "#EF4444" : "#475569"} sub={activeSessions.length > 0 ? activeSessions.map(s => s.empName).join(", ") : "Personne"} />
               <KPI icon="👥" label="Intervenants" value={employees.length} color="#8B5CF6" onClick={() => setTab("employees")} />
               <KPI icon="📨" label="Nouvelles demandes" value={newQuotes} color={P} onClick={() => setTab("quotes")} />
+              <KPI icon="🎯" label="Candidatures" value={newCandidatures} color="#F59E0B" onClick={() => setTab("candidatures")} sub={candidatures.length > 0 ? `${candidatures.length} total` : "Aucune"} />
             </div>
 
             {/* Quick stats */}
@@ -1038,6 +1065,141 @@ export default function AdminPage() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ═══ CANDIDATURES ═══ */}
+        {tab === "candidatures" && (
+          <div style={{ animation: "slideIn 0.25s ease" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
+              <div>
+                <h1 style={{ fontSize: 22, fontWeight: 800, color: "#F8FAFC", margin: 0 }}>Candidatures</h1>
+                <p style={{ fontSize: 13, color: "#475569", marginTop: 6 }}>
+                  {candidatures.length} candidature{candidatures.length !== 1 ? "s" : ""} · {newCandidatures} nouvelle{newCandidatures !== 1 ? "s" : ""}
+                </p>
+              </div>
+              <a href="/recrutement" target="_blank" rel="noopener noreferrer"
+                style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 18px", borderRadius: 10, background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)", color: "#F59E0B", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
+                🎯 Voir la page recrutement ↗
+              </a>
+            </div>
+
+            {/* Statuts */}
+            {(() => {
+              const STATUS_CFG = {
+                nouveau:   { label: "Nouveau", color: "#F59E0B", bg: "rgba(245,158,11,0.12)" },
+                contacte:  { label: "Contacté·e", color: T, bg: `${T}12` },
+                entretien: { label: "Entretien", color: "#8B5CF6", bg: "rgba(139,92,246,0.12)" },
+                retenu:    { label: "Retenu·e ✓", color: EMERALD, bg: "rgba(16,185,129,0.12)" },
+                refuse:    { label: "Refusé·e", color: "#475569", bg: "rgba(255,255,255,0.04)" },
+              };
+              const POSTE_LABELS = { menage: "🏠 Ménage", repas: "🍽️ Repas", courses: "🛒 Courses", assistance: "📋 Admin", rangement: "🗂️ Rangement" };
+              const EXP_LABELS = { aucune: "Aucune exp.", moins1: "<1 an", "1-3": "1–3 ans", "3-5": "3–5 ans", plus5: "5+ ans" };
+
+              if (candidatures.length === 0) return (
+                <div style={{ textAlign: "center", padding: "80px 24px", color: "#475569" }}>
+                  <div style={{ fontSize: 56, marginBottom: 16, opacity: 0.5 }}>🎯</div>
+                  <p style={{ fontSize: 16, marginBottom: 8 }}>Aucune candidature reçue pour l'instant.</p>
+                  <p style={{ fontSize: 13, color: "#334155" }}>Les formulaires soumis via <a href="/recrutement" target="_blank" rel="noopener noreferrer" style={{ color: T }}>jmtd.fr/recrutement</a> apparaîtront ici.</p>
+                </div>
+              );
+
+              return (
+                <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                  {candidatures.map(c => {
+                    const s = c.status || "nouveau";
+                    const cfg = STATUS_CFG[s] || STATUS_CFG.nouveau;
+                    const score = [
+                      c.experience && c.experience !== "aucune",
+                      c.transport && c.transport !== "non",
+                      c.motivation && c.motivation.length > 100,
+                      c.discretion && c.discretion.length > 60,
+                      c.references === "oui",
+                    ].filter(Boolean).length;
+
+                    return (
+                      <div key={c.id}
+                        style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${s === "nouveau" ? "rgba(245,158,11,0.35)" : s === "retenu" ? `${EMERALD}33` : "rgba(255,255,255,0.07)"}`, borderRadius: 18, padding: "22px 24px" }}>
+
+                        {/* Header */}
+                        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, flexWrap: "wrap" }}>
+                              <span style={{ fontSize: 17, fontWeight: 700, color: "#F8FAFC" }}>{c.prenom} {c.nom}</span>
+                              <span style={{ padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
+                              <span style={{ fontSize: 12, color: "#475569" }}>{"⭐".repeat(score)}{"☆".repeat(5 - score)}</span>
+                            </div>
+                            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", fontSize: 12, color: "#64748B" }}>
+                              <span>📍 {c.commune}</span>
+                              <span>💼 {EXP_LABELS[c.experience] || c.experience || "—"}</span>
+                              <span>🚗 {c.transport || "—"}</span>
+                              <span>⏰ {c.dispo_heures || "—"}</span>
+                            </div>
+                          </div>
+                          <div style={{ fontSize: 11, color: "#334155", textAlign: "right", flexShrink: 0 }}>
+                            {c.date ? fmtDate(c.date) : "—"}
+                          </div>
+                        </div>
+
+                        {/* Postes */}
+                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+                          {(c.postes || []).map(p => (
+                            <span key={p} style={{ padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: `${T}12`, border: `1px solid ${T}25`, color: T }}>
+                              {POSTE_LABELS[p] || p}
+                            </span>
+                          ))}
+                          {(c.dispo_jours || []).map(j => (
+                            <span key={j} style={{ padding: "3px 10px", borderRadius: 20, fontSize: 11, background: "rgba(255,255,255,0.06)", color: "#94A3B8" }}>{j}</span>
+                          ))}
+                        </div>
+
+                        {/* Motivation + Discrétion */}
+                        {c.motivation && (
+                          <div style={{ marginBottom: 10 }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 }}>Motivation</div>
+                            <div style={{ fontSize: 13, color: "#94A3B8", background: "rgba(255,255,255,0.03)", borderLeft: `2px solid ${T}`, borderRadius: "0 8px 8px 0", padding: "8px 12px", lineHeight: 1.65 }}>
+                              {c.motivation}
+                            </div>
+                          </div>
+                        )}
+                        {c.discretion && (
+                          <div style={{ marginBottom: 14 }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 }}>Discrétion</div>
+                            <div style={{ fontSize: 13, color: "#94A3B8", background: "rgba(255,255,255,0.03)", borderLeft: "2px solid #8B5CF6", borderRadius: "0 8px 8px 0", padding: "8px 12px", lineHeight: 1.65 }}>
+                              {c.discretion}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Actions */}
+                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                          <a href={`tel:${c.tel?.replace(/\s/g, "")}`}
+                            style={{ padding: "8px 14px", borderRadius: 8, background: `${T}12`, border: `1px solid ${T}33`, color: T, fontSize: 12, fontWeight: 600, textDecoration: "none" }}>
+                            📞 {c.tel}
+                          </a>
+                          {c.email && (
+                            <a href={`mailto:${c.email}`}
+                              style={{ padding: "8px 14px", borderRadius: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#94A3B8", fontSize: 12, textDecoration: "none" }}>
+                              ✉️ Email
+                            </a>
+                          )}
+                          <div style={{ flex: 1, minWidth: 140 }}>
+                            <select value={s} onChange={e => setCandidatureStatus(c.id, e.target.value)}
+                              style={{ width: "100%", padding: "8px 10px", background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, color: "#94A3B8", fontSize: 12, cursor: "pointer" }}>
+                              <option value="nouveau">🟡 Nouveau</option>
+                              <option value="contacte">🔵 Contacté·e</option>
+                              <option value="entretien">🟣 Entretien</option>
+                              <option value="retenu">✅ Retenu·e</option>
+                              <option value="refuse">⛔ Refusé·e</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </div>
         )}
 

@@ -49,6 +49,7 @@ export default function Footer() {
             ["/conseils", "💡 Conseils & astuces"],
             ["/faq", "❓ FAQ"],
             ["/contact", "Contact & Devis"],
+            ["/recrutement", "💼 Rejoindre l'équipe"],
             ["/mentions-legales", "Mentions légales"],
             ["/politique-confidentialite", "Politique de confidentialité"],
           ].map(([href, label]) => (

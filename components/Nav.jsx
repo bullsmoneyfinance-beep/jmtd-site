@@ -207,7 +207,7 @@ export default function Nav() {
         {/* ── Menu mobile déroulant ── */}
         {mobileOpen && (
           <div style={{ background: "#fff", borderTop: `1px solid rgba(13,169,164,0.1)`, padding: "16px 24px 24px", animation: "slideDown 0.22s ease" }}>
-            {[["/","🏠 Accueil"],["/services","🛠 Nos prestations"],["/coach","🗂️ Coach rangement"],["/coaching","✨ Mon coaching"],["/tarifs","💰 Tarifs"],["/conseils","💡 Conseils & astuces"],["/faq","❓ FAQ"],["/contact","✉️ Contact & Devis"]].map(([href, label]) => (
+            {[["/","🏠 Accueil"],["/services","🛠 Nos prestations"],["/coach","🗂️ Coach rangement"],["/coaching","✨ Mon coaching"],["/tarifs","💰 Tarifs"],["/conseils","💡 Conseils & astuces"],["/faq","❓ FAQ"],["/contact","✉️ Contact & Devis"],["/recrutement","💼 Rejoindre l'équipe"]].map(([href, label]) => (
               <Link key={href} href={href} style={{ display: "block", padding: "13px 0", borderBottom: "1px solid rgba(13,169,164,0.07)", fontSize: 15, color: pathname === href ? T : "#475569", fontWeight: pathname === href ? 600 : 400, textDecoration: "none" }}>
                 {label}
               </Link>

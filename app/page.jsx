@@ -123,7 +123,15 @@ function QuickForm() {
       </label>
       <button type="submit" disabled={loading} className="btn-amber"
         style={{ width: "100%", padding: "16px", borderRadius: 30, fontSize: 16, cursor: loading ? "wait" : "pointer", border: "none" }}>
-        {loading ? "Envoi…" : "Envoyer ma demande de devis →"}
+        {loading ? (
+          <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" style={{ animation: "spin 0.8s linear infinite", flexShrink: 0 }}>
+              <circle cx="12" cy="12" r="10" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="3"/>
+              <path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"/>
+            </svg>
+            Envoi en cours…
+          </span>
+        ) : "Envoyer ma demande de devis →"}
       </button>
     </form>
   );
@@ -174,23 +182,23 @@ export default function HomePage() {
 
           {/* Gauche */}
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}12`, border: `1px solid ${T}2a`, borderRadius: 30, padding: "7px 16px", marginBottom: 28 }}>
+            <div className="anim-fade-up" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}12`, border: `1px solid ${T}2a`, borderRadius: 30, padding: "7px 16px", marginBottom: 28 }}>
               <span style={{ width: 7, height: 7, borderRadius: "50%", background: T, display: "inline-block", animation: "softPulse 2.5s infinite" }} />
               <span style={{ fontSize: 12, color: T, fontWeight: 600, letterSpacing: 0.3 }}>Agréé Services à la Personne · SAP</span>
             </div>
 
-            <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(34px, 4.5vw, 58px)", fontWeight: 700, lineHeight: 1.12, color: TEXT, marginBottom: 22, letterSpacing: -1 }}>
+            <h1 className="anim-fade-up delay-1" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(34px, 4.5vw, 58px)", fontWeight: 700, lineHeight: 1.12, color: TEXT, marginBottom: 22, letterSpacing: -1 }}>
               La sérénité<br />
               à domicile, <span style={{ background: `linear-gradient(135deg, ${T}, ${P})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>enfin.</span>
             </h1>
 
-            <p style={{ fontSize: 17, color: TEXT2, lineHeight: 1.75, marginBottom: 36, maxWidth: 460 }}>
+            <p className="anim-fade-up delay-2" style={{ fontSize: 17, color: TEXT2, lineHeight: 1.75, marginBottom: 36, maxWidth: 460 }}>
               Ménage, repas, courses, coach rangement… Déléguez votre quotidien à l&apos;équipe J&apos;MTD.
               <strong style={{ color: TEXT }}> 50% remboursé</strong> par crédit d&apos;impôt.
             </p>
 
-            <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 44 }}>
-              <Link href="/contact" className="btn-amber"
+            <div className="anim-fade-up delay-3" style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 44 }}>
+              <Link href="/contact" className="btn-amber btn-gradient"
                 style={{ padding: "15px 28px", borderRadius: 30, fontSize: 15, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, border: "none" }}>
                 Devis gratuit en 2 min →
               </Link>
@@ -200,7 +208,7 @@ export default function HomePage() {
               </a>
             </div>
 
-            <div style={{ display: "flex", gap: 36 }}>
+            <div className="anim-fade-up delay-4" style={{ display: "flex", gap: 36 }}>
               {[["200+", "Foyers accompagnés"], ["5★", "Note Google"], ["50%", "Crédit d'impôt"]].map(([n, l]) => (
                 <div key={l}>
                   <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 24, fontWeight: 800, color: T }}>{n}</div>

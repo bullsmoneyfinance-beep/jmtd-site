@@ -422,3 +422,70 @@ a { color: inherit; text-decoration: none; }
   }
   .ticker-inner { animation: none !important; }
 }
+
+/* ══════════════════════════════════════════════════
+   DESKTOP UI UPGRADE — animations & micro-interactions
+   ══════════════════════════════════════════════════ */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes stepIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Animation utility classes ── */
+.anim-fade-up    { animation: fadeUp    0.6s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-scale-in   { animation: scaleIn   0.5s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-slide-right { animation: slideRight 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+
+.delay-1 { animation-delay: 0.08s; }
+.delay-2 { animation-delay: 0.16s; }
+.delay-3 { animation-delay: 0.24s; }
+.delay-4 { animation-delay: 0.32s; }
+.delay-5 { animation-delay: 0.40s; }
+.delay-6 { animation-delay: 0.48s; }
+
+/* ── Hover lift ── */
+.hover-lift {
+  transition: transform 0.22s cubic-bezier(0.16,1,0.3,1),
+              box-shadow 0.22s ease !important;
+}
+.hover-lift:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 14px 44px rgba(13,169,164,0.18) !important;
+}
+
+/* ── Boutons gradient — effet shine au hover ── */
+.btn-gradient {
+  position: relative;
+  overflow: hidden;
+}
+.btn-gradient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255,255,255,0.2) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+.btn-gradient:hover::after  { transform: translateX(100%); }
+.btn-gradient:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 32px rgba(13,169,164,0.42) !important;
+}
+.btn-gradient:active { transform: translateY(0) !important; }

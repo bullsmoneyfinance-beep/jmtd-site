@@ -168,7 +168,7 @@ function Quiz() {
 
   if (result) return (
     <div style={{ background: "#fff", border: `1.5px solid ${result.color}30`, borderRadius: 24, padding: "40px 36px", boxShadow: `0 8px 48px ${result.color}14`, textAlign: "center" }}>
-      <div style={{ fontSize: 64, marginBottom: 12 }}>{result.emoji}</div>
+      <div aria-hidden="true" style={{ fontSize: 64, marginBottom: 12 }}>{result.emoji}</div>
       <div style={{ fontSize: 12, fontWeight: 700, color: result.color, textTransform: "uppercase", letterSpacing: 2, marginBottom: 8 }}>Votre profil</div>
       <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 16 }}>{result.name}</h3>
       <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8, marginBottom: 20, maxWidth: 480, margin: "0 auto 20px" }}>{result.desc}</p>

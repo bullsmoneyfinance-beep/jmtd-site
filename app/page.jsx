@@ -276,7 +276,7 @@ export default function HomePage() {
           <div>
             <div className="anim-fade-up" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: `1.5px solid ${T}30`, borderRadius: 30, padding: "8px 18px", marginBottom: 30, boxShadow: "0 2px 14px rgba(13,169,164,0.12)" }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: T, display: "inline-block", animation: "softPulse 2.5s infinite" }} />
-              <span style={{ fontSize: 13, color: T, fontWeight: 700 }}>Déclaré Services à la Personne · N° {DECLARATION_SAP}</span>
+              <span style={{ fontSize: 13, color: TEAL_TEXT, fontWeight: 700 }}>Déclaré Services à la Personne · N° {DECLARATION_SAP}</span>
             </div>
 
             <h1 className="anim-fade-up delay-1 display" style={{ fontSize: "clamp(40px, 5.4vw, 72px)", marginBottom: 26, letterSpacing: -1.8 }}>
@@ -289,7 +289,7 @@ export default function HomePage() {
               Ménage, repas, courses, coach rangement. Nos intervenantes <strong style={{ color: TEXT }}>sélectionnées, formées et discrètes</strong> s&apos;occupent de votre maison — vous récupérez du temps pour votre famille et vos loisirs, partout en Martinique.
             </p>
             <p className="anim-fade-up delay-2" style={{ marginBottom: 38 }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 15, color: T, fontWeight: 600, background: `${T}12`, borderRadius: 20, padding: "5px 14px" }}><Icon name="credit" size={16} color={T} /> 50% remboursé par crédit d&apos;impôt SAP</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 15, color: TEAL_TEXT, fontWeight: 700, background: `${T}14`, borderRadius: 20, padding: "5px 14px" }}><Icon name="credit" size={16} color={TEAL_TEXT} /> 50% remboursé par crédit d&apos;impôt SAP</span>
             </p>
 
             <div className="anim-fade-up delay-3" style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 46 }}>

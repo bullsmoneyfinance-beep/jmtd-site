@@ -147,6 +147,8 @@ export default function FAQPage() {
           <div style={{ position: "relative", maxWidth: 480, margin: "0 auto" }}>
             <Icon name="search" size={18} color={MUTED} style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)" }} />
             <input
+              type="search"
+              aria-label="Rechercher une question dans la FAQ"
               value={activeSearch}
               onChange={e => setActiveSearch(e.target.value)}
               placeholder="Rechercher une question…"

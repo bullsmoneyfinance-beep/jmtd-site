@@ -29,3 +29,22 @@
  ✓ Compiled in 133ms (329 modules)
  ✓ Compiled / in 138ms (344 modules)
  GET / 200 in 266ms
+ ✓ Compiled in 155ms (329 modules)
+ ✓ Compiled in 92ms (329 modules)
+ ✓ Compiled in 139ms (329 modules)
+ ✓ Compiled in 134ms (329 modules)
+ ✓ Compiled in 121ms (329 modules)
+ ✓ Compiled in 110ms (329 modules)
+ ✓ Compiled in 73ms (329 modules)
+ ✓ Compiled in 161ms (329 modules)
+ ✓ Compiled in 120ms (329 modules)
+ ✓ Compiled in 74ms (329 modules)
+ ✓ Compiled in 130ms (329 modules)
+ ✓ Compiled /services in 254ms (661 modules)
+ GET /services 200 in 369ms
+ ✓ Compiled /tarifs in 165ms (668 modules)
+ GET /tarifs 200 in 275ms
+ ✓ Compiled /coaching in 151ms (675 modules)
+ GET /coaching 200 in 228ms
+ ✓ Compiled /conseils in 162ms (682 modules)
+ GET /conseils 200 in 239ms

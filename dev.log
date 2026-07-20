@@ -6,57 +6,35 @@
   - Local:        http://localhost:3001
 
  ✓ Starting...
- ✓ Ready in 4.7s
- ○ Compiling /tarifs ...
- ✓ Compiled /tarifs in 2.3s (551 modules)
- GET /tarifs 200 in 2452ms
- ✓ Compiled in 198ms (265 modules)
- GET /tarifs 200 in 39ms
- ✓ Compiled /icon.svg in 159ms (315 modules)
- GET /icon.svg?0a4bb7f4abccad1e 200 in 203ms
- ✓ Compiled in 144ms (265 modules)
- ✓ Compiled in 114ms (536 modules)
- ✓ Compiled in 331ms (550 modules)
- ✓ Compiled in 216ms (550 modules)
- ✓ Compiled in 129ms (550 modules)
- ✓ Compiled in 228ms (550 modules)
- ✓ Compiled /conciergerie in 115ms (542 modules)
- GET /conciergerie 200 in 190ms
- ✓ Compiled in 75ms (267 modules)
- ✓ Compiled in 119ms (267 modules)
- ✓ Compiled in 86ms (267 modules)
- ✓ Compiled in 108ms (267 modules)
- ✓ Compiled in 106ms (267 modules)
- ✓ Compiled in 80ms (267 modules)
- ✓ Compiled in 83ms (267 modules)
- ✓ Compiled in 72ms (267 modules)
- ✓ Compiled in 79ms (267 modules)
- ✓ Compiled in 87ms (267 modules)
- ✓ Compiled in 70ms (267 modules)
- ✓ Compiled in 81ms (267 modules)
- ✓ Compiled /admin in 322ms (548 modules)
- GET /admin 200 in 443ms
- ✓ Compiled /recrutement in 173ms (554 modules)
- GET /recrutement 200 in 264ms
- ✓ Compiled in 127ms (273 modules)
- ✓ Compiled in 98ms (273 modules)
- ✓ Compiled in 103ms (273 modules)
- ✓ Compiled in 104ms (273 modules)
- ✓ Compiled in 101ms (273 modules)
- ✓ Compiled in 77ms (273 modules)
- ✓ Compiled in 82ms (273 modules)
- ✓ Compiled in 90ms (273 modules)
- ✓ Compiled in 226ms (559 modules)
- ✓ Compiled in 106ms (273 modules)
- ✓ Compiled in 98ms (273 modules)
- ✓ Compiled in 230ms (558 modules)
- ✓ Compiled in 184ms (558 modules)
- ✓ Compiled in 118ms (558 modules)
- ✓ Compiled in 136ms (558 modules)
- ✓ Compiled in 78ms (273 modules)
- ✓ Compiled / in 257ms (550 modules)
- GET / 200 in 379ms
- ✓ Compiled /faq in 201ms (556 modules)
- GET /faq 200 in 289ms
- ✓ Compiled /mentions-legales in 158ms (563 modules)
- GET /mentions-legales 200 in 266ms
+ ✓ Ready in 1578ms
+ ○ Compiling /admin ...
+ ✓ Compiled /admin in 2.3s (557 modules)
+ GET /admin 200 in 2471ms
+ ✓ Compiled in 227ms (268 modules)
+ ✓ Compiled in 120ms (268 modules)
+ ✓ Compiled in 89ms (268 modules)
+ ✓ Compiled in 503ms (558 modules)
+ ✓ Compiled in 262ms (558 modules)
+ ✓ Compiled in 182ms (269 modules)
+ ✓ Compiled /admin in 169ms (289 modules)
+ GET /admin 200 in 271ms
+ ✓ Compiled in 302ms (558 modules)
+ ✓ Compiled in 261ms (558 modules)
+ ✓ Compiled in 305ms (558 modules)
+ ✓ Compiled in 195ms (269 modules)
+ ✓ Compiled in 98ms (269 modules)
+ ✓ Compiled in 77ms (269 modules)
+ ✓ Compiled in 40ms (255 modules)
+ ✓ Compiled in 106ms (269 modules)
+ ✓ Compiled in 39ms (255 modules)
+ ✓ Compiled in 81ms (269 modules)
+ ✓ Compiled in 169ms (269 modules)
+ ✓ Compiled in 78ms (269 modules)
+ ✓ Compiled in 74ms (269 modules)
+ ✓ Compiled /espace-client in 218ms (542 modules)
+ GET /espace-client 200 in 349ms
+ ✓ Compiled /admin in 154ms (293 modules)
+ GET /admin 200 in 248ms
+ ✓ Compiled / in 175ms (556 modules)
+ GET / 200 in 259ms
+[?25h

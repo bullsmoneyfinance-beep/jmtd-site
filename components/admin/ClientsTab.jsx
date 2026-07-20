@@ -18,6 +18,7 @@ const EMPTY_INTER = { date: "", service: "entretien", heures: 2, taux: 32, regle
 export default function ClientsTab() {
   const [clients, setClients] = useState([]);
   const [inters, setInters] = useState([]);
+  const [factures, setFactures] = useState([]);
   const [selId, setSelId] = useState(null);
   const [clientModal, setClientModal] = useState(null); // null | {mode,data}
   const [interModal, setInterModal] = useState(null);
@@ -26,13 +27,25 @@ export default function ClientsTab() {
 
   useEffect(() => {
     (async () => {
-      const [c, i] = await Promise.all([load("jmtd_clients", []), load("jmtd_interventions", [])]);
-      setClients(c); setInters(i); setLoading(false);
+      const [c, i, f] = await Promise.all([load("jmtd_clients", []), load("jmtd_interventions", []), load("jmtd_factures", [])]);
+      setClients(c); setInters(i); setFactures(f); setLoading(false);
     })();
   }, []);
 
   const persistClients = async (next) => { setClients(next); await save("jmtd_clients", next); };
   const persistInters = async (next) => { setInters(next); await save("jmtd_interventions", next); };
+  const persistFactures = async (next) => { setFactures(next); await save("jmtd_factures", next); };
+
+  // Génère une facture pour les interventions d'une année et l'imprime
+  const genFacture = async (client, yInters, yr) => {
+    if (yInters.length === 0) return;
+    const seq = factures.filter(f => f.year === yr).length + 1;
+    const numero = `F-${yr}-${String(seq).padStart(3, "0")}`;
+    const total = Math.round(yInters.reduce((a, i) => a + (i.montant || 0), 0) * 100) / 100;
+    const record = { id: `fac_${Date.now()}`, numero, clientId: client.id, clientNom: `${client.prenom} ${client.nom}`, year: yr, date: Date.now(), total, interIds: yInters.map(i => i.id) };
+    await persistFactures([record, ...factures]);
+    printFacture(client, yInters, numero);
+  };
 
   const saveClient = async (form) => {
     if (clientModal.mode === "add") {
@@ -77,11 +90,13 @@ export default function ClientsTab() {
       {sel ? (
         <ClientDetail
           client={sel} inters={selInters} year={year} setYear={setYear}
+          factures={factures.filter(f => f.clientId === sel.id)}
           onBack={() => setSelId(null)}
           onEdit={() => setClientModal({ mode: "edit", data: sel })}
           onDelete={() => deleteClient(sel.id)}
           onAddInter={() => setInterModal({ ...EMPTY_INTER, taux: sel.tauxDefaut || 32 })}
           onDelInter={delInter}
+          onFacture={(yInters) => genFacture(sel, yInters, year)}
         />
       ) : (
         <ClientList clients={clients} inters={inters} onSelect={setSelId} onAdd={() => setClientModal({ mode: "add", data: EMPTY_CLIENT })} />
@@ -134,7 +149,7 @@ function ClientList({ clients, inters, onSelect, onAdd }) {
   );
 }
 
-function ClientDetail({ client, inters, year, setYear, onBack, onEdit, onDelete, onAddInter, onDelInter }) {
+function ClientDetail({ client, inters, year, setYear, factures, onBack, onEdit, onDelete, onAddInter, onDelInter, onFacture }) {
   const [confirmDel, setConfirmDel] = useState(false);
   const years = Array.from(new Set(inters.map(i => new Date(i.date).getFullYear()))).sort((a, b) => b - a);
   if (!years.includes(year)) years.unshift(year);
@@ -143,6 +158,7 @@ function ClientDetail({ client, inters, year, setYear, onBack, onEdit, onDelete,
   const totalHeures = regleInters.reduce((a, i) => a + (Number(i.heures) || 0), 0);
   const totalMontant = regleInters.reduce((a, i) => a + (i.montant || 0), 0);
   const credit = Math.round(totalMontant * 0.5 * 100) / 100;
+  const yearFactures = (factures || []).filter(f => f.year === year);
 
   return (
     <div>
@@ -187,13 +203,29 @@ function ClientDetail({ client, inters, year, setYear, onBack, onEdit, onDelete,
             <Stat label="Total réglé" value={eur(totalMontant)} color="#F8FAFC" />
             <Stat label="Crédit d'impôt 50%" value={eur(credit)} color={EMERALD} />
           </div>
-          <button
-            onClick={() => printAttestation(client, regleInters, year, { totalHeures, totalMontant, credit })}
-            disabled={regleInters.length === 0}
-            style={{ padding: "11px 20px", borderRadius: 10, background: regleInters.length ? `linear-gradient(135deg,${T},${P})` : "rgba(255,255,255,0.06)", border: "none", color: "#fff", fontWeight: 700, fontSize: 13, cursor: regleInters.length ? "pointer" : "not-allowed", opacity: regleInters.length ? 1 : 0.5 }}>
-            🧾 Générer l'attestation {year}
-          </button>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <button
+              onClick={() => onFacture(yearInters)}
+              disabled={yearInters.length === 0}
+              style={{ padding: "11px 18px", borderRadius: 10, background: yearInters.length ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.04)", border: `1px solid ${yearInters.length ? `${T}44` : "rgba(255,255,255,0.08)"}`, color: yearInters.length ? T : "#475569", fontWeight: 700, fontSize: 13, cursor: yearInters.length ? "pointer" : "not-allowed" }}>
+              📄 Facture {year}
+            </button>
+            <button
+              onClick={() => printAttestation(client, regleInters, year, { totalHeures, totalMontant, credit })}
+              disabled={regleInters.length === 0}
+              style={{ padding: "11px 20px", borderRadius: 10, background: regleInters.length ? `linear-gradient(135deg,${T},${P})` : "rgba(255,255,255,0.06)", border: "none", color: "#fff", fontWeight: 700, fontSize: 13, cursor: regleInters.length ? "pointer" : "not-allowed", opacity: regleInters.length ? 1 : 0.5 }}>
+              🧾 Attestation {year}
+            </button>
+          </div>
         </div>
+        {yearFactures.length > 0 && (
+          <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.08)", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+            <span style={{ fontSize: 11, color: "#64748B" }}>Factures émises :</span>
+            {yearFactures.map(f => (
+              <span key={f.id} style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: "3px 9px" }}>{f.numero} · {eur(f.total)}</span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Interventions */}
@@ -382,8 +414,84 @@ function printAttestation(client, inters, year, totals) {
   </div>
 </body></html>`;
 
+  openPrint(html, "Autorisez les fenêtres pop-up pour générer l'attestation.");
+}
+
+// Génère une facture dans une fenêtre imprimable
+function printFacture(client, inters, numero) {
+  const sorted = [...inters].sort((a, b) => a.date - b.date);
+  const lignes = sorted.map(i =>
+    `<tr>
+      <td>${fmtD(i.date)}</td>
+      <td>${SERVICE_LABELS[i.service] || i.service}</td>
+      <td style="text-align:center">${i.heures}</td>
+      <td style="text-align:right">${eur(i.taux)}</td>
+      <td style="text-align:right">${eur(i.montant)}</td>
+    </tr>`).join("");
+  const total = Math.round(sorted.reduce((a, i) => a + (i.montant || 0), 0) * 100) / 100;
+  const credit = Math.round(total * 0.5 * 100) / 100;
+
+  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Facture ${numero} — ${client.prenom} ${client.nom}</title>
+<style>
+  @page { margin: 20mm; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a2d3d; line-height: 1.55; font-size: 13px; max-width: 720px; margin: 0 auto; padding: 20px; }
+  .head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 30px; }
+  .brand { font-size: 28px; font-weight: 800; color: #0DA9A4; }
+  .brand span { color: #D4197A; }
+  .meta { font-size: 11px; color: #555; text-align: right; line-height: 1.7; }
+  .facnum { background:#0DA9A4; color:#fff; padding: 10px 18px; border-radius: 8px; font-size: 16px; font-weight: 800; display:inline-block; }
+  .parties { display:flex; justify-content:space-between; gap: 20px; margin: 20px 0 26px; }
+  .party { flex:1; }
+  .party h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color:#999; margin: 0 0 6px; }
+  .party p { margin: 0; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 18px; }
+  th { background:#f4f7f9; text-align:left; padding: 9px 10px; font-size: 10.5px; text-transform:uppercase; letter-spacing:.4px; color:#555; }
+  td { padding: 9px 10px; border-bottom: 1px solid #eee; font-size: 12.5px; }
+  .totrow td { border-top: 2px solid #0DA9A4; font-weight: 800; font-size: 15px; }
+  .credit { background:#0DA9A410; border:1px solid #0DA9A430; border-radius:8px; padding:12px 16px; margin: 16px 0; font-size:13px; }
+  .legal { font-size: 10.5px; color: #777; line-height: 1.7; margin-top: 22px; border-top:1px solid #eee; padding-top:14px; }
+  .print-btn { position: fixed; top: 16px; right: 16px; padding: 12px 22px; background: #0DA9A4; color:#fff; border:none; border-radius: 30px; font-size: 14px; font-weight:700; cursor:pointer; }
+  @media print { .print-btn { display: none; } body { padding: 0; } }
+</style></head><body>
+  <button class="print-btn" onclick="window.print()">🖨️ Imprimer / PDF</button>
+  <div class="head">
+    <div>
+      <div class="brand">J'<span>m</span>TD</div>
+      <div style="font-size:11px;color:#666;margin-top:4px;">Services à la Personne · Martinique</div>
+    </div>
+    <div class="meta">${ADDRESS}<br>SIREN ${SIRET}<br>Déclaration ${DECLARATION_SAP}<br>${PHONE} · ${EMAIL}</div>
+  </div>
+
+  <div style="margin-bottom:8px;"><span class="facnum">FACTURE ${numero}</span></div>
+  <div style="font-size:12px;color:#666;">Émise le ${new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}</div>
+
+  <div class="parties">
+    <div class="party"><h3>Prestataire</h3><p><b>J'MTD</b><br>${FONDATRICE}<br>${ADDRESS}</p></div>
+    <div class="party" style="text-align:right"><h3>Facturé à</h3><p><b>${client.prenom} ${client.nom}</b>${client.adresse ? "<br>" + client.adresse : ""}${client.commune ? "<br>" + client.commune : ""}</p></div>
+  </div>
+
+  <table>
+    <thead><tr><th>Date</th><th>Prestation</th><th style="text-align:center">Heures</th><th style="text-align:right">Taux</th><th style="text-align:right">Montant</th></tr></thead>
+    <tbody>${lignes}</tbody>
+    <tfoot><tr class="totrow"><td colspan="4">TOTAL NET À PAYER</td><td style="text-align:right">${eur(total)}</td></tr></tfoot>
+  </table>
+
+  <div style="font-size:11px;color:#777;">TVA non applicable, article 293 B du Code général des impôts.</div>
+
+  <div class="credit">
+    💳 <b>Crédit d'impôt Services à la Personne :</b> cette prestation ouvre droit à un crédit d'impôt de 50 %, soit un coût réel de <b>${eur(credit)}</b> après remboursement. Éligible à l'avance immédiate du crédit d'impôt (URSSAF).
+  </div>
+
+  <div class="legal">
+    Règlement à réception de facture. Prestation de services à la personne réalisée au domicile du client, déclarée sous le n° ${DECLARATION_SAP}. Une attestation fiscale annuelle récapitulative vous sera remise en janvier. En cas de retard de paiement, pénalités au taux légal en vigueur ; indemnité forfaitaire de recouvrement de 40 € (art. L441-10 et D441-5 du Code de commerce).
+  </div>
+</body></html>`;
+  openPrint(html, "Autorisez les fenêtres pop-up pour générer la facture.");
+}
+
+function openPrint(html, popupMsg) {
   const w = window.open("", "_blank", "width=820,height=900");
-  if (!w) { alert("Autorisez les fenêtres pop-up pour générer l'attestation."); return; }
+  if (!w) { alert(popupMsg); return; }
   w.document.write(html);
   w.document.close();
 }

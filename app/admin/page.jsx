@@ -6,6 +6,7 @@ import { loadSession, clearSession, load, save } from "../../lib/storage";
 import { DEMO_EMPS, AMBER, PINK, NAVY, EMERALD, PHONE, EMAIL, ADDRESS, FONDATRICE, SIRET } from "../../lib/data";
 import { scoreCandidature, triageCandidatures, scoreToStars, TIERS, POSTE_LABELS, EXP_LABELS, TRANSPORT_LABELS, DISPO_LABELS } from "../../lib/scoring";
 import ClientsTab from "../../components/admin/ClientsTab";
+import ActiviteTab from "../../components/admin/ActiviteTab";
 
 const T = AMBER;   // teal
 const P = PINK;    // rose
@@ -43,9 +44,10 @@ function exportCSV(sessions) {
 
 /* ── Modal employé ── */
 function EmpModal({ emp, onSave, onClose }) {
-  const [form, setForm] = useState(emp || { name: "", role: "Aide ménagère", zone: "Centre", pin: "" });
+  const [form, setForm] = useState(emp || { name: "", role: "Aide ménagère", zone: "Centre", pin: "", tauxHoraire: 12, contrat: "CDI" });
   const roles = ["Aide ménagère", "Préparation repas", "Coach rangement", "Livraison courses", "Assistance admin"];
   const zones = ["Centre (Lamentin / Rivière-Salée)", "Nord Atlantique", "Nord Caraïbe", "Sud (Diamant / Saint-Esprit)", "Toute la Martinique"];
+  const contrats = ["CDI", "CDI temps partiel", "CDD", "Apprentissage", "Autre"];
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
 
   return (
@@ -68,15 +70,22 @@ function EmpModal({ emp, onSave, onClose }) {
         {[
           { label: "Rôle", key: "role", options: roles },
           { label: "Zone", key: "zone", options: zones },
+          { label: "Type de contrat", key: "contrat", options: contrats },
         ].map(f => (
           <div key={f.key} style={{ marginBottom: 16 }}>
             <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#94A3B8", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.8 }}>{f.label}</label>
-            <select value={form[f.key]} onChange={set(f.key)}
+            <select value={form[f.key] || ""} onChange={set(f.key)}
               style={{ width: "100%", padding: "11px 14px", background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#F8FAFC", fontSize: 14, boxSizing: "border-box", outline: "none" }}>
               {f.options.map(o => <option key={o} value={o} style={{ background: "#0D1B2A" }}>{o}</option>)}
             </select>
           </div>
         ))}
+        <div style={{ marginBottom: 16 }}>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#94A3B8", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.8 }}>Taux horaire brut (€ / h)</label>
+          <input type="number" step="0.5" value={form.tauxHoraire ?? ""} onChange={set("tauxHoraire")} placeholder="12"
+            style={{ width: "100%", padding: "11px 14px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#F8FAFC", fontSize: 14, boxSizing: "border-box", outline: "none" }} />
+          <div style={{ fontSize: 11, color: "#475569", marginTop: 6 }}>Sert au calcul du coût des heures pointées. La paie & la DSN restent gérées par votre outil dédié (convention IDCC 3127).</div>
+        </div>
         <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
           <button onClick={onClose}
             style={{ flex: 1, padding: "11px", borderRadius: 10, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#94A3B8", fontSize: 14, cursor: "pointer", fontWeight: 600 }}>
@@ -190,6 +199,7 @@ const TABS = [
   { id: "sessions",     icon: "⏱️", label: "Sessions" },
   { id: "messages",     icon: "💬", label: "Messages" },
   { id: "clients",      icon: "🏘️", label: "Clients" },
+  { id: "activite",     icon: "💶", label: "Activité" },
   { id: "employees",    icon: "👥", label: "Équipe" },
   { id: "quotes",       icon: "📨", label: "Demandes" },
   { id: "candidatures", icon: "🎯", label: "Candidatures" },
@@ -952,6 +962,8 @@ export default function AdminPage() {
                 const done = empSessions.filter(s => s.end);
                 const empHours = done.reduce((a, s) => a + (s.end - s.start) / 3600000, 0);
                 const isActive = sessions.some(s => s.empId === emp.id && !s.end);
+                const taux = Number(emp.tauxHoraire) || 0;
+                const cout = empHours * taux;
 
                 return (
                   <div key={emp.id} style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${isActive ? "rgba(239,68,68,0.3)" : "rgba(255,255,255,0.07)"}`, borderRadius: 18, padding: "22px 20px" }}>
@@ -986,6 +998,13 @@ export default function AdminPage() {
                         </div>
                       ))}
                     </div>
+
+                    {taux > 0 && (
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.03)", borderRadius: 10, padding: "9px 12px", marginBottom: 14, fontSize: 12 }}>
+                        <span style={{ color: "#64748B" }}>💶 {emp.contrat || "—"} · {taux}€/h brut</span>
+                        <span style={{ color: "#94A3B8", fontWeight: 700 }}>Coût ~{cout.toLocaleString("fr-FR", { maximumFractionDigits: 0 })}€</span>
+                      </div>
+                    )}
 
                     <div style={{ display: "flex", gap: 8 }}>
                       <button onClick={() => setEmpModal({ mode: "edit", emp })}
@@ -1079,6 +1098,8 @@ export default function AdminPage() {
 
         {/* ═══ CANDIDATURES ═══ */}
         {tab === "clients" && <ClientsTab />}
+
+        {tab === "activite" && <ActiviteTab />}
 
         {tab === "candidatures" && (
           <div style={{ animation: "slideIn 0.25s ease" }}>

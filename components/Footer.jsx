@@ -93,6 +93,10 @@ export default function Footer() {
             onMouseEnter={e => e.target.style.color = T} onMouseLeave={e => e.target.style.color = "#94A3B8"}>
             Confidentialité
           </Link>
+          <Link href="/espace-client" style={{ fontSize: 11, color: "#94A3B8", textDecoration: "none", transition: "color 0.15s" }}
+            onMouseEnter={e => e.target.style.color = T} onMouseLeave={e => e.target.style.color = "#94A3B8"}>
+            👤 Espace client
+          </Link>
           <Link href="/portail" style={{ fontSize: 11, color: "#94A3B8", textDecoration: "none", transition: "color 0.15s" }}
             onMouseEnter={e => e.target.style.color = T} onMouseLeave={e => e.target.style.color = "#94A3B8"}>
             🔐 Espace équipe

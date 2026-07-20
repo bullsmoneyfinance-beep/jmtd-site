@@ -12,8 +12,9 @@ export default function ConditionalLayout({ children }) {
   const isPrivate = PRIVATE.some(r => pathname.startsWith(r));
   return (
     <>
+      {!isPrivate && <a href="#main" className="skip-link">Aller au contenu</a>}
       {!isPrivate && <Nav />}
-      <main>{children}</main>
+      <main id="main">{children}</main>
       {!isPrivate && <FloatingCTA />}
       {!isPrivate && <Footer />}
       {!isPrivate && <CookieBanner />}

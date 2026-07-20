@@ -19,3 +19,7 @@
  GET /coach 200 in 281ms
  ✓ Compiled /faq in 151ms (671 modules)
  GET /faq 200 in 252ms
+ ✓ Compiled in 159ms (329 modules)
+ ✓ Compiled in 165ms (329 modules)
+ ✓ Compiled /faq in 89ms (345 modules)
+ GET /faq 200 in 197ms

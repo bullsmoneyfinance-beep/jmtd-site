@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PHONE_HREF, WHATSAPP, AMBER, PINK } from "../lib/data";
+import Icon from "./Icon";
 
 export default function FloatingCTA() {
   const [visible, setVisible] = useState(false);
@@ -81,7 +82,7 @@ export default function FloatingCTA() {
             style={{ width: 54, height: 54, borderRadius: "50%", background: `linear-gradient(135deg, ${AMBER}, ${PINK})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, textDecoration: "none", boxShadow: `0 6px 24px rgba(13,169,164,0.45)`, animation: "floatBtn 3s ease-in-out infinite", transition: "transform 0.2s" }}
             onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.12)"; e.currentTarget.style.animation = "none"; }}
             onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.animation = "floatBtn 3s ease-in-out infinite"; }}>
-            📞
+            <Icon name="phone" size={24} color="#fff" />
           </a>
         </div>
 
@@ -92,7 +93,7 @@ export default function FloatingCTA() {
             style={{ width: 54, height: 54, borderRadius: "50%", background: "#1A2D3D", border: `2px solid ${AMBER}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, textDecoration: "none", boxShadow: "0 4px 16px rgba(0,0,0,0.2)", transition: "transform 0.2s" }}
             onMouseEnter={e => e.currentTarget.style.transform = "scale(1.12)"}
             onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>
-            ✉️
+            <Icon name="mail" size={22} color="#fff" />
           </Link>
         </div>
       </div>

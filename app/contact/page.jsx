@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PHONE, PHONE_HREF, WHATSAPP, EMAIL, ADDRESS, HORAIRES, SERVICES } from "../../lib/data";
+import { PHONE, PHONE_HREF, WHATSAPP, EMAIL, ADDRESS, HORAIRES, SERVICES, TEAL_TEXT } from "../../lib/data";
 import { load, save } from "../../lib/storage";
 import Reveal from "../../components/Reveal";
 import Icon, { IconTile } from "../../components/Icon";
@@ -56,10 +56,10 @@ const inp = {
   fontFamily: "inherit", transition: "border-color 0.2s, box-shadow 0.2s",
 };
 
-function Field({ label, children }) {
+function Field({ label, htmlFor, children }) {
   return (
     <div>
-      <label style={{ display: "block", fontSize: 11, color: MUTED, marginBottom: 6, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
+      <label htmlFor={htmlFor} style={{ display: "block", fontSize: 11, color: MUTED, marginBottom: 6, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
         {label}
       </label>
       {children}
@@ -78,20 +78,32 @@ export default function ContactPage() {
     e.preventDefault();
     if (!form.rgpd) { alert("Veuillez accepter la politique de confidentialité."); return; }
     setLoading(true);
+    let ok = false;
     try {
       // Appel API → sauvegarde serveur + email de notification
-      await fetch("/api/contact", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+      if (!res.ok) throw new Error();
+      ok = true;
     } catch {
       // Fallback localStorage si l'API échoue
-      const existing = await load("jmtd_quotes", []);
-      await save("jmtd_quotes", [{ id: `q${Date.now()}`, date: Date.now(), status: "nouveau", name: `${form.prenom} ${form.nom}`.trim(), phone: form.tel, email: form.email, service: form.service, zone: form.zone, message: form.message }, ...existing]);
+      try {
+        const existing = await load("jmtd_quotes", []);
+        await save("jmtd_quotes", [{ id: `q${Date.now()}`, date: Date.now(), status: "nouveau", name: `${form.prenom} ${form.nom}`.trim(), phone: form.tel, email: form.email, service: form.service, zone: form.zone, message: form.message }, ...existing]);
+        ok = true;
+      } catch {
+        ok = false;
+      }
     }
     setLoading(false);
-    setSent(true);
+    if (ok) {
+      setSent(true);
+    } else {
+      alert("Une erreur est survenue. Veuillez réessayer ou nous contacter directement par téléphone.");
+    }
   };
 
   return (
@@ -132,7 +144,7 @@ export default function ContactPage() {
         <div style={{ maxWidth: 580, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: `1.5px solid ${T}30`, borderRadius: 30, padding: "7px 16px", marginBottom: 18, boxShadow: "0 2px 14px rgba(13,169,164,0.12)" }}>
             <span style={{ width: 7, height: 7, borderRadius: "50%", background: T, display: "inline-block" }} />
-            <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Contact & Devis</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 1.5 }}>Contact & Devis</span>
           </div>
           <h1 className="display" style={{ fontSize: "clamp(28px, 5vw, 48px)", color: TEXT, marginBottom: 14, lineHeight: 1.2 }}>
             Obtenez votre <span style={{ color: P }}>devis gratuit</span>
@@ -155,7 +167,7 @@ export default function ContactPage() {
                 <h2 style={{ fontSize: 22, fontWeight: 700, color: TEXT, marginBottom: 10 }}>Demande envoyée !</h2>
                 <p style={{ color: MUTED, marginBottom: 24, lineHeight: 1.7 }}>Merci {form.prenom || form.nom}. Nous vous contactons sous 24h ouvrées.</p>
                 <button onClick={() => { setSent(false); setForm({ nom: "", prenom: "", tel: "", email: "", service: "", message: "", zone: "", rgpd: false }); }}
-                  style={{ padding: "12px 28px", borderRadius: 30, border: `2px solid ${T}44`, background: "transparent", color: T, fontWeight: 600, cursor: "pointer", fontSize: 14 }}>
+                  style={{ padding: "12px 28px", borderRadius: 30, border: `2px solid ${T}44`, background: "transparent", color: TEAL_TEXT, fontWeight: 600, cursor: "pointer", fontSize: 14 }}>
                   Nouvelle demande
                 </button>
               </div>
@@ -165,41 +177,42 @@ export default function ContactPage() {
                 <p style={{ fontSize: 13, color: MUTED, marginBottom: 24 }}>Tous les champs * sont obligatoires.</p>
 
                 <div className="fields-2col" style={{ marginBottom: 14 }}>
-                  <Field label="Prénom *">
-                    <input className="inp-focus" style={inp} placeholder="Marie" value={form.prenom} onChange={set("prenom")} required />
+                  <Field label="Prénom *" htmlFor="prenom">
+                    <input id="prenom" className="inp-focus" style={inp} placeholder="Marie" value={form.prenom} onChange={set("prenom")} required />
                   </Field>
-                  <Field label="Nom *">
-                    <input className="inp-focus" style={inp} placeholder="Dupont" value={form.nom} onChange={set("nom")} required />
+                  <Field label="Nom *" htmlFor="nom">
+                    <input id="nom" className="inp-focus" style={inp} placeholder="Dupont" value={form.nom} onChange={set("nom")} required />
                   </Field>
                 </div>
 
                 <div className="fields-2col" style={{ marginBottom: 14 }}>
-                  <Field label="Téléphone *">
-                    <input className="inp-focus" style={inp} placeholder="05 96 XX XX XX" type="tel" value={form.tel} onChange={set("tel")} required />
+                  <Field label="Téléphone *" htmlFor="tel">
+                    <input id="tel" className="inp-focus" style={inp} placeholder="05 96 XX XX XX" type="tel" value={form.tel} onChange={set("tel")} required />
                   </Field>
-                  <Field label="Email">
-                    <input className="inp-focus" style={inp} placeholder="votre@email.fr" type="email" value={form.email} onChange={set("email")} />
+                  <Field label="Email" htmlFor="email">
+                    <input id="email" className="inp-focus" style={inp} placeholder="votre@email.fr" type="email" value={form.email} onChange={set("email")} />
                   </Field>
                 </div>
 
                 <div style={{ marginBottom: 14 }}>
-                  <Field label="Prestation souhaitée *">
-                    <select className="inp-focus" style={{ ...inp, color: form.service ? TEXT : "#94A3B8" }} value={form.service} onChange={set("service")} required>
+                  <Field label="Prestation souhaitée *" htmlFor="service">
+                    <select id="service" className="inp-focus" style={{ ...inp, color: form.service ? TEXT : "#94A3B8" }} value={form.service} onChange={set("service")} required>
                       <option value="" style={{ color: "#94A3B8" }}>Choisir une prestation…</option>
                       {SERVICES.map(s => <option key={s.id} value={s.id} style={{ color: TEXT }}>{s.icon} {s.title}</option>)}
+                      <option value="conciergerie" style={{ color: TEXT }}>🔑 Conciergerie locative (B2B)</option>
                     </select>
                   </Field>
                 </div>
 
                 <div style={{ marginBottom: 14 }}>
-                  <Field label="Votre commune">
-                    <input className="inp-focus" style={inp} placeholder="Rivière-Salée, Fort-de-France…" value={form.zone} onChange={set("zone")} />
+                  <Field label="Votre commune" htmlFor="zone">
+                    <input id="zone" className="inp-focus" style={inp} placeholder="Rivière-Salée, Fort-de-France…" value={form.zone} onChange={set("zone")} />
                   </Field>
                 </div>
 
                 <div style={{ marginBottom: 22 }}>
-                  <Field label="Message (optionnel)">
-                    <textarea className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 110 }} placeholder="Décrivez votre besoin, fréquence souhaitée, toute info utile…" value={form.message} onChange={set("message")} rows={4} />
+                  <Field label="Message (optionnel)" htmlFor="message">
+                    <textarea id="message" className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 110 }} placeholder="Décrivez votre besoin, fréquence souhaitée, toute info utile…" value={form.message} onChange={set("message")} rows={4} />
                   </Field>
                 </div>
 
@@ -210,7 +223,7 @@ export default function ContactPage() {
                       style={{ marginTop: 3, accentColor: T, flexShrink: 0, width: 18, height: 18 }} required />
                     <span style={{ fontSize: 13, color: MUTED, lineHeight: 1.7 }}>
                       J&apos;accepte que J&apos;MTD traite mes données pour répondre à ma demande. Données non partagées, conservées 3 ans max.{" "}
-                      <Link href="/politique-confidentialite" style={{ color: T }}>En savoir plus</Link>. *
+                      <Link href="/politique-confidentialite" style={{ color: TEAL_TEXT }}>En savoir plus</Link>. *
                     </span>
                   </label>
                 </div>
@@ -244,7 +257,7 @@ export default function ContactPage() {
               {[
                 { href: PHONE_HREF, bg: `linear-gradient(135deg,${T},${P})`, icon: "phone", iconColor: "#fff", title: PHONE, sub: "Appel direct" },
                 { href: WHATSAPP, bg: "#25D366", icon: "chat", iconColor: "#fff", title: "WhatsApp", sub: "Message rapide", target: "_blank" },
-                { href: `mailto:${EMAIL}`, bg: `${T}14`, icon: "mail", iconColor: T, title: EMAIL, sub: "Email", border: `1px solid ${T}22` },
+                { href: `mailto:${EMAIL}`, bg: `${T}14`, icon: "mail", iconColor: TEAL_TEXT, title: EMAIL, sub: "Email", border: `1px solid ${T}22` },
               ].map(item => (
                 <a key={item.href} href={item.href} target={item.target} rel={item.target ? "noopener noreferrer" : undefined}
                   style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14, textDecoration: "none", WebkitTapHighlightColor: "transparent" }}>

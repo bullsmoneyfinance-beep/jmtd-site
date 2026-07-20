@@ -4,15 +4,19 @@ import Link from "next/link";
 import Reveal from "../components/Reveal";
 import Icon, { IconTile } from "../components/Icon";
 import SapOfficiel from "../components/SapOfficiel";
-import { PHONE, PHONE_HREF, WHATSAPP, SERVICES, TESTIMONIALS, DECLARATION_SAP } from "../lib/data";
+import { PHONE, PHONE_HREF, WHATSAPP, SERVICES, TESTIMONIALS, DECLARATION_SAP, TEAL_TEXT } from "../lib/data";
 
 const WA_SVG = (<svg width="18" height="18" viewBox="0 0 32 32" fill="none" style={{display:"block",flexShrink:0}}><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.5 8.5A10.4 10.4 0 0 0 16 5.5C10.2 5.5 5.5 10.2 5.5 16c0 1.85.48 3.65 1.4 5.25L5.5 26.5l5.4-1.4A10.4 10.4 0 0 0 16 26.5c5.8 0 10.5-4.7 10.5-10.5 0-2.8-1.1-5.43-3-7.5zm-7.5 16.1a8.6 8.6 0 0 1-4.4-1.2l-.3-.2-3.2.84.86-3.1-.2-.33A8.6 8.6 0 1 1 16 24.6zm4.7-6.4c-.26-.13-1.53-.75-1.77-.84-.23-.08-.4-.13-.56.13-.17.26-.64.84-.79 1.01-.14.17-.29.19-.54.06-.26-.13-1.08-.4-2.06-1.27-.76-.68-1.28-1.52-1.43-1.77-.15-.26-.01-.4.11-.52.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.08-.17.04-.32-.02-.45-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.26-.87.85-.87 2.07s.89 2.4 1.01 2.57c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.47-.07 1.53-.63 1.74-1.23.22-.6.22-1.12.15-1.23-.06-.12-.23-.19-.49-.31z" fill="#fff"/></svg>);
 
-const T = "#0DA9A4";       // teal
+const T = "#0DA9A4";       // teal — FONDS / dégradés / IconTile uniquement
+const TT = TEAL_TEXT;      // teal accessible (#0B7C78) — TEXTE / liens / petites icônes sur fond clair
 const P = "#D4197A";       // rose/magenta
 const OCEAN = "#12B5B0";   // turquoise océan (accent tropical discret)
 const TEXT = "#1A2D3D";
 const TEXT2 = "#64748B";
+
+/* Tarifs réels par prestation (source /tarifs) — €/h avant crédit d'impôt */
+const PRICES = { entretien: 32, repas: 32, courses: 28, assistance: 34, jardinage: 36 };
 
 /* Couleurs chaudes services à la personne */
 const WARM = "#FFF8F4";
@@ -58,20 +62,23 @@ function useParallax() {
 }
 
 const TICKS = [
-  "✦ Déclaré SAP officiel","✦ 5/5 Google","✦ +200 foyers","✦ Méthode Marie Kondo",
+  "✦ Déclaré SAP officiel","✦ Recommandé par nos clients","✦ +200 foyers","✦ Méthode Marie Kondo",
   "✦ 50% crédit d'impôt","✦ Toute la Martinique","✦ Réponse en 24h","✦ Devis gratuit",
 ];
 
+// Tarifs réels par prestation (cohérents avec /tarifs) — pas de "18€" trompeur
+const PRIX = { entretien: 32, repas: 32, courses: 28, assistance: 34, jardinage: 36 };
+
 function Calculator() {
   const [h, setH] = useState(8);
-  const gross = h * 18;
+  const gross = h * 30;
   const net = Math.ceil(gross * 0.5);
   return (
     <div style={{ background: "#fff", borderRadius: 24, border: `1.5px solid rgba(13,169,164,0.15)`, boxShadow: "0 22px 60px rgba(13,27,42,0.10)", padding: "36px 32px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
         <IconTile name="credit" size={40} icon={20} from={T} to={P} radius={10} />
         <div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1 }}>Simulateur</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: TT, textTransform: "uppercase", letterSpacing: 1 }}>Simulateur</div>
           <div style={{ fontSize: 16, fontWeight: 700, color: TEXT }}>Crédit d&apos;impôt</div>
         </div>
       </div>
@@ -111,12 +118,31 @@ function QuickForm() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [error, setError] = useState("");
   const submit = async e => {
     e.preventDefault();
     if (!form.rgpd) { alert("Veuillez accepter la politique de confidentialité."); return; }
-    setLoading(true);
-    await new Promise(r => setTimeout(r, 900));
-    setLoading(false); setSent(true);
+    setLoading(true); setError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prenom: "", nom: form.nom, tel: form.tel, email: "", service: form.service, zone: "", message: "Demande rapide (accueil)" }),
+      });
+      if (!res.ok) throw new Error("api");
+      setSent(true);
+    } catch {
+      // Fallback local si l'API échoue — le lead n'est jamais perdu silencieusement
+      try {
+        const { load, save } = await import("../lib/storage");
+        const existing = await load("jmtd_quotes", []);
+        await save("jmtd_quotes", [{ id: `q${Date.now()}`, date: Date.now(), status: "nouveau", name: form.nom, phone: form.tel, email: "", service: form.service, zone: "", message: "Demande rapide (accueil)" }, ...existing]);
+        setSent(true);
+      } catch {
+        setError("Envoi impossible pour le moment. Appelez-nous ou réessayez.");
+      }
+    }
+    setLoading(false);
   };
 
   if (sent) return (
@@ -162,6 +188,9 @@ function QuickForm() {
           <Link href="/politique-confidentialite" style={{ color: T, textDecoration: "underline" }}>politique de confidentialité</Link>.
         </span>
       </label>
+      {error && (
+        <div role="alert" style={{ background: "#FEF2F2", border: "1px solid #FECACA", color: "#DC2626", borderRadius: 12, padding: "10px 14px", fontSize: 13, marginBottom: 14, lineHeight: 1.5 }}>{error}</div>
+      )}
       <button type="submit" disabled={loading} className="btn-amber btn-gradient"
         style={{ width: "100%", padding: "16px", borderRadius: 30, fontSize: 16, cursor: loading ? "wait" : "pointer", border: "none" }}>
         {loading ? (
@@ -421,7 +450,7 @@ export default function HomePage() {
                   <img src={s.img} alt={s.title} width={500} height={210} loading="lazy" className="img-zoom"
                     style={{ width: "100%", height: 214, objectFit: "cover", display: "block" }} />
                   <div style={{ position: "absolute", bottom: 12, right: 12, background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)", borderRadius: 20, padding: "5px 14px", fontSize: 12, fontWeight: 700, color: s.special ? P : T, boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
-                    {s.id === "rangement" ? "Sur devis" : "À partir de 18€/h"}
+                    {s.id === "rangement" ? "Sur devis" : `À partir de ${PRIX[s.id] || 32}€/h`}
                   </div>
                   {s.special && (
                     <div style={{ position: "absolute", top: 14, left: 14, display: "inline-flex", alignItems: "center", gap: 5, background: P, color: "#fff", fontSize: 11, fontWeight: 700, padding: "5px 14px", borderRadius: 20 }}><Icon name="star" size={13} color="#fff" strokeWidth={2.2} /> Spécialité</div>

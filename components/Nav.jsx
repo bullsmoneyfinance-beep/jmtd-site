@@ -3,9 +3,10 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Icon from "./Icon";
-import { PHONE, PHONE_HREF, SERVICES, YOUTUBE } from "../lib/data";
+import { PHONE, PHONE_HREF, SERVICES, YOUTUBE, WHATSAPP, TEAL_TEXT } from "../lib/data";
 
-const T = "#0DA9A4";
+const T = "#0DA9A4";       // teal vif — FONDS / dégradés / bordures déco
+const TT = TEAL_TEXT;      // teal accessible — TEXTE / liens / petites icônes
 const P = "#D4197A";
 
 const TEAM_LINKS = [
@@ -55,6 +56,14 @@ export default function Nav() {
     return () => document.removeEventListener("mousedown", h);
   }, [teamOpen]);
 
+  /* Escape ferme les menus déroulants ouverts */
+  useEffect(() => {
+    if (!svcOpen && !teamOpen) return;
+    const onKey = e => { if (e.key === "Escape") { setSvcOpen(false); setTeamOpen(false); } };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [svcOpen, teamOpen]);
+
   const isActive     = h => pathname === h || pathname.startsWith(h + "/");
   const isTeamActive = isActive("/portail") || isActive("/admin") || isActive("/pointage");
 
@@ -70,7 +79,7 @@ export default function Nav() {
       <style>{`
         @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
         .nav-strip { overflow:hidden; transition: max-height 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.35s ease; }
-        .nav-link-hover:hover { color: ${T} !important; }
+        .nav-link-hover:hover { color: ${TT} !important; }
       `}</style>
 
       <header style={{
@@ -94,7 +103,7 @@ export default function Nav() {
             <span className="hide-mobile" style={{ fontSize: 12, color: "#CBD5E1" }}>·</span>
             <span className="hide-mobile" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748B", whiteSpace: "nowrap" }}><Icon name="clock" size={13} color="#64748B" /> Lun–Ven 08h–18h</span>
             <span className="hide-mobile" style={{ fontSize: 12, color: "#CBD5E1" }}>·</span>
-            <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: T, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" }}><Icon name="phone" size={13} color={T} /> {PHONE}</a>
+            <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: TT, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" }}><Icon name="phone" size={13} color={TT} /> {PHONE}</a>
           </div>
         </div>
 
@@ -120,8 +129,13 @@ export default function Nav() {
             {/* Dropdown prestations */}
             <div style={{ position: "relative" }}
               onMouseEnter={() => setSvcOpen(true)}
-              onMouseLeave={() => setSvcOpen(false)}>
-              <button className="nav-link-hover" style={{ ...linkStyle(pathname.startsWith("/services") || pathname.startsWith("/coach")), display: "flex", alignItems: "center", gap: 5 }}>
+              onMouseLeave={() => setSvcOpen(false)}
+              onFocus={() => setSvcOpen(true)}>
+              <button className="nav-link-hover"
+                onClick={() => setSvcOpen(o => !o)}
+                aria-haspopup="true"
+                aria-expanded={svcOpen}
+                style={{ ...linkStyle(pathname.startsWith("/services") || pathname.startsWith("/coach")), display: "flex", alignItems: "center", gap: 5 }}>
                 Nos prestations <span style={{ fontSize: 9, color: "#94A3B8", transition: "transform 0.2s", transform: svcOpen ? "rotate(180deg)" : "none", display: "inline-block" }}>▾</span>
               </button>
               {svcOpen && (
@@ -130,7 +144,7 @@ export default function Nav() {
                     {SERVICES.map(s => (
                       <Link key={s.id} href={s.id === "rangement" ? "/coach" : `/services#${s.id}`}
                         style={{ display: "flex", alignItems: "center", gap: 14, padding: "11px 20px", fontSize: 13, color: "#64748B", textDecoration: "none", transition: "all 0.15s" }}
-                        onMouseEnter={e => { e.currentTarget.style.background = `${T}0a`; e.currentTarget.style.color = T; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = `${T}0a`; e.currentTarget.style.color = TT; }}
                         onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#64748B"; }}>
                         <span style={{ width: 28, display: "flex", justifyContent: "center", color: "inherit" }}><Icon name={s.id} size={19} color="currentColor" /></span>
                         <div>

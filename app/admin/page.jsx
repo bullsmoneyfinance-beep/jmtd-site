@@ -5,6 +5,7 @@ import Link from "next/link";
 import { loadSession, clearSession, load, save } from "../../lib/storage";
 import { DEMO_EMPS, AMBER, PINK, NAVY, EMERALD, PHONE, EMAIL, ADDRESS, FONDATRICE, SIRET } from "../../lib/data";
 import { scoreCandidature, triageCandidatures, scoreToStars, TIERS, POSTE_LABELS, EXP_LABELS, TRANSPORT_LABELS, DISPO_LABELS } from "../../lib/scoring";
+import ClientsTab from "../../components/admin/ClientsTab";
 
 const T = AMBER;   // teal
 const P = PINK;    // rose
@@ -188,6 +189,7 @@ const TABS = [
   { id: "agenda",       icon: "📅", label: "Agenda" },
   { id: "sessions",     icon: "⏱️", label: "Sessions" },
   { id: "messages",     icon: "💬", label: "Messages" },
+  { id: "clients",      icon: "🏘️", label: "Clients" },
   { id: "employees",    icon: "👥", label: "Équipe" },
   { id: "quotes",       icon: "📨", label: "Demandes" },
   { id: "candidatures", icon: "🎯", label: "Candidatures" },
@@ -1076,6 +1078,8 @@ export default function AdminPage() {
         )}
 
         {/* ═══ CANDIDATURES ═══ */}
+        {tab === "clients" && <ClientsTab />}
+
         {tab === "candidatures" && (
           <div style={{ animation: "slideIn 0.25s ease" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>

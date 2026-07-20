@@ -174,15 +174,16 @@ export default function FAQPage() {
                 </div>
               ) : filtered.map(item => (
                 <div key={item.key} className="faq-item"
-                  style={{ background: "#fff", borderRadius: 16, marginBottom: 8, padding: "0 20px" }}
-                  onClick={() => setOpenItem(openItem === item.key ? null : item.key)}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16 }}>
-                    <div>
-                      <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: T, fontWeight: 700, marginBottom: 3 }}><Icon name={item.catIcon} size={13} color={T} /> {item.cat}</div>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: TEXT }}>{item.q}</div>
-                    </div>
+                  style={{ background: "#fff", borderRadius: 16, marginBottom: 8, padding: "0 20px" }}>
+                  <button type="button" aria-expanded={openItem === item.key}
+                    onClick={() => setOpenItem(openItem === item.key ? null : item.key)}
+                    style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16, background: "none", border: "none", cursor: "pointer", textAlign: "left", fontFamily: "inherit" }}>
+                    <span>
+                      <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: T, fontWeight: 700, marginBottom: 3 }}><Icon name={item.catIcon} size={13} color={T} /> {item.cat}</span>
+                      <span style={{ display: "block", fontSize: 15, fontWeight: 600, color: TEXT }}>{item.q}</span>
+                    </span>
                     <span style={{ color: T, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: openItem === item.key ? "rotate(45deg)" : "none" }}>+</span>
-                  </div>
+                  </button>
                   {openItem === item.key && (
                     <div style={{ padding: "0 0 18px", fontSize: 14, color: MUTED, lineHeight: 1.8 }}>{item.a}</div>
                   )}
@@ -221,13 +222,13 @@ export default function FAQPage() {
                       {cat.items.map((item, ii) => {
                         const key = `${ci}-${ii}`;
                         return (
-                          <div key={ii} className="faq-item"
-                            style={{ padding: "0 24px" }}
-                            onClick={() => setOpenItem(openItem === key ? null : key)}>
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16 }}>
+                          <div key={ii} className="faq-item" style={{ padding: "0 24px" }}>
+                            <button type="button" aria-expanded={openItem === key}
+                              onClick={() => setOpenItem(openItem === key ? null : key)}
+                              style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16, background: "none", border: "none", cursor: "pointer", textAlign: "left", fontFamily: "inherit" }}>
                               <span style={{ fontSize: 15, fontWeight: 600, color: TEXT, lineHeight: 1.4 }}>{item.q}</span>
                               <span style={{ color: T, fontSize: 22, flexShrink: 0, fontWeight: 300, transition: "transform 0.25s", transform: openItem === key ? "rotate(45deg)" : "none" }}>+</span>
-                            </div>
+                            </button>
                             {openItem === key && (
                               <div style={{ padding: "0 0 20px", fontSize: 14, color: MUTED, lineHeight: 1.85 }}>{item.a}</div>
                             )}

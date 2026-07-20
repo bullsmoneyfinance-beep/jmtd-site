@@ -8,22 +8,41 @@ const P = "#D4197A";
 const NAVY = "#0D1B2A";
 const NAVY2 = "#12304A";
 const GOLD = "#C9A24B";
+const GOLD2 = "#E0BC6A";
 const TEXT = "#1A2D3D";
 const MUTED = "#64748B";
 
-// ── Services conciergerie (à la carte) ──
+const IMG = (id, w = 800, h = 600) => `https://images.unsplash.com/${id}?w=${w}&h=${h}&fit=crop&auto=format&q=80`;
+
+// ── Opportunité marché ──
+const MARCHE = [
+  { n: "+1 M", l: "de touristes par an en Martinique", ic: "✈️" },
+  { n: "×3", l: "de meublés de tourisme en 5 ans", ic: "📈" },
+  { n: "70 %+", l: "de taux d'occupation en haute saison", ic: "🗓️" },
+  { n: "24/7", l: "de demande voyageurs à gérer", ic: "🌙" },
+];
+
+// ── Services conciergerie ──
 const SERVICES_CONCIERGE = [
-  { icon: "🧹", title: "Ménage entre séjours", desc: "Remise en état complète du bien après chaque départ : sols, sanitaires, cuisine, poussières, aération.", color: T },
+  { icon: "🧹", title: "Ménage entre séjours", desc: "Remise en état hôtelière après chaque départ : sols, sanitaires, cuisine, poussières, aération.", color: T },
   { icon: "🛏️", title: "Blanchisserie & linge hôtelier", desc: "Fourniture, lavage et mise en place du linge de lit et de toilette, pliage soigné façon hôtel.", color: P },
   { icon: "🔑", title: "Accueil & remise des clés", desc: "Check-in / check-out des voyageurs, remise des clés, présentation du logement et des consignes.", color: "#0EA5A0" },
   { icon: "📋", title: "États des lieux", desc: "Inventaire photographique à l'entrée et à la sortie, signalement immédiat de tout dégât.", color: "#F59E0B" },
-  { icon: "🌿", title: "Entretien extérieur", desc: "Jardin, terrasse, piscine, abords : votre bien reste impeccable à chaque arrivée.", color: "#16A34A" },
+  { icon: "🌿", title: "Entretien extérieur & piscine", desc: "Jardin, terrasse, piscine, abords : votre bien reste impeccable à chaque arrivée.", color: "#16A34A" },
   { icon: "🔧", title: "Maintenance & petits travaux", desc: "Coordination des interventions (plomberie, électricité, électroménager) et petits dépannages.", color: "#6366F1" },
   { icon: "📅", title: "Gestion des annonces", desc: "Multi-plateformes (Airbnb, Booking, Abritel), calendrier synchronisé et messagerie voyageurs.", color: "#0284C7" },
-  { icon: "💬", title: "Relation voyageurs", desc: "Réponses rapides, gestion des avis et des demandes pendant le séjour, disponibilité 7j/7.", color: P },
+  { icon: "💬", title: "Relation voyageurs 7j/7", desc: "Réponses rapides, gestion des avis et des demandes pendant le séjour, disponibilité continue.", color: P },
 ];
 
-// ── Formules clés en main ──
+// ── Rotation opérationnelle ──
+const ROTATION = [
+  { n: "1", ic: "🚪", t: "Départ voyageur", d: "Check-out et récupération des clés, premier contrôle du logement." },
+  { n: "2", ic: "🧴", t: "Ménage & linge", d: "Nettoyage complet, linge hôtelier frais, réassort des consommables." },
+  { n: "3", ic: "🔍", t: "Contrôle qualité", d: "Inspection photo, signalement d'incident, mise en scène du logement." },
+  { n: "4", ic: "✨", t: "Prêt à accueillir", d: "Logement irréprochable, accueil du prochain voyageur assuré." },
+];
+
+// ── Formules ──
 const FORMULES = [
   {
     key: "essentiel", label: "Essentiel", tag: "À la rotation", price: "dès 55€", unit: "/ rotation",
@@ -45,7 +64,6 @@ const FORMULES = [
   },
 ];
 
-// ── Forfaits ménage par surface ──
 const FORFAITS_MENAGE = [
   { type: "Studio / T1", surface: "jusqu'à 30 m²", prix: "55€" },
   { type: "T2", surface: "30 à 50 m²", prix: "75€" },
@@ -53,7 +71,6 @@ const FORFAITS_MENAGE = [
   { type: "T4 / Villa", surface: "75 m² et +", prix: "dès 130€" },
 ];
 
-// ── À la carte (compléments) ──
 const A_LA_CARTE = [
   { label: "Blanchisserie (parure complète draps + serviettes)", prix: "18€ / parure" },
   { label: "Accueil voyageur & remise des clés", prix: "35€ / arrivée" },
@@ -62,13 +79,72 @@ const A_LA_CARTE = [
   { label: "Entretien piscine (forfait mensuel)", prix: "dès 120€ / mois" },
 ];
 
-// ── Étapes accompagnement lancement ──
-const LANCEMENT = [
-  { n: "1", icon: "🔍", title: "Audit du bien", desc: "Visite, estimation du potentiel locatif et des travaux éventuels." },
-  { n: "2", icon: "📸", title: "Mise en valeur", desc: "Home-staging léger, photos professionnelles, rédaction des annonces." },
-  { n: "3", icon: "🚀", title: "Mise en ligne", desc: "Création et paramétrage des annonces sur les plateformes, tarification." },
-  { n: "4", icon: "📈", title: "Pilotage", desc: "Suivi des performances, ajustement des prix, optimisation continue." },
+const BIENS = [
+  { img: "photo-1512917774080-9991f1c4c750", label: "Villas avec piscine", sub: "Le Diamant · Trois-Îlets" },
+  { img: "photo-1502672260266-1c1ef2d93688", label: "Appartements vue mer", sub: "Sainte-Luce · Le Marin" },
+  { img: "photo-1560448204-e02f11c3d0e2", label: "Studios & T2 citadins", sub: "Fort-de-France · Lamentin" },
+  { img: "photo-1613490493576-7fde63acd811", label: "Bungalows & lodges", sub: "Sainte-Anne · Le Vauclin" },
 ];
+
+const TEMOIGNAGES = [
+  { txt: "Je vis en métropole et je loue ma villa au Diamant. J'MTD gère tout : je n'ai jamais eu un seul retour négatif de voyageur, et mon taux d'occupation a grimpé.", nom: "Philippe R.", loc: "Propriétaire · Le Diamant" },
+  { txt: "Le ménage est irréprochable et le linge digne d'un hôtel. Mes notes Airbnb sont passées à 4,9. Un vrai partenaire local de confiance.", nom: "Sandra M.", loc: "Propriétaire · Sainte-Luce" },
+  { txt: "Ils ont lancé ma location de A à Z : photos, annonce, tarifs. Première réservation en une semaine. Je recommande à 100%.", nom: "Karl D.", loc: "Propriétaire · Trois-Îlets" },
+];
+
+// ── Simulateur de revenus ──
+function SimulateurRevenus() {
+  const [prixNuit, setPrixNuit] = useState(130);
+  const [nuits, setNuits] = useState(16);
+  const caMois = prixNuit * nuits;
+  const commission = Math.round(caMois * 0.2);
+  const net = caMois - commission;
+  const netAn = net * 12;
+
+  const slider = { width: "100%", accentColor: GOLD, cursor: "pointer" };
+  const lab = { fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", letterSpacing: 0.8, display: "block", marginBottom: 10 };
+
+  return (
+    <div style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${GOLD}44`, borderRadius: 24, padding: "34px 30px", backdropFilter: "blur(10px)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 26 }}>
+        <span style={{ fontSize: 26 }}>📊</span>
+        <h3 style={{ fontSize: 20, fontWeight: 800, color: "#fff", margin: 0 }}>Estimez vos revenus locatifs</h3>
+      </div>
+      <div className="cg-simu-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 26, marginBottom: 30 }}>
+        <div>
+          <label style={lab}>Prix par nuit</label>
+          <input type="range" min="50" max="400" step="5" value={prixNuit} onChange={e => setPrixNuit(+e.target.value)} style={slider} />
+          <div style={{ textAlign: "center", fontSize: 24, fontWeight: 900, color: GOLD, marginTop: 8 }}>{prixNuit}€</div>
+        </div>
+        <div>
+          <label style={lab}>Nuits réservées / mois</label>
+          <input type="range" min="0" max="30" value={nuits} onChange={e => setNuits(+e.target.value)} style={slider} />
+          <div style={{ textAlign: "center", fontSize: 24, fontWeight: 900, color: GOLD, marginTop: 8 }}>{nuits} nuits</div>
+        </div>
+      </div>
+      <div className="cg-simu-res" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
+        <ResCard label="CA brut / mois" value={`${caMois.toLocaleString("fr-FR")}€`} color="#fff" />
+        <ResCard label="Notre commission (20%)" value={`−${commission.toLocaleString("fr-FR")}€`} color={GOLD} />
+        <ResCard label="Votre net / mois" value={`${net.toLocaleString("fr-FR")}€`} color="#5EEAD4" big />
+      </div>
+      <div style={{ textAlign: "center", marginTop: 18, fontSize: 14, color: "rgba(255,255,255,0.8)" }}>
+        Soit <strong style={{ color: GOLD, fontSize: 18 }}>{netAn.toLocaleString("fr-FR")}€</strong> nets estimés sur l'année — sans lever le petit doigt.
+      </div>
+      <p style={{ fontSize: 11.5, color: "rgba(255,255,255,0.45)", textAlign: "center", marginTop: 14 }}>
+        Estimation indicative sur la base de la formule Sérénité (20%). Hors charges plateformes et fiscalité.
+      </p>
+    </div>
+  );
+}
+
+function ResCard({ label, value, color, big }) {
+  return (
+    <div style={{ textAlign: "center", padding: "16px 10px", background: "rgba(255,255,255,0.06)", borderRadius: 16, border: big ? `1px solid ${GOLD}55` : "1px solid rgba(255,255,255,0.1)" }}>
+      <div style={{ fontSize: 10.5, color: "rgba(255,255,255,0.6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: big ? 26 : 21, fontWeight: 900, color }}>{value}</div>
+    </div>
+  );
+}
 
 export default function ConciergeriePage() {
   const [openFaq, setOpenFaq] = useState(null);
@@ -77,50 +153,57 @@ export default function ConciergeriePage() {
     <>
       <style>{`
         @keyframes floatOrb { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+        @keyframes cgFade { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
         .cg-wrap { overflow-x: hidden; }
-        .cg-hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; }
+        .cg-reveal { animation: cgFade 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+        .cg-hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+        .cg-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
         .cg-services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+        .cg-rotation { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
         .cg-formules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
         .cg-forfaits-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .cg-lancement-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .cg-two { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
-        @media (max-width: 900px) {
-          .cg-hero-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
-          .cg-services-grid { grid-template-columns: 1fr 1fr !important; }
-          .cg-formules-grid { grid-template-columns: 1fr !important; }
+        .cg-biens { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .cg-temoins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .cg-marche-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: center; }
+        .cg-simu-wrap { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 44px; align-items: center; }
+        @media (max-width: 960px) {
+          .cg-hero-grid, .cg-marche-grid, .cg-simu-wrap { grid-template-columns: 1fr !important; gap: 32px !important; }
+          .cg-services-grid, .cg-rotation, .cg-lancement-grid, .cg-biens { grid-template-columns: 1fr 1fr !important; }
+          .cg-formules-grid, .cg-temoins { grid-template-columns: 1fr !important; }
           .cg-forfaits-grid { grid-template-columns: 1fr 1fr !important; }
-          .cg-lancement-grid { grid-template-columns: 1fr 1fr !important; }
           .cg-two { grid-template-columns: 1fr !important; gap: 24px !important; }
         }
         @media (max-width: 560px) {
-          .cg-services-grid { grid-template-columns: 1fr !important; }
-          .cg-forfaits-grid { grid-template-columns: 1fr 1fr !important; }
-          .cg-lancement-grid { grid-template-columns: 1fr !important; }
-          .cg-hero { padding: 48px 16px 40px !important; }
+          .cg-services-grid, .cg-rotation, .cg-lancement-grid, .cg-biens, .cg-stats { grid-template-columns: 1fr !important; }
+          .cg-simu-grid, .cg-simu-res { grid-template-columns: 1fr !important; }
+          .cg-hero { padding: 44px 16px 40px !important; }
           .cg-section { padding: 48px 16px !important; }
         }
       `}</style>
 
       <div className="cg-wrap">
         {/* ── Hero ── */}
-        <section className="cg-hero" style={{ background: `linear-gradient(160deg, ${NAVY} 0%, ${NAVY2} 100%)`, padding: "80px 24px 72px", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: -80, right: "6%", width: 380, height: 380, borderRadius: "50%", background: `radial-gradient(circle, ${T}30, transparent 70%)`, filter: "blur(60px)", animation: "floatOrb 16s ease-in-out infinite", pointerEvents: "none" }} />
-          <div style={{ position: "absolute", bottom: -100, left: "2%", width: 340, height: 340, borderRadius: "50%", background: `radial-gradient(circle, ${GOLD}22, transparent 70%)`, filter: "blur(60px)", animation: "floatOrb 20s ease-in-out infinite", pointerEvents: "none" }} />
+        <section className="cg-hero" style={{ background: `linear-gradient(155deg, ${NAVY} 0%, ${NAVY2} 100%)`, padding: "78px 24px 72px", position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: -80, right: "4%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${T}30, transparent 70%)`, filter: "blur(60px)", animation: "floatOrb 16s ease-in-out infinite", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", bottom: -100, left: "0%", width: 360, height: 360, borderRadius: "50%", background: `radial-gradient(circle, ${GOLD}26, transparent 70%)`, filter: "blur(60px)", animation: "floatOrb 20s ease-in-out infinite", pointerEvents: "none" }} />
 
-          <div className="cg-hero-grid" style={{ maxWidth: 1140, margin: "0 auto", position: "relative" }}>
+          <div className="cg-hero-grid cg-reveal" style={{ maxWidth: 1160, margin: "0 auto", position: "relative" }}>
             <div>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: `1px solid ${GOLD}55`, borderRadius: 30, padding: "6px 16px", marginBottom: 22 }}>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: GOLD }} />
                 <span style={{ fontSize: 12, fontWeight: 800, color: GOLD, textTransform: "uppercase", letterSpacing: 1.4 }}>Conciergerie locative · Martinique</span>
               </div>
-              <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(30px, 5.5vw, 58px)", fontWeight: 700, color: "#fff", lineHeight: 1.1, marginBottom: 20 }}>
+              <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(32px, 5.5vw, 60px)", fontWeight: 700, color: "#fff", lineHeight: 1.08, marginBottom: 20 }}>
                 Votre bien locatif géré{" "}
                 <span style={{ color: GOLD }}>de A à Z.</span><br />Vous encaissez.
               </h1>
               <p style={{ fontSize: 17, color: "rgba(255,255,255,0.82)", lineHeight: 1.75, maxWidth: 520, marginBottom: 32 }}>
-                Ménage, blanchisserie, accueil des voyageurs, entretien, gestion des annonces : J'MTD prend en charge toute la logistique de votre location saisonnière ou meublé de tourisme. Vous profitez des revenus, sans la charge mentale.
+                Ménage hôtelier, blanchisserie, accueil des voyageurs, entretien, gestion des annonces : J'MTD prend en charge toute la logistique de votre location saisonnière. Vous profitez des revenus, sans la charge mentale.
               </p>
               <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-                <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "15px 30px", borderRadius: 30, background: `linear-gradient(135deg, ${GOLD}, #E0BC6A)`, color: NAVY, fontWeight: 800, fontSize: 15, textDecoration: "none", boxShadow: `0 10px 34px ${GOLD}44` }}>
+                <Link href="#simulateur" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "15px 30px", borderRadius: 30, background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})`, color: NAVY, fontWeight: 800, fontSize: 15, textDecoration: "none", boxShadow: `0 10px 34px ${GOLD}44` }}>
                   Estimer mes revenus →
                 </Link>
                 <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "15px 26px", borderRadius: 30, background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
@@ -128,7 +211,7 @@ export default function ConciergeriePage() {
                 </a>
               </div>
               <div style={{ display: "flex", gap: 22, marginTop: 34, flexWrap: "wrap" }}>
-                {[["A→Z", "Gestion complète"], ["7j/7", "Astreinte voyageurs"], ["100%", "Local & réactif"]].map(([n, l]) => (
+                {[["A→Z", "Gestion complète"], ["7j/7", "Astreinte voyageurs"], ["4,9★", "Note voyageurs visée"]].map(([n, l]) => (
                   <div key={l}>
                     <div style={{ fontSize: 24, fontWeight: 900, color: GOLD }}>{n}</div>
                     <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>{l}</div>
@@ -137,42 +220,69 @@ export default function ConciergeriePage() {
               </div>
             </div>
 
-            {/* Carte flottante */}
-            <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 24, padding: "28px 26px", backdropFilter: "blur(12px)" }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: GOLD, textTransform: "uppercase", letterSpacing: 1, marginBottom: 18 }}>Ce qu'on gère pour vous</div>
-              {[
-                ["🧹", "Ménage & remise en état entre chaque séjour"],
-                ["🛏️", "Linge hôtelier fourni, lavé, mis en place"],
-                ["🔑", "Accueil des voyageurs & remise des clés"],
-                ["🌿", "Entretien extérieur, jardin & piscine"],
-                ["📅", "Annonces, calendrier & optimisation des prix"],
-              ].map(([ic, txt]) => (
-                <div key={txt} style={{ display: "flex", alignItems: "center", gap: 13, padding: "11px 0", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-                  <span style={{ fontSize: 20, width: 26, textAlign: "center", flexShrink: 0 }}>{ic}</span>
-                  <span style={{ fontSize: 13.5, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>{txt}</span>
+            {/* Image hero */}
+            <div style={{ position: "relative" }}>
+              <div style={{ borderRadius: 24, overflow: "hidden", boxShadow: "0 30px 80px rgba(0,0,0,0.45)", border: "1px solid rgba(255,255,255,0.12)" }}>
+                <img src={IMG("photo-1512917774080-9991f1c4c750", 720, 560)} alt="Villa avec piscine en location en Martinique" loading="eager"
+                  style={{ width: "100%", height: 420, objectFit: "cover", display: "block" }} />
+              </div>
+              <div style={{ position: "absolute", bottom: -22, left: -18, background: "#fff", borderRadius: 16, padding: "14px 18px", boxShadow: "0 16px 40px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ fontSize: 26 }}>💰</span>
+                <div>
+                  <div style={{ fontSize: 12, color: MUTED, fontWeight: 600 }}>Revenus optimisés</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: NAVY }}>+ de réservations, 0 tracas</div>
                 </div>
-              ))}
-              <div style={{ marginTop: 18, fontSize: 11.5, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
-                Prestation professionnelle pour propriétaires-loueurs — charges déductibles de vos revenus locatifs.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Opportunité marché Martinique ── */}
+        <section className="cg-section" style={{ background: "#fff", padding: "76px 24px" }}>
+          <div className="cg-marche-grid" style={{ maxWidth: 1140, margin: "0 auto" }}>
+            <div style={{ borderRadius: 24, overflow: "hidden", boxShadow: "0 20px 60px rgba(13,169,164,0.14)" }}>
+              <img src={IMG("photo-1507525428034-b723cf961d3e", 700, 620)} alt="Plage de Martinique, destination touristique" loading="lazy"
+                style={{ width: "100%", height: 440, objectFit: "cover", display: "block" }} />
+            </div>
+            <div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 18 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: T, textTransform: "uppercase", letterSpacing: 1.2 }}>Un marché en plein essor</span>
+              </div>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 16, lineHeight: 1.15 }}>
+                La Martinique, terre de<br />location courte durée
+              </h2>
+              <p style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.8, marginBottom: 28 }}>
+                Le tourisme explose et la demande de meublés de qualité dépasse l'offre. Mais gérer une location à distance — ou en plus d'un emploi — épuise. La conciergerie professionnelle est la clé pour <strong style={{ color: TEXT }}>rentabiliser son bien sans y laisser son temps ni sa sérénité</strong>.
+              </p>
+              <div className="cg-stats">
+                {MARCHE.map(m => (
+                  <div key={m.l} style={{ background: "#F8FAFB", border: "1px solid rgba(13,169,164,0.12)", borderRadius: 16, padding: "18px 16px", textAlign: "center" }}>
+                    <div style={{ fontSize: 22, marginBottom: 6 }}>{m.ic}</div>
+                    <div style={{ fontSize: 22, fontWeight: 900, color: T }}>{m.n}</div>
+                    <div style={{ fontSize: 11.5, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>{m.l}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
         {/* ── Services à la carte ── */}
-        <section className="cg-section" style={{ background: "#fff", padding: "76px 24px" }}>
-          <div style={{ maxWidth: 1140, margin: "0 auto" }}>
+        <section className="cg-section" style={{ background: `linear-gradient(180deg, #F8FAFB, #fff)`, padding: "76px 24px" }}>
+          <div style={{ maxWidth: 1160, margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
                 Une conciergerie complète
               </h2>
               <p style={{ fontSize: 15, color: MUTED, maxWidth: 560, margin: "0 auto" }}>
-                Chaque prestation disponible seule ou intégrée à une formule clés en main.
+                Le même soin et le même professionnalisme que nos prestations à domicile — au service de votre rentabilité.
               </p>
             </div>
             <div className="cg-services-grid">
               {SERVICES_CONCIERGE.map(s => (
-                <div key={s.title} style={{ background: "#fff", borderRadius: 18, border: "1px solid rgba(13,169,164,0.12)", borderTop: `3px solid ${s.color}`, padding: "24px 20px", boxShadow: "0 4px 20px rgba(13,169,164,0.06)" }}>
+                <div key={s.title} style={{ background: "#fff", borderRadius: 18, border: "1px solid rgba(13,169,164,0.12)", borderTop: `3px solid ${s.color}`, padding: "24px 20px", boxShadow: "0 4px 20px rgba(13,169,164,0.06)", transition: "transform 0.2s, box-shadow 0.2s" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-5px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(13,169,164,0.14)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(13,169,164,0.06)"; }}>
                   <div style={{ width: 48, height: 48, borderRadius: 13, background: `${s.color}14`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 14 }}>{s.icon}</div>
                   <h3 style={{ fontSize: 15.5, fontWeight: 800, color: TEXT, margin: "0 0 8px" }}>{s.title}</h3>
                   <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, margin: 0 }}>{s.desc}</p>
@@ -182,8 +292,50 @@ export default function ConciergeriePage() {
           </div>
         </section>
 
-        {/* ── Formules clés en main ── */}
-        <section className="cg-section" style={{ background: `linear-gradient(180deg, #F8FAFB, #fff)`, padding: "76px 24px" }}>
+        {/* ── Rotation opérationnelle ── */}
+        <section className="cg-section" style={{ background: "#fff", padding: "72px 24px" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 46 }}>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.2vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+                Entre chaque voyageur, une rotation millimétrée
+              </h2>
+              <p style={{ fontSize: 15, color: MUTED, maxWidth: 540, margin: "0 auto" }}>Un logement toujours prêt, propre et accueillant — sans que vous ayez à y penser.</p>
+            </div>
+            <div className="cg-rotation">
+              {ROTATION.map((r, i) => (
+                <div key={r.n} style={{ position: "relative", background: "#F8FAFB", border: "1px solid rgba(13,169,164,0.1)", borderRadius: 18, padding: "26px 20px", textAlign: "center" }}>
+                  <div style={{ width: 52, height: 52, borderRadius: "50%", background: `linear-gradient(135deg, ${T}, ${P})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", fontSize: 24, boxShadow: `0 8px 22px ${T}33` }}>{r.ic}</div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: T, textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>Étape {r.n}</div>
+                  <h3 style={{ fontSize: 16, fontWeight: 800, color: TEXT, margin: "0 0 8px" }}>{r.t}</h3>
+                  <p style={{ fontSize: 12.5, color: MUTED, lineHeight: 1.6, margin: 0 }}>{r.d}</p>
+                  {i < ROTATION.length - 1 && <div className="hide-mobile" style={{ position: "absolute", top: 46, right: -12, fontSize: 20, color: `${T}66`, zIndex: 2 }}>→</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Simulateur de revenus ── */}
+        <section id="simulateur" className="cg-section" style={{ background: `linear-gradient(160deg, ${NAVY}, ${NAVY2})`, padding: "78px 24px", position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: "20%", right: "-4%", width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${GOLD}1c, transparent 70%)`, filter: "blur(55px)", pointerEvents: "none" }} />
+          <div className="cg-simu-wrap" style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
+            <div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: `1px solid ${GOLD}55`, borderRadius: 30, padding: "6px 16px", marginBottom: 18 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: GOLD, textTransform: "uppercase", letterSpacing: 1.2 }}>Combien pouvez-vous gagner ?</span>
+              </div>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: "#fff", marginBottom: 16, lineHeight: 1.15 }}>
+                Votre bien peut rapporter<br />plus que vous ne l'imaginez
+              </h2>
+              <p style={{ fontSize: 15.5, color: "rgba(255,255,255,0.75)", lineHeight: 1.8 }}>
+                Ajustez le curseur selon votre bien et découvrez vos revenus nets estimés. Notre rémunération est indexée sur vos résultats : <strong style={{ color: GOLD }}>on ne gagne que si vous gagnez</strong>.
+              </p>
+            </div>
+            <SimulateurRevenus />
+          </div>
+        </section>
+
+        {/* ── Formules ── */}
+        <section className="cg-section" style={{ background: "#fff", padding: "76px 24px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: 46 }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${GOLD}18`, border: `1px solid ${GOLD}55`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
@@ -204,9 +356,10 @@ export default function ConciergeriePage() {
                   border: f.highlight ? `2px solid ${GOLD}` : "1px solid rgba(13,169,164,0.14)",
                   boxShadow: f.highlight ? `0 16px 50px ${NAVY}33` : "0 4px 22px rgba(13,169,164,0.07)",
                   display: "flex", flexDirection: "column", gap: 16,
+                  transform: f.highlight ? "scale(1.03)" : "none",
                 }}>
                   {f.highlight && (
-                    <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${GOLD}, #E0BC6A)`, color: NAVY, fontSize: 10.5, fontWeight: 800, padding: "4px 16px", borderRadius: 20, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.8 }}>
+                    <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})`, color: NAVY, fontSize: 10.5, fontWeight: 800, padding: "4px 16px", borderRadius: 20, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.8 }}>
                       ⭐ Le plus populaire
                     </div>
                   )}
@@ -228,7 +381,7 @@ export default function ConciergeriePage() {
                   </ul>
                   <Link href="/contact" style={{
                     display: "block", textAlign: "center", padding: "13px", borderRadius: 30, marginTop: "auto",
-                    background: f.highlight ? `linear-gradient(135deg, ${GOLD}, #E0BC6A)` : `${T}12`,
+                    background: f.highlight ? `linear-gradient(135deg, ${GOLD}, ${GOLD2})` : `${T}12`,
                     border: f.highlight ? "none" : `1px solid ${T}30`,
                     color: f.highlight ? NAVY : T, fontWeight: 800, fontSize: 14, textDecoration: "none",
                   }}>
@@ -243,11 +396,34 @@ export default function ConciergeriePage() {
           </div>
         </section>
 
+        {/* ── Types de biens (galerie) ── */}
+        <section className="cg-section" style={{ background: "#F8FAFB", padding: "72px 24px" }}>
+          <div style={{ maxWidth: 1160, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 44 }}>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.2vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+                Tous les biens, partout en Martinique
+              </h2>
+              <p style={{ fontSize: 15, color: MUTED }}>Villa, appartement, studio ou bungalow — on s'adapte à votre patrimoine.</p>
+            </div>
+            <div className="cg-biens">
+              {BIENS.map(b => (
+                <div key={b.label} style={{ position: "relative", borderRadius: 18, overflow: "hidden", boxShadow: "0 8px 28px rgba(13,27,42,0.12)", cursor: "default" }}>
+                  <img src={IMG(b.img, 500, 420)} alt={b.label} loading="lazy" style={{ width: "100%", height: 240, objectFit: "cover", display: "block" }} />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,27,42,0.85) 0%, transparent 55%)" }} />
+                  <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>{b.label}</div>
+                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>{b.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ── Forfaits ménage + à la carte ── */}
-        <section className="cg-section" style={{ background: "#fff", padding: "76px 24px" }}>
+        <section className="cg-section" style={{ background: "#fff", padding: "72px 24px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <div className="cg-two">
-              {/* Forfaits ménage par surface */}
               <div>
                 <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 700, color: TEXT, marginBottom: 8 }}>
                   Forfaits ménage par rotation
@@ -265,8 +441,6 @@ export default function ConciergeriePage() {
                   ))}
                 </div>
               </div>
-
-              {/* À la carte */}
               <div>
                 <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 700, color: TEXT, marginBottom: 8 }}>
                   Prestations à la carte
@@ -287,7 +461,30 @@ export default function ConciergeriePage() {
           </div>
         </section>
 
-        {/* ── Accompagnement lancement business locatif ── */}
+        {/* ── Témoignages propriétaires ── */}
+        <section className="cg-section" style={{ background: "#F8FAFB", padding: "72px 24px" }}>
+          <div style={{ maxWidth: 1120, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 44 }}>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.2vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+                Ils nous confient leur bien
+              </h2>
+              <p style={{ fontSize: 15, color: MUTED }}>Des propriétaires sereins, des voyageurs conquis.</p>
+            </div>
+            <div className="cg-temoins">
+              {TEMOIGNAGES.map(t => (
+                <div key={t.nom} style={{ background: "#fff", borderRadius: 20, padding: "28px 26px", border: "1px solid rgba(13,169,164,0.1)", boxShadow: "0 6px 26px rgba(13,169,164,0.07)", position: "relative" }}>
+                  <div style={{ fontFamily: "Georgia, serif", fontSize: 60, color: `${GOLD}44`, lineHeight: 0.6, height: 26 }}>“</div>
+                  <div style={{ display: "flex", gap: 2, marginBottom: 12 }}>{"★★★★★".split("").map((s, i) => <span key={i} style={{ color: GOLD, fontSize: 15 }}>{s}</span>)}</div>
+                  <p style={{ fontSize: 14.5, color: "#374151", lineHeight: 1.8, marginBottom: 18 }}>{t.txt}</p>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: TEXT }}>{t.nom}</div>
+                  <div style={{ fontSize: 12.5, color: MUTED }}>{t.loc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Accompagnement lancement ── */}
         <section className="cg-section" style={{ background: `linear-gradient(160deg, ${NAVY}, ${NAVY2})`, padding: "76px 24px", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: -60, left: "8%", width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${GOLD}1e, transparent 70%)`, filter: "blur(50px)", pointerEvents: "none" }} />
           <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
@@ -299,13 +496,18 @@ export default function ConciergeriePage() {
                 On lance votre business locatif
               </h2>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", maxWidth: 600, margin: "0 auto" }}>
-                Vous avez un bien mais ne savez pas par où commencer ? On vous accompagne du diagnostic à la première réservation.
+                Un bien mais aucune idée de par où commencer ? On vous accompagne du diagnostic à la première réservation.
               </p>
             </div>
             <div className="cg-lancement-grid">
-              {LANCEMENT.map(s => (
+              {[
+                { n: "1", icon: "🔍", title: "Audit du bien", desc: "Visite, estimation du potentiel locatif et des travaux éventuels." },
+                { n: "2", icon: "📸", title: "Mise en valeur", desc: "Home-staging léger, photos professionnelles, rédaction des annonces." },
+                { n: "3", icon: "🚀", title: "Mise en ligne", desc: "Création et paramétrage des annonces, tarification optimisée." },
+                { n: "4", icon: "📈", title: "Pilotage", desc: "Suivi des performances, ajustement des prix, optimisation continue." },
+              ].map(s => (
                 <div key={s.n} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 18, padding: "24px 20px", textAlign: "center" }}>
-                  <div style={{ width: 46, height: 46, borderRadius: "50%", background: `linear-gradient(135deg, ${GOLD}, #E0BC6A)`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", color: NAVY, fontWeight: 900, fontSize: 18 }}>{s.n}</div>
+                  <div style={{ width: 46, height: 46, borderRadius: "50%", background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", color: NAVY, fontWeight: 900, fontSize: 18 }}>{s.n}</div>
                   <div style={{ fontSize: 26, marginBottom: 8 }}>{s.icon}</div>
                   <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 6 }}>{s.title}</div>
                   <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>{s.desc}</div>
@@ -333,6 +535,7 @@ export default function ConciergeriePage() {
               { q: "Le linge est-il fourni ?", a: "Oui, nous pouvons fournir un linge hôtelier de qualité (draps, serviettes), le laver et le mettre en place à chaque rotation. C'est en option dans la formule Essentiel et inclus dans les formules Sérénité et Full Management." },
               { q: "Intervenez-vous partout en Martinique ?", a: "Nous couvrons le Centre et le Sud en priorité (Rivière-Salée, Diamant, Sainte-Luce, Trois-Îlets…). Pour les autres zones, contactez-nous : nous étudions chaque demande selon la distance et le volume." },
               { q: "Comment êtes-vous rémunérés sur les formules au pourcentage ?", a: "Le pourcentage s'applique au chiffre d'affaires locatif réellement encaissé. Pas de réservation, pas de commission : nos intérêts sont alignés avec les vôtres — plus votre bien performe, mieux nous travaillons ensemble." },
+              { q: "Je vis en métropole, est-ce un problème ?", a: "Au contraire, c'est là que la conciergerie prend tout son sens. Nous sommes vos yeux et vos mains sur place : vous pilotez à distance, nous gérons le concret. Reporting régulier à l'appui." },
             ].map((item, i) => (
               <div key={i} onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ borderBottom: "1px solid rgba(13,169,164,0.1)", cursor: "pointer" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16 }}>
@@ -346,17 +549,18 @@ export default function ConciergeriePage() {
         </section>
 
         {/* ── CTA final ── */}
-        <section style={{ background: `linear-gradient(135deg, ${NAVY}, ${NAVY2})`, padding: "72px 24px" }}>
-          <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 40px)", fontWeight: 700, color: "#fff", marginBottom: 16 }}>
+        <section style={{ background: `linear-gradient(135deg, ${NAVY}, ${NAVY2})`, padding: "76px 24px", position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: "10%", right: "6%", width: 260, height: 260, borderRadius: "50%", background: `radial-gradient(circle, ${GOLD}20, transparent 70%)`, filter: "blur(50px)", pointerEvents: "none" }} />
+          <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center", position: "relative" }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.8vw, 44px)", fontWeight: 700, color: "#fff", marginBottom: 16 }}>
               Votre bien mérite mieux que votre temps libre.
             </h2>
-            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, marginBottom: 34 }}>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.78)", lineHeight: 1.8, marginBottom: 34 }}>
               Parlons de votre projet locatif. Estimation et devis gratuits, sans engagement.
             </p>
             <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
-              <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 34px", borderRadius: 30, background: `linear-gradient(135deg, ${GOLD}, #E0BC6A)`, color: NAVY, fontWeight: 800, fontSize: 16, textDecoration: "none", boxShadow: `0 10px 34px ${GOLD}44` }}>
-                Estimer mes revenus →
+              <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 34px", borderRadius: 30, background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})`, color: NAVY, fontWeight: 800, fontSize: 16, textDecoration: "none", boxShadow: `0 10px 34px ${GOLD}44` }}>
+                Être rappelé →
               </Link>
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
                 💬 WhatsApp

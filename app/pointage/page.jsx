@@ -153,7 +153,7 @@ export default function PointagePage() {
   const startFromRdv = useCallback(async (rdv) => {
     setLoading(true); setGpsError(null);
     try {
-      const pos = await getGPS();
+      const pos = emp.geoloc !== false ? await getGPS() : null;
       const session = { id: Date.now(), empId: emp.id, empName: emp.name, start: Date.now(), startGps: pos, end: null, endGps: null, appointmentId: rdv.id, clientName: rdv.clientName, service: rdv.service };
       setActive(session);
       await save(`jmtd_active_${emp.id}`, session);
@@ -172,7 +172,7 @@ export default function PointagePage() {
   const pointageIn = useCallback(async () => {
     setLoading(true); setGpsError(null);
     try {
-      const pos = await getGPS();
+      const pos = emp.geoloc !== false ? await getGPS() : null;
       const session = { id: Date.now(), empId: emp.id, empName: emp.name, start: Date.now(), startGps: pos, end: null, endGps: null };
       setActive(session);
       await save(`jmtd_active_${emp.id}`, session);
@@ -183,11 +183,32 @@ export default function PointagePage() {
     setLoading(false);
   }, [emp]);
 
+  // Mode "tâche terminée" : un seul clic, session complète instantanée (sans durée)
+  const pointageTache = useCallback(async (rdv = null) => {
+    setLoading(true); setGpsError(null);
+    try {
+      const pos = emp.geoloc !== false ? await getGPS() : null;
+      const now = Date.now();
+      const session = { id: now, empId: emp.id, empName: emp.name, start: now, startGps: pos, end: now, endGps: pos, taskOnly: true, ...(rdv ? { appointmentId: rdv.id, clientName: rdv.clientName, service: rdv.service } : {}) };
+      const allS = await load("jmtd_sessions", []);
+      const updS = [...allS.filter(s => s.id !== session.id), session];
+      await save("jmtd_sessions", updS);
+      setSessions(updS.filter(x => x.empId === emp.id).sort((a, b) => b.start - a.start));
+      if (rdv) {
+        const allR = await load("jmtd_appointments", []);
+        const updR = allR.map(r => r.id === rdv.id ? { ...r, status: "done" } : r);
+        await save("jmtd_appointments", updR);
+        setApts(updR.filter(x => x.empId === emp.id).sort((a, b) => a.date - b.date));
+      }
+    } catch(e) { setGpsError(String(e)); }
+    setLoading(false);
+  }, [emp]);
+
   const pointageOut = useCallback(async () => {
     if (!active) return;
     setLoading(true); setGpsError(null);
     try {
-      const pos = await getGPS();
+      const pos = emp.geoloc !== false ? await getGPS() : null;
       const closed = { ...active, end: Date.now(), endGps: pos };
       const allS = await load("jmtd_sessions", []);
       const updS = [...allS.filter(s => s.id !== closed.id), closed];
@@ -291,9 +312,9 @@ export default function PointagePage() {
 
                 {/* Cercle principal */}
                 <div style={{ width: 140, height: 140, borderRadius: "50%", background: active ? `radial-gradient(circle, ${G}20, ${G}08)` : "rgba(255,255,255,0.04)", border: `3px solid ${active ? G : "rgba(255,255,255,0.1)"}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", transition: "all 0.4s ease" }}>
-                  <div style={{ fontSize: 40, marginBottom: 4 }}>{active ? "🟢" : "⭕"}</div>
+                  <div style={{ fontSize: 40, marginBottom: 4 }}>{active ? "🟢" : (emp.pointageMode || "arrivee_depart") === "tache_terminee" ? "📍" : "⭕"}</div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: active ? G : "#475569" }}>
-                    {active ? "En service" : "Hors service"}
+                    {active ? "En service" : (emp.pointageMode || "arrivee_depart") === "tache_terminee" ? "Prêt à pointer" : "Hors service"}
                   </div>
                 </div>
               </div>
@@ -325,7 +346,9 @@ export default function PointagePage() {
             {!active && (
               <div style={{ textAlign: "center", marginBottom: 28 }}>
                 <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.6 }}>
-                  Appuyez sur le bouton<br />pour démarrer votre service
+                  {(emp.pointageMode || "arrivee_depart") === "tache_terminee"
+                    ? <>Appuyez à chaque fois<br />qu&apos;une tâche est terminée</>
+                    : <>Appuyez sur le bouton<br />pour démarrer votre service</>}
                 </p>
               </div>
             )}
@@ -338,24 +361,36 @@ export default function PointagePage() {
             )}
 
             {/* Bouton principal — énorme, impossible à rater */}
-            <button onClick={active ? pointageOut : pointageIn} disabled={loading}
-              style={{ width: "100%", minHeight: 64, borderRadius: 20, border: "none", fontSize: 18, fontWeight: 800, cursor: loading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12, transition: "transform 0.15s, box-shadow 0.3s", touchAction: "manipulation",
-                background: active ? "rgba(239,68,68,0.92)" : `linear-gradient(135deg, ${T}, ${P})`,
-                color: "#fff",
-                animation: loading ? "none" : active ? "glowRed 3s infinite" : "glow 3s infinite",
-              }}
-              onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
-              onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}>
-              {loading
-                ? <><Spinner /> Localisation GPS…</>
-                : active
-                  ? <>🔴 Pointer la sortie</>
-                  : <>🟢 Pointer l&apos;entrée</>
-              }
-            </button>
+            {(emp.pointageMode || "arrivee_depart") === "tache_terminee" ? (
+              <button onClick={() => pointageTache()} disabled={loading}
+                style={{ width: "100%", minHeight: 64, borderRadius: 20, border: "none", fontSize: 18, fontWeight: 800, cursor: loading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12, transition: "transform 0.15s, box-shadow 0.3s", touchAction: "manipulation",
+                  background: `linear-gradient(135deg, ${G}, ${T})`, color: "#fff", animation: loading ? "none" : "glow 3s infinite" }}
+                onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
+                onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}>
+                {loading ? <><Spinner /> {emp.geoloc !== false ? "Localisation…" : "Enregistrement…"}</> : <>✅ Valider une tâche terminée</>}
+              </button>
+            ) : (
+              <button onClick={active ? pointageOut : pointageIn} disabled={loading}
+                style={{ width: "100%", minHeight: 64, borderRadius: 20, border: "none", fontSize: 18, fontWeight: 800, cursor: loading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12, transition: "transform 0.15s, box-shadow 0.3s", touchAction: "manipulation",
+                  background: active ? "rgba(239,68,68,0.92)" : `linear-gradient(135deg, ${T}, ${P})`,
+                  color: "#fff",
+                  animation: loading ? "none" : active ? "glowRed 3s infinite" : "glow 3s infinite",
+                }}
+                onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
+                onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}>
+                {loading
+                  ? <><Spinner /> {emp.geoloc !== false ? "Localisation GPS…" : "Enregistrement…"}</>
+                  : active
+                    ? <>🔴 Pointer la sortie</>
+                    : <>🟢 Pointer l&apos;entrée</>
+                }
+              </button>
+            )}
 
             <div style={{ textAlign: "center", marginTop: 12, fontSize: 12, color: "#334155", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }}>
-              <span>📍</span> Votre position GPS sera enregistrée au pointage
+              {emp.geoloc !== false
+                ? <><span>📍</span> Votre position GPS sera enregistrée au pointage</>
+                : <><span>🔒</span> Pointage sans localisation</>}
             </div>
 
             {/* Si RDV du jour, afficher raccourci */}

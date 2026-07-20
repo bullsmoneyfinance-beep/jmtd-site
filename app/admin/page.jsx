@@ -44,10 +44,14 @@ function exportCSV(sessions) {
 
 /* ── Modal employé ── */
 function EmpModal({ emp, onSave, onClose }) {
-  const [form, setForm] = useState(emp || { name: "", role: "Aide ménagère", zone: "Centre", pin: "", tauxHoraire: 12, contrat: "CDI" });
+  const [form, setForm] = useState(emp || { name: "", role: "Aide ménagère", zone: "Centre", pin: "", tauxHoraire: 12, contrat: "CDI", pointageMode: "arrivee_depart", geoloc: true });
   const roles = ["Aide ménagère", "Préparation repas", "Coach rangement", "Livraison courses", "Assistance admin"];
   const zones = ["Centre (Lamentin / Rivière-Salée)", "Nord Atlantique", "Nord Caraïbe", "Sud (Diamant / Saint-Esprit)", "Toute la Martinique"];
   const contrats = ["CDI", "CDI temps partiel", "CDD", "Apprentissage", "Autre"];
+  const pointageModes = [
+    { v: "arrivee_depart", label: "Arrivée + départ (durée)" },
+    { v: "tache_terminee", label: "Tâche terminée (1 clic)" },
+  ];
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
 
   return (
@@ -86,6 +90,28 @@ function EmpModal({ emp, onSave, onClose }) {
             style={{ width: "100%", padding: "11px 14px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#F8FAFC", fontSize: 14, boxSizing: "border-box", outline: "none" }} />
           <div style={{ fontSize: 11, color: "#475569", marginTop: 6 }}>Sert au calcul du coût des heures pointées. La paie & la DSN restent gérées par votre outil dédié (convention IDCC 3127).</div>
         </div>
+
+        {/* ── Surveillance / pointage ── */}
+        <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${T}22`, borderRadius: 12, padding: "16px 16px", marginBottom: 8 }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: T, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 12 }}>🎚️ Niveau de suivi</div>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#94A3B8", marginBottom: 6 }}>Mode de pointage</label>
+          <select value={form.pointageMode || "arrivee_depart"} onChange={set("pointageMode")}
+            style={{ width: "100%", padding: "11px 14px", background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#F8FAFC", fontSize: 14, boxSizing: "border-box", outline: "none", marginBottom: 14 }}>
+            {pointageModes.map(m => <option key={m.v} value={m.v} style={{ background: "#0D1B2A" }}>{m.label}</option>)}
+          </select>
+          <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", padding: "10px 12px", background: "rgba(255,255,255,0.04)", borderRadius: 10 }}>
+            <span style={{ fontSize: 13, color: "#F8FAFC" }}>📍 Géolocalisation au pointage</span>
+            <input type="checkbox" checked={form.geoloc !== false} onChange={e => setForm(f => ({ ...f, geoloc: e.target.checked }))}
+              style={{ width: 18, height: 18, accentColor: T, cursor: "pointer" }} />
+          </label>
+          <div style={{ fontSize: 11, color: "#475569", marginTop: 8, lineHeight: 1.5 }}>
+            {(form.pointageMode || "arrivee_depart") === "tache_terminee"
+              ? "L'intervenant valide simplement « Tâche terminée » — pas de durée."
+              : "L'intervenant pointe son arrivée puis son départ — durée calculée."}
+            {form.geoloc !== false ? " Position GPS enregistrée." : " Sans position GPS."}
+          </div>
+        </div>
+
         <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
           <button onClick={onClose}
             style={{ flex: 1, padding: "11px", borderRadius: 10, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#94A3B8", fontSize: 14, cursor: "pointer", fontWeight: 600 }}>

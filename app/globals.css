@@ -489,3 +489,89 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 10px 32px rgba(13,169,164,0.42) !important;
 }
 .btn-gradient:active { transform: translateY(0) !important; }
+
+/* ══════════════════════════════════════════════════
+   PREMIUM EFFECT SYSTEM — réutilisable sur tout le site
+   (composant <Reveal>, parallax, zoom image, hover lift)
+   ══════════════════════════════════════════════════ */
+
+/* ── Scroll-reveal universel (piloté par <Reveal>) ──
+   Ajoute simplement la classe .is-in quand l'élément entre à l'écran.
+   translate3d + opacity = 100% compositor-friendly. */
+.reveal-el {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-y, 28px), 0);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal-el.is-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ── Parallax (piloté en JS via [data-parallax]) ──
+   L'élément est translaté en Y selon le scroll. Garder le calque
+   surdimensionné + un conteneur overflow:hidden pour éviter tout vide. */
+.parallax { will-change: transform; }
+
+/* ── Zoom d'image élégant au survol ──
+   <div class="img-zoom-wrap"><img class="img-zoom" …></div> */
+.img-zoom-wrap { overflow: hidden; }
+.img-zoom {
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.img-zoom-wrap:hover .img-zoom,
+a:hover .img-zoom { transform: scale(1.06); }
+
+/* ── Hover lift raffiné (surfaces premium) ── */
+.lift {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 60px rgba(13, 27, 42, 0.14);
+}
+
+/* ── Eyebrow / sur-titre de section ── */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0DA9A4;
+  text-transform: uppercase;
+  letter-spacing: 2.6px;
+  margin-bottom: 16px;
+}
+.eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 1.5px;
+  background: linear-gradient(90deg, #0DA9A4, #D4197A);
+  border-radius: 2px;
+}
+
+/* ── Titre serif premium ── */
+.display {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.08;
+  color: #1A2D3D;
+}
+
+/* ── Respect des préférences d'animation ── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-el {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .parallax { transform: none !important; }
+  .img-zoom, .lift { transition: none !important; }
+}

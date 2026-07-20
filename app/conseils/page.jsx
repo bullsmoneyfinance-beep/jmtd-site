@@ -1,12 +1,52 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Icon, { IconTile } from "../../components/Icon";
 import { YOUTUBE, PHONE_HREF, WHATSAPP } from "../../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
+const OCEAN = "#12B5B0";
 const TEXT  = "#1A2D3D";
 const MUTED = "#64748B";
+const WARM  = "#FFF8F4";
+
+/* ── Imagerie Martinique / tropical-premium (Unsplash) ── */
+const IMG = {
+  greenery: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1600&h=900&fit=crop&auto=format&q=80", // feuillage vert rétroéclairé
+  palm:     "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=900&h=1100&fit=crop&auto=format&q=80",  // frondes de palmier
+  sea:      "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1600&h=1000&fit=crop&auto=format&q=80", // mer turquoise
+};
+
+/* Parallax générique — piloté par [data-parallax] (voir globals.css .parallax) */
+function useParallax() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const layers = Array.from(document.querySelectorAll("[data-parallax]"));
+    if (!layers.length) return;
+    let raf = null;
+    const update = () => {
+      const vh = window.innerHeight;
+      layers.forEach(el => {
+        const speed = parseFloat(el.getAttribute("data-parallax")) || 0.12;
+        const r = el.getBoundingClientRect();
+        const offset = r.top + r.height / 2 - vh / 2;
+        el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(1)}px, 0)`;
+      });
+      raf = null;
+    };
+    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+}
 
 /* ── Reveal scroll ── */
 function useReveal() {
@@ -23,18 +63,18 @@ function useReveal() {
 
 /* ── Catégories ── */
 const CATS = [
-  { id: "all",          icon: "✨", label: "Tout voir"         },
-  { id: "menage",       icon: "🧹", label: "Ménage"            },
-  { id: "rangement",    icon: "📦", label: "Rangement"         },
-  { id: "produits",     icon: "🧴", label: "Produits & Recettes" },
-  { id: "comparatifs",  icon: "⚖️", label: "Comparatifs"       },
-  { id: "temps",        icon: "⏱️", label: "Gain de temps"     },
+  { id: "all",          icon: "sparkles",  label: "Tout voir"         },
+  { id: "menage",       icon: "menage",    label: "Ménage"            },
+  { id: "rangement",    icon: "rangement", label: "Rangement"         },
+  { id: "produits",     icon: "sparkles",  label: "Produits & Recettes" },
+  { id: "comparatifs",  icon: "search",    label: "Comparatifs"       },
+  { id: "temps",        icon: "clock",     label: "Gain de temps"     },
 ];
 
 /* ── Articles conseils ── */
 const ARTICLES = [
   {
-    id: 1, cat: "menage", icon: "🧹",
+    id: 1, cat: "menage", icon: "menage",
     tag: "Ménage", color: T,
     title: "Les 5 erreurs que tout le monde fait en faisant le ménage",
     desc: "Commencer par les sols avant les surfaces, oublier les interrupteurs, utiliser trop de produit… On vous explique comment éviter ces pièges pour un résultat impeccable en moins de temps.",
@@ -48,7 +88,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 2, cat: "rangement", icon: "📦",
+    id: 2, cat: "rangement", icon: "rangement",
     tag: "Rangement", color: P,
     title: "La méthode KonMari expliquée simplement",
     desc: "Marie Kondo a révolutionné l'art du rangement. Découvrez comment appliquer sa méthode chez vous, pièce par pièce, pour ne garder que ce qui vous apporte de la joie.",
@@ -62,7 +102,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 3, cat: "produits", icon: "🍋",
+    id: 3, cat: "produits", icon: "sparkles",
     tag: "Produits naturels", color: "#10B981",
     title: "Bicarbonate + vinaigre blanc : le duo miracle pour votre maison",
     desc: "Ces deux ingrédients du placard remplacent des dizaines de produits chimiques coûteux. On vous dévoile toutes les astuces et les dosages exacts pour chaque surface.",
@@ -76,7 +116,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 4, cat: "temps", icon: "⏱️",
+    id: 4, cat: "temps", icon: "clock",
     tag: "Gain de temps", color: "#F59E0B",
     title: "Le ménage express : faites le tour de votre maison en 30 minutes",
     desc: "Une routine en 7 étapes chronométrées pour avoir un intérieur propre et présentable rapidement. Idéal pour les visites impromptues ou les semaines chargées.",
@@ -91,7 +131,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 5, cat: "comparatifs", icon: "⚖️",
+    id: 5, cat: "comparatifs", icon: "search",
     tag: "Comparatif", color: "#8B5CF6",
     title: "Aspirateur balai vs aspirateur robot : lequel choisir en Martinique ?",
     desc: "Humidité, poils d'animaux, sol en carrelage ou parquet… On passe en revue les critères spécifiques à nos intérieurs antillais pour vous aider à choisir le bon appareil.",
@@ -105,7 +145,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 6, cat: "rangement", icon: "🚪",
+    id: 6, cat: "rangement", icon: "rangement",
     tag: "Rangement", color: P,
     title: "Organiser ses placards de cuisine : les secrets des pros",
     desc: "Zones de travail, rangement vertical, étiquetage, boîtes hermétiques… Adoptez les techniques des cuisines professionnelles pour ne plus rien chercher.",
@@ -119,7 +159,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 7, cat: "produits", icon: "🧴",
+    id: 7, cat: "produits", icon: "sparkles",
     tag: "Produits", color: "#10B981",
     title: "Les 6 produits ménagers indispensables (et les 10 inutiles)",
     desc: "Le marketing nous pousse à acheter des dizaines de produits spécialisés. En réalité, 6 produits suffisent à nettoyer toute votre maison. On fait le tri ensemble.",
@@ -133,7 +173,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 8, cat: "menage", icon: "🪟",
+    id: 8, cat: "menage", icon: "menage",
     tag: "Ménage", color: T,
     title: "Vitres sans traces : la technique que les professionnels utilisent",
     desc: "Eau démagnétisée, microfibres, mouvement en Z, bon timing selon la chaleur… La méthode complète pour des vitres parfaitement transparentes, même sous le soleil antillais.",
@@ -147,7 +187,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 9, cat: "temps", icon: "📅",
+    id: 9, cat: "temps", icon: "calendar",
     tag: "Organisation", color: "#F59E0B",
     title: "Créez un planning ménager hebdomadaire qui fonctionne vraiment",
     desc: "Finissez avec le ménage du samedi en bloc ! Répartissez les tâches sur la semaine selon une logique intelligente et gagnez vos week-ends.",
@@ -162,7 +202,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 10, cat: "comparatifs", icon: "🧽",
+    id: 10, cat: "comparatifs", icon: "search",
     tag: "Comparatif", color: "#8B5CF6",
     title: "Serpillière classique, microfibre ou vapeur : le comparatif honnête",
     desc: "Test, efficacité, coût, entretien… On compare les 3 méthodes de lavage des sols pour vous dire laquelle vaut vraiment l'investissement selon votre type de sol.",
@@ -176,7 +216,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 11, cat: "rangement", icon: "🛏️",
+    id: 11, cat: "rangement", icon: "rangement",
     tag: "Rangement", color: P,
     title: "Désencombrer sa chambre en une heure : le guide étape par étape",
     desc: "Garde-robe, tables de nuit, sous le lit… Une checklist actionnable pour vider, trier et réorganiser votre chambre dans le bon ordre, sans vous épuiser.",
@@ -190,7 +230,7 @@ const ARTICLES = [
     ],
   },
   {
-    id: 12, cat: "produits", icon: "🌿",
+    id: 12, cat: "produits", icon: "jardinage",
     tag: "Produits naturels", color: "#10B981",
     title: "Huiles essentielles et ménage : lesquelles utiliser et comment ?",
     desc: "Tea tree, lavande, eucalyptus, citron… Ces huiles naturelles ont des propriétés antibactériennes puissantes. On vous explique comment les intégrer à votre routine.",
@@ -230,7 +270,7 @@ function ConseilCard({ article, onClick }) {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span style={{ fontSize: 32 }}>{article.icon}</span>
+        <IconTile name={article.icon} size={48} icon={24} from={article.color} to={article.color} radius={14} />
         <span style={{ fontSize: 11, fontWeight: 700, color: article.color, background: article.color + "14", border: `1px solid ${article.color}28`, borderRadius: 20, padding: "4px 12px", textTransform: "uppercase", letterSpacing: 0.8 }}>
           {article.tag}
         </span>
@@ -242,7 +282,7 @@ function ConseilCard({ article, onClick }) {
         {article.desc}
       </p>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 12, borderTop: "1px solid rgba(13,169,164,0.08)" }}>
-        <span style={{ fontSize: 12, color: "#94A3B8" }}>⏱ {article.duration} de lecture</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, color: "#94A3B8" }}><Icon name="clock" size={13} color="#94A3B8" /> {article.duration} de lecture</span>
         <span style={{ fontSize: 13, fontWeight: 700, color: article.color }}>Lire →</span>
       </div>
     </div>
@@ -320,14 +360,12 @@ function ArticleModal({ article, onClose }) {
             display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16,
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <div style={{ width: 56, height: 56, borderRadius: 16, background: article.color + "20", border: `2px solid ${article.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>
-                {article.icon}
-              </div>
+              <IconTile name={article.icon} size={56} icon={28} from={article.color} to={article.color} radius={16} />
               <div>
                 <span style={{ display: "inline-block", fontSize: 11, fontWeight: 700, color: article.color, background: article.color + "18", border: `1px solid ${article.color}30`, borderRadius: 20, padding: "3px 12px", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>
                   {article.tag}
                 </span>
-                <div style={{ fontSize: 12, color: "#94A3B8" }}>⏱ {article.duration} de lecture</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: "#94A3B8" }}><Icon name="clock" size={13} color="#94A3B8" /> {article.duration} de lecture</div>
               </div>
             </div>
             <button
@@ -355,7 +393,7 @@ function ArticleModal({ article, onClose }) {
             {article.tips && (
               <div style={{ marginBottom: 28 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: TEXT, textTransform: "uppercase", letterSpacing: 1, marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ width: 24, height: 24, borderRadius: "50%", background: article.color, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: "#fff" }}>✓</span>
+                  <span style={{ width: 24, height: 24, borderRadius: "50%", background: article.color, display: "inline-flex", alignItems: "center", justifyContent: "center", color: "#fff" }}><Icon name="check" size={13} color="#fff" strokeWidth={3} /></span>
                   Points clés à retenir
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -406,6 +444,7 @@ function ArticleModal({ article, onClose }) {
 /* ══════════════════════════════════════════════════════════ */
 export default function ConseilsPage() {
   useReveal();
+  useParallax();
   const [activeCat, setActiveCat] = useState("all");
   const [openArticle, setOpenArticle] = useState(null);
 
@@ -414,16 +453,28 @@ export default function ConseilsPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section style={{ background: "#fff", padding: "88px 24px 72px", textAlign: "center", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -100, right: "5%",  width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${T}12, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -80, left: "3%", width: 380, height: 380, borderRadius: "50%", background: `radial-gradient(circle, ${P}0e, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none" }} />
+      <section style={{ background: `linear-gradient(160deg, ${WARM} 0%, #EAF7F6 100%)`, padding: "96px 24px 76px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        {/* Calque feuillage tropical (parallax profond) */}
+        <div aria-hidden data-parallax="0.16" className="parallax" style={{ position: "absolute", top: "-24%", left: 0, right: 0, height: "148%", zIndex: 0 }}>
+          <img src={IMG.greenery} alt="" width={1600} height={900} loading="eager"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.18 }} />
+        </div>
+        {/* Frondes de palmier — accent tropical (droite) */}
+        <div aria-hidden data-parallax="0.06" className="parallax hero-palm" style={{ position: "absolute", top: "-8%", right: "-6%", width: "clamp(200px, 30vw, 440px)", height: "116%", zIndex: 0, pointerEvents: "none" }}>
+          <img src={IMG.palm} alt="" width={900} height={1100} loading="eager"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.13, mixBlendMode: "multiply", maskImage: "linear-gradient(to left, #000 18%, transparent 90%)", WebkitMaskImage: "linear-gradient(to left, #000 18%, transparent 90%)" }} />
+        </div>
+        {/* Voile clair pour lisibilité */}
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(180deg, rgba(255,248,244,0.90) 0%, rgba(248,250,247,0.82) 46%, rgba(234,247,246,0.72) 100%)" }} />
+        <div style={{ position: "absolute", top: -100, right: "5%",  width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${T}12, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none", zIndex: 1 }} />
+        <div style={{ position: "absolute", bottom: -80, left: "3%", width: 380, height: 380, borderRadius: "50%", background: `radial-gradient(circle, ${P}0e, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none", zIndex: 1 }} />
 
-        <div style={{ maxWidth: 760, margin: "0 auto", position: "relative" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 18px", marginBottom: 20 }}>
-            <span style={{ fontSize: 14 }}>✨</span>
+        <div style={{ maxWidth: 760, margin: "0 auto", position: "relative", zIndex: 2 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: `1.5px solid ${T}28`, borderRadius: 30, padding: "7px 18px", marginBottom: 20, boxShadow: "0 2px 14px rgba(13,169,164,0.12)" }}>
+            <Icon name="sparkles" size={15} color={T} />
             <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Conseils & Astuces J&apos;MTD</span>
           </div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(30px, 5vw, 54px)", fontWeight: 700, color: TEXT, lineHeight: 1.15, marginBottom: 20 }}>
+          <h1 className="display" style={{ fontSize: "clamp(30px, 5vw, 54px)", color: TEXT, lineHeight: 1.15, marginBottom: 20 }}>
             Tout savoir sur{" "}
             <span style={{ background: `linear-gradient(135deg, ${T}, ${P})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               le ménage & le rangement
@@ -505,7 +556,7 @@ export default function ConseilsPage() {
               <button key={cat.id}
                 onClick={() => setActiveCat(cat.id)}
                 style={{ display: "flex", alignItems: "center", gap: 7, padding: "9px 18px", borderRadius: 30, border: activeCat === cat.id ? `1.5px solid ${T}` : "1.5px solid rgba(13,169,164,0.2)", background: activeCat === cat.id ? `${T}14` : "transparent", color: activeCat === cat.id ? T : MUTED, fontWeight: activeCat === cat.id ? 700 : 500, fontSize: 13, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>
-                <span>{cat.icon}</span>
+                <Icon name={cat.icon} size={15} />
                 <span>{cat.label}</span>
                 {activeCat === cat.id && cat.id !== "all" && (
                   <span style={{ background: T, color: "#fff", borderRadius: "50%", width: 18, height: 18, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800 }}>
@@ -527,10 +578,28 @@ export default function ConseilsPage() {
 
           {filtered.length === 0 && (
             <div style={{ textAlign: "center", padding: "80px 24px", color: MUTED }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
+              <Icon name="search" size={46} color={MUTED} style={{ margin: "0 auto 12px" }} />
               <p style={{ fontSize: 16 }}>Aucun article dans cette catégorie pour l&apos;instant.</p>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ── Bande immersive tropicale ── */}
+      <section style={{ position: "relative", overflow: "hidden", height: "clamp(240px, 34vw, 380px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div aria-hidden data-parallax="0.14" className="parallax" style={{ position: "absolute", top: "-18%", left: 0, right: 0, height: "136%", zIndex: 0 }}>
+          <img src={IMG.sea} alt="" width={1600} height={1000} loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(120deg, rgba(9,58,58,0.74), rgba(13,27,42,0.60))" }} />
+        <div className="reveal" style={{ position: "relative", zIndex: 2, maxWidth: 780, padding: "0 28px", textAlign: "center" }}>
+          <Icon name="piscine" size={32} color="#fff" style={{ margin: "0 auto 16px" }} />
+          <p className="display" style={{ fontSize: "clamp(22px, 3.2vw, 34px)", color: "#fff", lineHeight: 1.3, fontWeight: 600 }}>
+            « Un intérieur qui respire,<br />à l&apos;image de la Martinique. »
+          </p>
+          <div style={{ fontSize: 13.5, color: "rgba(255,255,255,0.72)", marginTop: 16, letterSpacing: 0.5 }}>
+            Nos astuces, votre sérénité · J&apos;MTD
+          </div>
         </div>
       </section>
 
@@ -570,6 +639,7 @@ export default function ConseilsPage() {
         @media (max-width: 768px) {
           .yt-banner-grid { grid-template-columns: 1fr !important; }
           .yt-banner-right { min-height: 180px !important; }
+          .hero-palm { opacity: 0.5 !important; }
         }
       `}</style>
     </>

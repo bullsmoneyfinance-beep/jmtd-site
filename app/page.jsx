@@ -1,28 +1,59 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PHONE, PHONE_HREF, WHATSAPP, SERVICES, TESTIMONIALS, ZONES, DECLARATION_SAP } from "../lib/data";
+import Reveal from "../components/Reveal";
+import Icon, { IconTile } from "../components/Icon";
+import SapOfficiel from "../components/SapOfficiel";
+import { PHONE, PHONE_HREF, WHATSAPP, SERVICES, TESTIMONIALS, DECLARATION_SAP } from "../lib/data";
 
 const WA_SVG = (<svg width="18" height="18" viewBox="0 0 32 32" fill="none" style={{display:"block",flexShrink:0}}><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.5 8.5A10.4 10.4 0 0 0 16 5.5C10.2 5.5 5.5 10.2 5.5 16c0 1.85.48 3.65 1.4 5.25L5.5 26.5l5.4-1.4A10.4 10.4 0 0 0 16 26.5c5.8 0 10.5-4.7 10.5-10.5 0-2.8-1.1-5.43-3-7.5zm-7.5 16.1a8.6 8.6 0 0 1-4.4-1.2l-.3-.2-3.2.84.86-3.1-.2-.33A8.6 8.6 0 1 1 16 24.6zm4.7-6.4c-.26-.13-1.53-.75-1.77-.84-.23-.08-.4-.13-.56.13-.17.26-.64.84-.79 1.01-.14.17-.29.19-.54.06-.26-.13-1.08-.4-2.06-1.27-.76-.68-1.28-1.52-1.43-1.77-.15-.26-.01-.4.11-.52.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.08-.17.04-.32-.02-.45-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.26-.87.85-.87 2.07s.89 2.4 1.01 2.57c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.47-.07 1.53-.63 1.74-1.23.22-.6.22-1.12.15-1.23-.06-.12-.23-.19-.49-.31z" fill="#fff"/></svg>);
 
-const T = "#0DA9A4";
-const P = "#D4197A";
+const T = "#0DA9A4";       // teal
+const P = "#D4197A";       // rose/magenta
+const OCEAN = "#12B5B0";   // turquoise océan (accent tropical discret)
 const TEXT = "#1A2D3D";
 const TEXT2 = "#64748B";
 
 /* Couleurs chaudes services à la personne */
 const WARM = "#FFF8F4";
-const WARM2 = "#FFF4EE";
 const WARM_SHADOW = "0 4px 28px rgba(0,0,0,0.06)";
 
-function useReveal() {
+/* ── Imagerie Martinique / tropical-premium (Unsplash) ── */
+const IMG = {
+  heroBg:   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&h=1200&fit=crop&auto=format&q=80", // lagon turquoise, lumière claire
+  heroCard: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&h=1100&fit=crop&auto=format&q=80",  // intérieur lumineux & aéré
+  greenery: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1600&h=900&fit=crop&auto=format&q=80",  // feuillage vert rétroéclairé
+  palmLeaf: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=900&h=1100&fit=crop&auto=format&q=80",  // frondes de palmier, lumière douce (accent)
+  seaLight: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1600&h=1000&fit=crop&auto=format&q=80", // mer turquoise vue du ciel (plein cadre)
+};
+
+/* Parallax générique — piloté par [data-parallax] (voir globals.css .parallax) */
+function useParallax() {
   useEffect(() => {
-    const els = document.querySelectorAll(".reveal");
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); } });
-    }, { threshold: 0.1 });
-    els.forEach(el => obs.observe(el));
-    return () => obs.disconnect();
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const layers = Array.from(document.querySelectorAll("[data-parallax]"));
+    if (!layers.length) return;
+    let raf = null;
+    const update = () => {
+      const vh = window.innerHeight;
+      layers.forEach(el => {
+        const speed = parseFloat(el.getAttribute("data-parallax")) || 0.12;
+        const r = el.getBoundingClientRect();
+        const offset = r.top + r.height / 2 - vh / 2;
+        el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(1)}px, 0)`;
+      });
+      raf = null;
+    };
+    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 }
 
@@ -36,9 +67,9 @@ function Calculator() {
   const gross = h * 18;
   const net = Math.ceil(gross * 0.5);
   return (
-    <div style={{ background: "#fff", borderRadius: 24, border: `1.5px solid rgba(13,169,164,0.15)`, boxShadow: WARM_SHADOW, padding: "36px 32px" }}>
+    <div style={{ background: "#fff", borderRadius: 24, border: `1.5px solid rgba(13,169,164,0.15)`, boxShadow: "0 22px 60px rgba(13,27,42,0.10)", padding: "36px 32px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 10, background: `linear-gradient(135deg, ${T}, ${P})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>💳</div>
+        <IconTile name="credit" size={40} icon={20} from={T} to={P} radius={10} />
         <div>
           <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1 }}>Simulateur</div>
           <div style={{ fontSize: 16, fontWeight: 700, color: TEXT }}>Crédit d&apos;impôt</div>
@@ -68,7 +99,7 @@ function Calculator() {
       <p style={{ fontSize: 12, color: "#94A3B8", textAlign: "center", marginBottom: 20, lineHeight: 1.6 }}>
         L&apos;État rembourse <strong style={{ color: TEXT2 }}>50% de vos dépenses</strong> via votre déclaration d&apos;impôt
       </p>
-      <Link href="/contact" style={{ display: "block", textAlign: "center", background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", padding: 15, borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 6px 24px ${T}44` }}>
+      <Link href="/contact" className="btn-gradient" style={{ display: "block", textAlign: "center", background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", padding: 15, borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 6px 24px ${T}44`, border: "none" }}>
         Obtenir mon devis gratuit →
       </Link>
     </div>
@@ -89,15 +120,22 @@ function QuickForm() {
   };
 
   if (sent) return (
-    <div style={{ textAlign: "center", padding: "56px 24px", background: "#F0FDFB", border: `1.5px solid rgba(13,169,164,0.2)`, borderRadius: 24 }}>
-      <div style={{ fontSize: 52, marginBottom: 16 }}>✅</div>
-      <h3 style={{ fontSize: 22, fontWeight: 700, color: TEXT, marginBottom: 8 }}>Demande envoyée !</h3>
+    <div style={{ textAlign: "center", padding: "56px 24px", background: "#fff", border: `1.5px solid rgba(13,169,164,0.2)`, borderRadius: 26, boxShadow: "0 30px 70px rgba(13,27,42,0.22)" }}>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}><Icon name="checkCircle" size={52} color="#16A34A" strokeWidth={1.8} /></div>
+      <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 8 }}>Demande envoyée !</h3>
       <p style={{ color: TEXT2 }}>Nous vous rappelons sous 24h ouvrées.</p>
     </div>
   );
 
   return (
-    <form onSubmit={submit} style={{ background: "#fff", border: `1.5px solid rgba(13,169,164,0.12)`, borderRadius: 24, padding: "36px 32px", boxShadow: WARM_SHADOW }}>
+    <form onSubmit={submit} style={{ background: "#fff", border: `1px solid rgba(13,169,164,0.12)`, borderRadius: 26, padding: "38px 34px", boxShadow: "0 30px 70px rgba(13,27,42,0.22)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 26 }}>
+        <IconTile name="mail" size={44} icon={21} from={T} to={P} radius={12} />
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Devis gratuit</div>
+          <div style={{ fontSize: 17, fontWeight: 700, color: TEXT }}>Parlez-nous de vos besoins</div>
+        </div>
+      </div>
       <div className="quick-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
         <div>
           <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: TEXT2, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Nom *</label>
@@ -113,7 +151,7 @@ function QuickForm() {
         <select className="form-input" value={form.service} onChange={e => setForm(f => ({ ...f, service: e.target.value }))} required
           style={{ color: form.service ? TEXT : "#94A3B8", background: "#FAFBFC" }}>
           <option value="" style={{ color: "#94A3B8" }}>Choisir une prestation…</option>
-          {SERVICES.map(s => <option key={s.id} value={s.id} style={{ color: TEXT }}>{s.icon} {s.title}</option>)}
+          {SERVICES.map(s => <option key={s.id} value={s.id} style={{ color: TEXT }}>{s.title}</option>)}
         </select>
       </div>
       <label style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 24, cursor: "pointer" }}>
@@ -124,7 +162,7 @@ function QuickForm() {
           <Link href="/politique-confidentialite" style={{ color: T, textDecoration: "underline" }}>politique de confidentialité</Link>.
         </span>
       </label>
-      <button type="submit" disabled={loading} className="btn-amber"
+      <button type="submit" disabled={loading} className="btn-amber btn-gradient"
         style={{ width: "100%", padding: "16px", borderRadius: 30, fontSize: 16, cursor: loading ? "wait" : "pointer", border: "none" }}>
         {loading ? (
           <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
@@ -136,6 +174,11 @@ function QuickForm() {
           </span>
         ) : "Envoyer ma demande de devis →"}
       </button>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "8px 20px", marginTop: 18 }}>
+        {["Rappel sous 24h", "Sans engagement", "100% gratuit"].map(t => (
+          <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, color: TEXT2, fontWeight: 600 }}><Icon name="check" size={14} color={T} strokeWidth={2.5} /> {t}</span>
+        ))}
+      </div>
     </form>
   );
 }
@@ -170,98 +213,112 @@ function FAQ() {
    PAGE PRINCIPALE
 ──────────────────────────────────────── */
 export default function HomePage() {
-  useReveal();
+  useParallax();
 
   return (
-    <div style={{ background: "#fff" }}>
+    <div style={{ background: "#fff", overflowX: "hidden" }}>
 
       {/* ════════════════════════════════
-          HERO — chaud, humain, rassurant
+          HERO — immersif, clair & aéré, touche tropicale
           ════════════════════════════════ */}
-      <section style={{ position: "relative", overflow: "hidden", background: `linear-gradient(160deg, ${WARM} 0%, #EFF9F8 100%)`, paddingBottom: 80 }}>
-        {/* Orbes doux */}
-        <div style={{ position: "absolute", top: -100, right: -60, width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${T}12 0%, transparent 70%)`, animation: "floatOrb 14s ease-in-out infinite", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -60, left: -40, width: 360, height: 360, borderRadius: "50%", background: `radial-gradient(circle, ${P}0c 0%, transparent 70%)`, animation: "floatOrb 18s ease-in-out infinite reverse", pointerEvents: "none" }} />
+      <section className="hero-section" style={{ position: "relative", overflow: "hidden", background: `linear-gradient(160deg, ${WARM} 0%, #EAF7F6 100%)`, paddingBottom: 96, minHeight: "clamp(640px, 92vh, 940px)", display: "flex", alignItems: "center" }}>
 
-        <div className="hero-grid" style={{ maxWidth: 1140, margin: "0 auto", padding: "64px 24px 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center", position: "relative" }}>
+        {/* Calque photo tropical (parallax profond — lagon turquoise, atmosphère cinématique) */}
+        <div aria-hidden data-parallax="0.18" className="parallax" style={{ position: "absolute", top: "-22%", left: 0, right: 0, height: "144%", zIndex: 0 }}>
+          <img src={IMG.heroBg} alt="" width={1600} height={1200} loading="eager"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.26 }} />
+        </div>
+        {/* Frondes de palmier — second calque de profondeur (parallax plus lent) */}
+        <div aria-hidden data-parallax="0.06" className="parallax hero-palm" style={{ position: "absolute", top: "-10%", right: "-6%", width: "clamp(280px, 38vw, 640px)", height: "120%", zIndex: 0, pointerEvents: "none" }}>
+          <img src={IMG.palmLeaf} alt="" width={900} height={1100} loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.16, mixBlendMode: "multiply", maskImage: "linear-gradient(to left, #000 30%, transparent 92%)", WebkitMaskImage: "linear-gradient(to left, #000 30%, transparent 92%)" }} />
+        </div>
+        {/* Voile — dégradé travaillé : dense à gauche (lisibilité du texte), plus aéré à droite */}
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(105deg, rgba(255,248,244,0.96) 0%, rgba(248,250,247,0.90) 38%, rgba(236,247,246,0.72) 66%, rgba(224,244,242,0.52) 100%)" }} />
+        {/* Halo lumineux bas — ancre la scène */}
+        <div aria-hidden style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", zIndex: 1, background: `linear-gradient(to top, ${WARM} 4%, rgba(255,248,244,0.0) 100%)`, pointerEvents: "none" }} />
+        {/* Orbes doux */}
+        <div aria-hidden style={{ position: "absolute", top: -100, right: -60, width: 520, height: 520, borderRadius: "50%", background: `radial-gradient(circle, ${T}14 0%, transparent 70%)`, animation: "floatOrb 14s ease-in-out infinite", pointerEvents: "none", zIndex: 1 }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -60, left: -40, width: 360, height: 360, borderRadius: "50%", background: `radial-gradient(circle, ${P}0c 0%, transparent 70%)`, animation: "floatOrb 18s ease-in-out infinite reverse", pointerEvents: "none", zIndex: 1 }} />
+
+        <div className="hero-grid" style={{ maxWidth: 1160, margin: "0 auto", padding: "40px 24px 0", width: "100%", display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: 64, alignItems: "center", position: "relative", zIndex: 2 }}>
 
           {/* ── Gauche — proposition de valeur ── */}
           <div>
-            {/* Badge SAP */}
-            <div className="anim-fade-up" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", border: `1.5px solid ${T}30`, borderRadius: 30, padding: "8px 18px", marginBottom: 32, boxShadow: "0 2px 12px rgba(13,169,164,0.1)" }}>
+            <div className="anim-fade-up" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: `1.5px solid ${T}30`, borderRadius: 30, padding: "8px 18px", marginBottom: 30, boxShadow: "0 2px 14px rgba(13,169,164,0.12)" }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: T, display: "inline-block", animation: "softPulse 2.5s infinite" }} />
               <span style={{ fontSize: 13, color: T, fontWeight: 700 }}>Déclaré Services à la Personne · N° {DECLARATION_SAP}</span>
             </div>
 
-            {/* H1 */}
-            <h1 className="anim-fade-up delay-1" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(36px, 4.8vw, 62px)", fontWeight: 700, lineHeight: 1.1, color: TEXT, marginBottom: 24, letterSpacing: -1.5 }}>
+            <h1 className="anim-fade-up delay-1 display" style={{ fontSize: "clamp(40px, 5.4vw, 72px)", marginBottom: 26, letterSpacing: -1.8 }}>
               Votre maison<br />
               entre de bonnes{" "}
-              <span style={{ background: `linear-gradient(135deg, ${T}, ${P})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>mains.</span>
+              <span style={{ background: `linear-gradient(120deg, ${T}, ${OCEAN} 45%, ${P})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>mains.</span>
             </h1>
 
-            {/* Description */}
-            <p className="anim-fade-up delay-2" style={{ fontSize: 17, color: TEXT2, lineHeight: 1.8, marginBottom: 12, maxWidth: 460 }}>
-              Ménage, repas, courses, coach rangement — des intervenantes <strong style={{ color: TEXT }}>sélectionnées, formées et discrètes</strong> pour prendre soin de votre quotidien.
+            <p className="anim-fade-up delay-2" style={{ fontSize: 18, color: TEXT2, lineHeight: 1.75, marginBottom: 14, maxWidth: 480 }}>
+              Ménage, repas, courses, coach rangement — des intervenantes <strong style={{ color: TEXT }}>sélectionnées, formées et discrètes</strong> pour prendre soin de votre quotidien en Martinique.
             </p>
-            <p className="anim-fade-up delay-2" style={{ fontSize: 15, color: T, fontWeight: 600, marginBottom: 36, display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ background: `${T}15`, borderRadius: 20, padding: "3px 12px" }}>💳 50% remboursé par crédit d&apos;impôt SAP</span>
+            <p className="anim-fade-up delay-2" style={{ marginBottom: 38 }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 15, color: T, fontWeight: 600, background: `${T}12`, borderRadius: 20, padding: "5px 14px" }}><Icon name="credit" size={16} color={T} /> 50% remboursé par crédit d&apos;impôt SAP</span>
             </p>
 
-            {/* CTAs */}
-            <div className="anim-fade-up delay-3" style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 48 }}>
+            <div className="anim-fade-up delay-3" style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 46 }}>
               <Link href="/contact" className="btn-amber btn-gradient"
-                style={{ padding: "16px 32px", borderRadius: 30, fontSize: 16, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, border: "none", fontWeight: 700 }}>
+                style={{ padding: "17px 34px", borderRadius: 30, fontSize: 16, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, border: "none", fontWeight: 700 }}>
                 Devis gratuit →
               </Link>
               <a href={PHONE_HREF}
-                style={{ padding: "16px 28px", borderRadius: 30, border: `2px solid ${T}40`, color: TEXT, fontSize: 15, fontWeight: 700, textDecoration: "none", background: "#fff", display: "inline-flex", alignItems: "center", gap: 10, transition: "all 0.2s", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
-                📞 {PHONE}
+                style={{ padding: "17px 28px", borderRadius: 30, border: `2px solid ${T}40`, color: TEXT, fontSize: 15, fontWeight: 700, textDecoration: "none", background: "rgba(255,255,255,0.9)", display: "inline-flex", alignItems: "center", gap: 10, transition: "all 0.2s", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = T; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = `${T}40`; e.currentTarget.style.transform = "none"; }}>
+                <Icon name="phone" size={17} color={T} /> {PHONE}
               </a>
             </div>
 
-            {/* Stats */}
-            <div className="anim-fade-up delay-4" style={{ display: "flex", gap: 32, paddingTop: 28, borderTop: "1px solid rgba(13,169,164,0.12)" }}>
+            <div className="anim-fade-up delay-4" style={{ display: "flex", gap: 34, paddingTop: 30, borderTop: "1px solid rgba(13,169,164,0.14)" }}>
               {[["200+", "Foyers accompagnés", T], ["5★", "Note Google", "#F59E0B"], ["50%", "Crédit d'impôt", P]].map(([n, l, c]) => (
                 <div key={l}>
-                  <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 28, fontWeight: 800, color: c, lineHeight: 1 }}>{n}</div>
-                  <div style={{ fontSize: 12, color: TEXT2, marginTop: 4, lineHeight: 1.4 }}>{l}</div>
+                  <div className="display" style={{ fontSize: 32, fontWeight: 800, color: c, lineHeight: 1 }}>{n}</div>
+                  <div style={{ fontSize: 12.5, color: TEXT2, marginTop: 5, lineHeight: 1.4 }}>{l}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* ── Droite — preuves sociales ── */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {/* ── Droite — photographie + preuves flottantes (profondeur) ── */}
+          <div className="hero-visual anim-scale-in delay-2" style={{ position: "relative" }}>
+            <div className="img-zoom-wrap" style={{ borderRadius: 30, position: "relative", boxShadow: "0 40px 90px rgba(13,27,42,0.22), 0 8px 24px rgba(13,27,42,0.10)", border: "1px solid rgba(255,255,255,0.6)" }}>
+              <img src={IMG.heroCard} alt="Un intérieur lumineux et impeccable en Martinique" width={560} height={640} loading="eager" className="img-zoom hero-photo"
+                style={{ width: "100%", height: 520, objectFit: "cover", display: "block", borderRadius: 30 }} />
+              {/* dégradé bas pour ancrer la puce */}
+              <div aria-hidden style={{ position: "absolute", inset: 0, borderRadius: 30, background: "linear-gradient(to top, rgba(13,27,42,0.28), transparent 42%)", pointerEvents: "none" }} />
 
-            {/* Témoignage featured */}
-            <div style={{ background: "#fff", borderRadius: 22, padding: "28px 26px", boxShadow: "0 8px 48px rgba(0,0,0,0.08)", border: "1px solid rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", top: 12, right: 18, fontFamily: "Georgia", fontSize: 80, color: `${T}0a`, lineHeight: 1 }}>&ldquo;</div>
-              <div style={{ display: "flex", gap: 2, marginBottom: 14 }}>
-                {"★★★★★".split("").map((s, j) => <span key={j} style={{ color: "#F59E0B", fontSize: 16 }}>{s}</span>)}
-              </div>
-              <p style={{ fontSize: 15, color: TEXT, lineHeight: 1.8, fontStyle: "italic", marginBottom: 18, fontWeight: 500 }}>
-                &ldquo;Myriam et son équipe sont d&apos;une discrétion et d&apos;un professionnalisme exemplaires. Ma maison n&apos;a jamais été aussi bien tenue.&rdquo;
-              </p>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 16, borderTop: "1px solid #F1F5F9" }}>
-                <div style={{ width: 40, height: 40, borderRadius: "50%", background: `linear-gradient(135deg, ${T}30, ${P}20)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>👤</div>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: TEXT }}>Sandrine M.</div>
-                  <div style={{ fontSize: 12, color: TEXT2 }}>📍 Le Lamentin · Cliente depuis 2 ans</div>
+              {/* Puce note (bas-gauche, chevauchante) */}
+              <div style={{ position: "absolute", left: 18, bottom: 18, background: "rgba(255,255,255,0.96)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderRadius: 18, padding: "13px 16px", boxShadow: "0 10px 30px rgba(13,27,42,0.18)", display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", gap: 1 }}>
+                    {"★★★★★".split("").map((s, j) => <span key={j} style={{ color: "#F59E0B", fontSize: 14 }}>{s}</span>)}
+                  </div>
+                  <div style={{ fontSize: 12, color: TEXT2, marginTop: 2, fontWeight: 600 }}>5/5 · +200 familles</div>
                 </div>
+              </div>
+
+              {/* Puce SAP (haut-droite) */}
+              <div style={{ position: "absolute", top: 18, right: 18, background: "rgba(255,255,255,0.96)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderRadius: 14, padding: "9px 14px", boxShadow: "0 10px 30px rgba(13,27,42,0.16)", display: "inline-flex", alignItems: "center", gap: 7 }}>
+                <Icon name="sap" size={17} color={T} />
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: TEXT }}>Déclaré SAP</span>
               </div>
             </div>
 
             {/* Badges confiance */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }}>
               {[
-                { icon: "🏅", title: "Déclaré SAP", sub: "Crédit impôt 50%", bg: `${T}10`, border: `${T}22` },
-                { icon: "⭐", title: "5/5 Google", sub: "Avis vérifiés", bg: "#FFF9F0", border: "#F59E0B33" },
-                { icon: "🏠", title: "Toute la Martinique", sub: "Déplacement inclus", bg: `${P}08`, border: `${P}20` },
-                { icon: "⏰", title: "Réponse 24h", sub: "Lun–Ven 8h–18h", bg: WARM, border: `${T}15` },
+                { icon: "lock", iconColor: T, title: "Personnel vérifié", sub: "Sélection & formation", bg: `${T}0d`, border: `${T}22` },
+                { icon: "home", iconColor: P, title: "Toute la Martinique", sub: "Déplacement inclus", bg: `${P}08`, border: `${P}20` },
               ].map(item => (
-                <div key={item.title} style={{ background: item.bg, border: `1px solid ${item.border}`, borderRadius: 16, padding: "16px 14px" }}>
-                  <div style={{ fontSize: 22, marginBottom: 6 }}>{item.icon}</div>
+                <div key={item.title} style={{ background: item.bg, border: `1px solid ${item.border}`, borderRadius: 16, padding: "14px 16px" }}>
+                  <div style={{ marginBottom: 8 }}><Icon name={item.icon} size={20} color={item.iconColor} /></div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: TEXT, lineHeight: 1.3 }}>{item.title}</div>
                   <div style={{ fontSize: 11, color: TEXT2, marginTop: 2 }}>{item.sub}</div>
                 </div>
@@ -270,10 +327,10 @@ export default function HomePage() {
 
             {/* WhatsApp */}
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              style={{ padding: "16px 20px", borderRadius: 16, textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#fff", border: "1.5px solid #25D36630", fontSize: 15, fontWeight: 600, color: "#0d6e5c", transition: "all 0.2s", boxShadow: "0 2px 12px rgba(37,211,102,0.08)" }}
+              style={{ marginTop: 12, padding: "15px 20px", borderRadius: 16, textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(255,255,255,0.92)", border: "1.5px solid #25D36630", fontSize: 15, fontWeight: 600, color: "#0d6e5c", transition: "all 0.2s", boxShadow: "0 2px 12px rgba(37,211,102,0.1)" }}
               onMouseEnter={e => { e.currentTarget.style.background = "#f0fff4"; e.currentTarget.style.borderColor = "#25D36650"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.borderColor = "#25D36630"; }}>
-              <span style={{ display: "flex", alignItems: "center", gap: 10 }}>{WA_SVG} Écrire sur WhatsApp — réponse rapide</span>
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.92)"; e.currentTarget.style.borderColor = "#25D36630"; }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 10 }}>{WA_SVG} Écrire sur WhatsApp</span>
               <span style={{ fontSize: 18, color: "#25D366" }}>›</span>
             </a>
           </div>
@@ -290,34 +347,50 @@ export default function HomePage() {
       </div>
 
       {/* ════════════════════════════════
-          POURQUOI J'MTD — valeurs chaleureuses
+          STATUT OFFICIEL — logo Services à la Personne
           ════════════════════════════════ */}
-      <section style={{ background: WARM, padding: "88px 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 64 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Pourquoi nous choisir</div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 700, color: TEXT, marginBottom: 16, letterSpacing: -0.5 }}>
-              Votre confiance, notre priorité
-            </h2>
-            <p style={{ fontSize: 16, color: TEXT2, maxWidth: 520, margin: "0 auto", lineHeight: 1.8 }}>
-              Vous nous invitez chez vous. C&apos;est une responsabilité que nous prenons très au sérieux.
+      <section style={{ background: "#fff", padding: "52px 24px", borderBottom: "1px solid rgba(13,169,164,0.08)" }}>
+        <Reveal style={{ maxWidth: 920, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 32, flexWrap: "wrap" }}>
+          <SapOfficiel height={112} variant="logo" />
+          <div style={{ maxWidth: 440 }}>
+            <div className="eyebrow">Statut officiel</div>
+            <h3 className="display" style={{ fontSize: "clamp(21px, 2.5vw, 30px)", marginBottom: 10 }}>
+              Organisme déclaré Services à la Personne
+            </h3>
+            <p style={{ fontSize: 15, color: TEXT2, lineHeight: 1.75 }}>
+              Déclaration N° <strong style={{ color: TEXT }}>{DECLARATION_SAP}</strong> auprès de la DEETS Martinique. Toutes nos prestations à domicile ouvrent droit au <strong style={{ color: T }}>crédit d&apos;impôt de 50 %</strong>.
             </p>
           </div>
+        </Reveal>
+      </section>
 
-          <div className="why-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+      {/* ════════════════════════════════
+          POURQUOI J'MTD — valeurs chaleureuses
+          ════════════════════════════════ */}
+      <section style={{ background: WARM, padding: "96px 24px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 64 }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>Pourquoi nous choisir</div>
+            <h2 className="display" style={{ fontSize: "clamp(30px, 3.8vw, 48px)", marginBottom: 16 }}>
+              Votre confiance, notre priorité
+            </h2>
+            <p style={{ fontSize: 16.5, color: TEXT2, maxWidth: 540, margin: "0 auto", lineHeight: 1.8 }}>
+              Vous nous invitez chez vous. C&apos;est une responsabilité que nous prenons très au sérieux.
+            </p>
+          </Reveal>
+
+          <div className="why-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 22 }}>
             {[
-              { icon: "🔒", title: "Personnel rigoureusement sélectionné", text: "Chaque intervenante passe par un entretien approfondi, une vérification des références et une formation aux standards J'MTD avant sa première intervention.", color: T },
-              { icon: "🕐", title: "Vous récupérez votre temps", text: "Ménage, repas, courses… Confiez-nous les tâches qui vous pèsent et retrouvez du temps pour ce qui compte vraiment : votre famille, vos loisirs, vous-même.", color: P },
-              { icon: "💳", title: "50% remboursé par l'État", text: "Notre déclaration SAP vous permet de récupérer la moitié de vos dépenses via le crédit d'impôt. Nous vous remettons une attestation fiscale chaque année.", color: T },
+              { icon: "lock",   title: "Personnel rigoureusement sélectionné", text: "Chaque intervenante passe par un entretien approfondi, une vérification des références et une formation aux standards J'MTD avant sa première intervention.", color: T, to: OCEAN },
+              { icon: "clock",  title: "Vous récupérez votre temps", text: "Ménage, repas, courses… Confiez-nous les tâches qui vous pèsent et retrouvez du temps pour ce qui compte vraiment : votre famille, vos loisirs, vous-même.", color: P, to: "#E0559E" },
+              { icon: "credit", title: "50% remboursé par l'État", text: "Notre déclaration SAP vous permet de récupérer la moitié de vos dépenses via le crédit d'impôt. Nous vous remettons une attestation fiscale chaque année.", color: T, to: OCEAN },
             ].map((c, i) => (
-              <div key={c.title} className={`reveal reveal-delay-${i + 1}`}
-                style={{ padding: "36px 30px", background: "#fff", borderRadius: 22, boxShadow: WARM_SHADOW, borderLeft: `4px solid ${c.color}`, transition: "transform 0.25s, box-shadow 0.25s" }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 48px rgba(0,0,0,0.1)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = WARM_SHADOW; }}>
-                <div style={{ fontSize: 40, marginBottom: 20, lineHeight: 1 }}>{c.icon}</div>
-                <h3 style={{ fontSize: 17, fontWeight: 700, color: TEXT, marginBottom: 12, lineHeight: 1.4 }}>{c.title}</h3>
-                <p style={{ fontSize: 14, color: TEXT2, lineHeight: 1.85 }}>{c.text}</p>
-              </div>
+              <Reveal key={c.title} delay={i * 110} className="lift"
+                style={{ padding: "38px 32px", background: "#fff", borderRadius: 24, boxShadow: WARM_SHADOW, borderTop: `4px solid ${c.color}` }}>
+                <IconTile name={c.icon} size={60} icon={28} from={c.color} to={c.to} radius={18} style={{ marginBottom: 20 }} />
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: TEXT, marginBottom: 12, lineHeight: 1.4 }}>{c.title}</h3>
+                <p style={{ fontSize: 14.5, color: TEXT2, lineHeight: 1.85 }}>{c.text}</p>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -326,98 +399,163 @@ export default function HomePage() {
       {/* ════════════════════════════════
           NOS SERVICES — cartes visuelles
           ════════════════════════════════ */}
-      <section style={{ background: "#fff", padding: "88px 24px" }}>
+      <section style={{ background: "#fff", padding: "96px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 64 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Nos prestations</div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 64 }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>Nos prestations</div>
+            <h2 className="display" style={{ fontSize: "clamp(30px, 3.8vw, 48px)" }}>
               Tout ce dont vous avez besoin
             </h2>
-            <p style={{ fontSize: 15, color: TEXT2, marginTop: 14, maxWidth: 480, margin: "14px auto 0" }}>
+            <p style={{ fontSize: 15.5, color: TEXT2, maxWidth: 480, margin: "14px auto 0", lineHeight: 1.7 }}>
               Des prestations certifiées SAP — éligibles au crédit d&apos;impôt de 50%.
             </p>
-          </div>
+          </Reveal>
 
-          <div className="services-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 22 }}>
+          <div className="services-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
             {SERVICES.map((s, i) => (
-              <Link key={s.id} href={s.id === "rangement" ? "/coach" : `/services#${s.id}`}
-                className={`reveal reveal-delay-${(i % 3) + 1}`}
-                style={{ textDecoration: "none", display: "block", overflow: "hidden", borderRadius: 22, background: "#fff", boxShadow: WARM_SHADOW, border: "1px solid rgba(0,0,0,0.05)", transition: "transform 0.25s, box-shadow 0.25s", borderTop: `3px solid ${s.special ? P : T}` }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-5px)"; e.currentTarget.style.boxShadow = "0 16px 56px rgba(0,0,0,0.1)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = WARM_SHADOW; }}>
+              <Reveal key={s.id} as={Link} href={s.id === "rangement" ? "/coach" : `/services#${s.id}`}
+                delay={(i % 3) * 100} className="lift img-zoom-wrap"
+                style={{ textDecoration: "none", display: "block", borderRadius: 24, background: "#fff", boxShadow: WARM_SHADOW, border: "1px solid rgba(0,0,0,0.05)", borderTop: `3px solid ${s.special ? P : T}` }}>
                 {/* Photo */}
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={s.img} alt={s.title} style={{ width: "100%", height: 210, objectFit: "cover", display: "block", transition: "transform 0.55s ease" }}
-                    onMouseEnter={e => e.target.style.transform = "scale(1.06)"}
-                    onMouseLeave={e => e.target.style.transform = "scale(1)"}
-                    loading="lazy" />
-                  {/* Prix badge */}
+                  <img src={s.img} alt={s.title} width={500} height={210} loading="lazy" className="img-zoom"
+                    style={{ width: "100%", height: 214, objectFit: "cover", display: "block" }} />
                   <div style={{ position: "absolute", bottom: 12, right: 12, background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)", borderRadius: 20, padding: "5px 14px", fontSize: 12, fontWeight: 700, color: s.special ? P : T, boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
                     {s.id === "rangement" ? "Sur devis" : "À partir de 18€/h"}
                   </div>
                   {s.special && (
-                    <div style={{ position: "absolute", top: 14, left: 14, background: P, color: "#fff", fontSize: 11, fontWeight: 700, padding: "5px 14px", borderRadius: 20 }}>⭐ Spécialité</div>
+                    <div style={{ position: "absolute", top: 14, left: 14, display: "inline-flex", alignItems: "center", gap: 5, background: P, color: "#fff", fontSize: 11, fontWeight: 700, padding: "5px 14px", borderRadius: 20 }}><Icon name="star" size={13} color="#fff" strokeWidth={2.2} /> Spécialité</div>
                   )}
                 </div>
                 {/* Contenu */}
                 <div style={{ padding: "22px 24px 26px" }}>
-                  <div style={{ fontSize: 26, marginBottom: 10 }}>{s.icon}</div>
-                  <h3 style={{ fontSize: 17, fontWeight: 700, color: TEXT, marginBottom: 8, lineHeight: 1.3 }}>{s.title}</h3>
-                  <p style={{ fontSize: 13, color: TEXT2, lineHeight: 1.7, marginBottom: 16 }}>{s.short}</p>
+                  <IconTile name={s.id} size={50} icon={24} from={s.special ? P : T} to={s.special ? "#E0559E" : OCEAN} radius={15} style={{ marginTop: -46, marginBottom: 12, position: "relative", boxShadow: `0 10px 24px ${s.special ? P : T}40, inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -3px 8px rgba(0,0,0,0.14)`, border: "2px solid #fff" }} />
+                  <h3 style={{ fontSize: 17.5, fontWeight: 700, color: TEXT, marginBottom: 8, lineHeight: 1.3 }}>{s.title}</h3>
+                  <p style={{ fontSize: 13.5, color: TEXT2, lineHeight: 1.7, marginBottom: 16 }}>{s.short}</p>
                   <span style={{ fontSize: 13, color: s.special ? P : T, fontWeight: 700, display: "flex", alignItems: "center", gap: 4 }}>
                     Découvrir <span>→</span>
                   </span>
                 </div>
-              </Link>
+              </Reveal>
             ))}
           </div>
 
-          <div className="reveal" style={{ textAlign: "center", marginTop: 48 }}>
+          <Reveal style={{ textAlign: "center", marginTop: 50 }}>
             <Link href="/services"
               style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 32px", borderRadius: 30, border: `2px solid ${T}40`, color: T, fontWeight: 700, fontSize: 15, textDecoration: "none", background: "#fff", boxShadow: "0 2px 12px rgba(13,169,164,0.1)", transition: "all 0.2s" }}
               onMouseEnter={e => { e.currentTarget.style.background = `${T}08`; }}
               onMouseLeave={e => { e.currentTarget.style.background = "#fff"; }}>
               Voir toutes nos prestations →
             </Link>
-          </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════
+          BANDE IMMERSIVE — feuillage + citation (parallax)
+          ════════════════════════════════ */}
+      <section style={{ position: "relative", overflow: "hidden", minHeight: "clamp(340px, 46vw, 520px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div aria-hidden data-parallax="0.18" className="parallax" style={{ position: "absolute", top: "-22%", left: 0, right: 0, height: "144%", zIndex: 0 }}>
+          <img src={IMG.greenery} alt="" width={1600} height={900} loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(120deg, rgba(10,40,40,0.80), rgba(13,27,42,0.64))" }} />
+        {/* Vignette douce — concentre le regard sur la citation */}
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "radial-gradient(120% 90% at 50% 50%, transparent 40%, rgba(6,20,24,0.45) 100%)", pointerEvents: "none" }} />
+        <div className="band-quote" style={{ position: "relative", zIndex: 2, maxWidth: 840, padding: "56px 28px", textAlign: "center" }}>
+          <Reveal y={20} style={{ marginBottom: 20, display: "flex", justifyContent: "center" }}><Icon name="jardinage" size={38} color="rgba(255,255,255,0.92)" strokeWidth={1.6} /></Reveal>
+          <Reveal delay={120} y={34}>
+            <p className="display" style={{ fontSize: "clamp(24px, 3.4vw, 42px)", color: "#fff", lineHeight: 1.28, fontWeight: 600, textShadow: "0 2px 24px rgba(0,0,0,0.28)" }}>
+              « Prendre soin de votre maison,<br />comme si c&apos;était la nôtre. »
+            </p>
+          </Reveal>
+          <Reveal delay={260} style={{ fontSize: 14, color: "rgba(255,255,255,0.74)", marginTop: 20, letterSpacing: 0.5 }}>
+            Myriam Rovela · Fondatrice de J&apos;MTD
+          </Reveal>
         </div>
       </section>
 
       {/* ════════════════════════════════
           COMMENT ÇA MARCHE
           ════════════════════════════════ */}
-      <section style={{ background: WARM, padding: "88px 24px" }}>
-        <div style={{ maxWidth: 880, margin: "0 auto" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 64 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Simple & rapide</div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
+      <section style={{ background: WARM, padding: "96px 24px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 64 }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>Simple & rapide</div>
+            <h2 className="display" style={{ fontSize: "clamp(30px, 3.8vw, 48px)" }}>
               Comment ça marche ?
             </h2>
-          </div>
+          </Reveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24, textAlign: "center" }} className="reveal">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24, textAlign: "center" }} className="why-grid">
             {[
-              { n: "01", icon: "📞", title: "Vous contactez", text: "Par téléphone, WhatsApp ou formulaire. Réponse sous 24h.", color: T },
-              { n: "02", icon: "📋", title: "Devis gratuit", text: "Nous analysons vos besoins et vous proposons une formule.", color: P },
-              { n: "03", icon: "🏠", title: "On intervient", text: "Votre intervenante J'MTD vient chez vous aux horaires convenus.", color: T },
-              { n: "04", icon: "💳", title: "50% remboursé", text: "Attestation fiscale fournie chaque année pour votre déclaration.", color: P },
+              { n: "01", icon: "phone",      title: "Vous contactez", text: "Par téléphone, WhatsApp ou formulaire. Réponse sous 24h.", color: T, to: OCEAN },
+              { n: "02", icon: "assistance", title: "Devis gratuit", text: "Nous analysons vos besoins et vous proposons une formule.", color: P, to: "#E0559E" },
+              { n: "03", icon: "home",       title: "On intervient", text: "Votre intervenante J'MTD vient chez vous aux horaires convenus.", color: T, to: OCEAN },
+              { n: "04", icon: "credit",     title: "50% remboursé", text: "Attestation fiscale fournie chaque année pour votre déclaration.", color: P, to: "#E0559E" },
             ].map((step, i) => (
-              <div key={step.n} style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
+              <Reveal key={step.n} delay={i * 90} style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
                 {i < 3 && <div className="hide-mobile" style={{ position: "absolute", top: 28, left: "62%", width: "76%", height: 2, background: `linear-gradient(90deg, ${step.color}40, transparent)` }} />}
-                <div style={{ width: 56, height: 56, borderRadius: "50%", background: `linear-gradient(135deg, ${step.color}, ${step.color}cc)`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14, boxShadow: `0 6px 20px ${step.color}35`, fontSize: 24 }}>
-                  {step.icon}
-                </div>
+                <IconTile name={step.icon} size={58} icon={25} from={step.color} to={step.to} radius={29} style={{ marginBottom: 14 }} />
+
                 <div style={{ fontSize: 11, fontWeight: 800, color: step.color, letterSpacing: 1, marginBottom: 6 }}>ÉTAPE {step.n}</div>
-                <h3 style={{ fontSize: 15, fontWeight: 700, color: TEXT, marginBottom: 8 }}>{step.title}</h3>
+                <h3 style={{ fontSize: 15.5, fontWeight: 700, color: TEXT, marginBottom: 8 }}>{step.title}</h3>
                 <p style={{ fontSize: 13, color: TEXT2, lineHeight: 1.7 }}>{step.text}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
 
-          <div className="reveal" style={{ textAlign: "center", marginTop: 52 }}>
-            <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 32px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 16, textDecoration: "none", boxShadow: `0 8px 28px ${T}44` }}>
-              📞 Commencer — Appel gratuit
+          <Reveal style={{ textAlign: "center", marginTop: 56 }}>
+            <a href={PHONE_HREF} className="btn-gradient" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 34px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 16, textDecoration: "none", boxShadow: `0 8px 28px ${T}44` }}>
+              <Icon name="phone" size={18} color="#fff" /> Commencer — Appel gratuit
             </a>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════
+          MOMENT CINÉMATIQUE PLEIN CADRE — mer turquoise + statement (parallax)
+          ════════════════════════════════ */}
+      <section style={{ position: "relative", overflow: "hidden", minHeight: "clamp(420px, 56vw, 620px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {/* Calque mer (parallax profond) — surdimensionné pour ne jamais laisser de vide */}
+        <div aria-hidden data-parallax="0.16" className="parallax" style={{ position: "absolute", top: "-20%", left: 0, right: 0, height: "140%", zIndex: 0 }}>
+          <img src={IMG.seaLight} alt="" width={1600} height={1000} loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+        {/* Scrim navy/teal — profondeur & lisibilité */}
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(160deg, rgba(9,32,38,0.62) 0%, rgba(11,40,44,0.50) 50%, rgba(13,27,42,0.68) 100%)" }} />
+        {/* Voile teal subtil pour la teinte tropicale */}
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: `radial-gradient(120% 80% at 50% 40%, ${OCEAN}18 0%, transparent 60%)`, mixBlendMode: "screen", pointerEvents: "none" }} />
+
+        <div style={{ position: "relative", zIndex: 2, maxWidth: 940, padding: "72px 28px", textAlign: "center", width: "100%" }}>
+          <Reveal>
+            <div className="eyebrow" style={{ justifyContent: "center", color: "rgba(255,255,255,0.85)" }}>Enracinés en Martinique</div>
+          </Reveal>
+          <Reveal delay={110} y={38}>
+            <p className="display" style={{ fontSize: "clamp(28px, 4vw, 52px)", color: "#fff", lineHeight: 1.22, fontWeight: 600, marginBottom: 14, textShadow: "0 2px 24px rgba(0,0,0,0.25)" }}>
+              Une île, une exigence :<br />prendre soin des foyers d&apos;ici.
+            </p>
+          </Reveal>
+          <Reveal delay={220}>
+            <p style={{ fontSize: "clamp(15px, 1.6vw, 18px)", color: "rgba(255,255,255,0.82)", lineHeight: 1.75, maxWidth: 560, margin: "0 auto 44px" }}>
+              De Rivière-Salée à Fort-de-France, nos intervenantes connaissent la Martinique — et vos attentes.
+            </p>
+          </Reveal>
+
+          <div className="sea-stats" style={{ display: "flex", alignItems: "stretch", justifyContent: "center", gap: 0, flexWrap: "wrap" }}>
+            {[
+              ["200+", "Foyers accompagnés"],
+              ["11", "Communes desservies"],
+              ["24h", "Délai de réponse"],
+              ["50%", "Crédit d'impôt"],
+            ].map(([n, l], i) => (
+              <Reveal key={l} delay={300 + i * 90} y={24}
+                style={{ padding: "0 clamp(18px, 3vw, 40px)", position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: 130 }}>
+                {i > 0 && <span aria-hidden className="sea-stat-div" style={{ position: "absolute", left: 0, top: "18%", bottom: "18%", width: 1, background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.35), transparent)" }} />}
+                <div className="display" style={{ fontSize: "clamp(34px, 4.6vw, 56px)", fontWeight: 700, color: "#fff", lineHeight: 1 }}>{n}</div>
+                <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.72)", marginTop: 8, letterSpacing: 0.4 }}>{l}</div>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
@@ -425,63 +563,63 @@ export default function HomePage() {
       {/* ════════════════════════════════
           CRÉDIT D'IMPÔT + SIMULATEUR
           ════════════════════════════════ */}
-      <section style={{ background: "#fff", padding: "88px 24px" }}>
+      <section style={{ background: "#fff", padding: "96px 24px" }}>
         <div className="calc-grid" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 64, alignItems: "center" }}>
-          <div className="reveal">
-            <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Crédit d&apos;impôt SAP</div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 700, color: TEXT, marginBottom: 20, letterSpacing: -0.5 }}>
+          <Reveal>
+            <div className="eyebrow">Crédit d&apos;impôt SAP</div>
+            <h2 className="display" style={{ fontSize: "clamp(30px, 3.8vw, 48px)", marginBottom: 22 }}>
               Moins cher<br />que vous<br />ne le pensez
             </h2>
-            <p style={{ fontSize: 16, color: TEXT2, lineHeight: 1.8, marginBottom: 32 }}>
+            <p style={{ fontSize: 16.5, color: TEXT2, lineHeight: 1.8, marginBottom: 32, maxWidth: 440 }}>
               L&apos;État finance <strong style={{ color: TEXT }}>50% de vos dépenses</strong> de services à la personne. Ce qui coûte 100€ ne vous revient qu&apos;à 50€.
             </p>
             {["Valable pour tous les foyers", "Sur toutes nos prestations", "Attestation fiscale incluse"].map(t => (
               <div key={t} style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 15, color: TEXT2, marginBottom: 14 }}>
-                <span style={{ width: 24, height: 24, borderRadius: "50%", background: `${T}18`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: T, fontWeight: 700, flexShrink: 0 }}>✓</span>
+                <span style={{ width: 24, height: 24, borderRadius: "50%", background: `${T}18`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Icon name="check" size={14} color={T} strokeWidth={2.5} /></span>
                 {t}
               </div>
             ))}
-          </div>
-          <div className="reveal reveal-delay-2"><Calculator /></div>
+          </Reveal>
+          <Reveal delay={140}><Calculator /></Reveal>
         </div>
       </section>
 
       {/* ════════════════════════════════
-          TÉMOIGNAGES — humains et chaleureux
+          TÉMOIGNAGES
           ════════════════════════════════ */}
-      <section style={{ background: WARM, padding: "88px 24px" }}>
+      <section style={{ background: WARM, padding: "96px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 64 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Ils nous font confiance</div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 64 }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>Ils nous font confiance</div>
+            <h2 className="display" style={{ fontSize: "clamp(30px, 3.8vw, 48px)" }}>
               Ce que disent nos clients
             </h2>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginTop: 16 }}>
               {"★★★★★".split("").map((s, i) => <span key={i} style={{ color: "#F59E0B", fontSize: 22 }}>{s}</span>)}
               <span style={{ fontSize: 14, color: TEXT2, marginLeft: 10, fontWeight: 500 }}>5/5 · +200 familles satisfaites en Martinique</span>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="testimonials-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 22 }}>
+          <div className="testimonials-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24 }}>
             {TESTIMONIALS.map((t, i) => (
-              <div key={t.name} className={`reveal reveal-delay-${i + 1}`}
-                style={{ padding: "32px 28px", background: "#fff", borderRadius: 22, boxShadow: WARM_SHADOW, border: "1px solid rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
-                <div style={{ position: "absolute", top: 10, right: 20, fontFamily: "Georgia, serif", fontSize: 100, color: `${T}07`, lineHeight: 1 }}>&ldquo;</div>
+              <Reveal key={t.name} delay={i * 110} className="lift"
+                style={{ padding: "34px 30px", background: "#fff", borderRadius: 24, boxShadow: WARM_SHADOW, border: "1px solid rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: 10, right: 20, fontFamily: "Georgia, serif", fontSize: 100, color: `${T}09`, lineHeight: 1 }}>&ldquo;</div>
                 <div style={{ display: "flex", gap: 3, marginBottom: 18 }}>
-                  {"★★★★★".split("").map((s, j) => <span key={j} className="star-filled" style={{ animationDelay: `${j * 0.08}s` }}>{s}</span>)}
+                  {"★★★★★".split("").map((s, j) => <span key={j} style={{ color: "#F59E0B", fontSize: 15 }}>{s}</span>)}
                 </div>
                 <p style={{ fontSize: 15, color: TEXT, lineHeight: 1.9, marginBottom: 28, fontStyle: "italic", fontWeight: 500, position: "relative" }}>
                   &ldquo;{t.text}&rdquo;
                 </p>
                 <div style={{ display: "flex", alignItems: "center", gap: 14, paddingTop: 20, borderTop: "1px solid #F1F5F9" }}>
-                  <div style={{ width: 46, height: 46, borderRadius: "50%", background: `linear-gradient(135deg, ${T}30, ${P}20)`, border: `2px solid ${T}25`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>👤</div>
+                  <div style={{ width: 46, height: 46, borderRadius: "50%", background: `linear-gradient(135deg, ${T}30, ${P}20)`, border: `2px solid ${T}25`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Icon name="users" size={22} color={T} /></div>
                   <div>
                     <div style={{ fontSize: 15, fontWeight: 700, color: TEXT }}>{t.name}</div>
-                    <div style={{ fontSize: 12, color: TEXT2, marginTop: 2 }}>📍 {t.city} · Cliente J&apos;MTD</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: TEXT2, marginTop: 2 }}><Icon name="pin" size={12} color={TEXT2} /> {t.city} · Cliente J&apos;MTD</div>
                   </div>
-                  <div style={{ marginLeft: "auto", background: `${T}10`, borderRadius: "50%", width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", color: T, fontWeight: 700, fontSize: 13 }}>✓</div>
+                  <div style={{ marginLeft: "auto", background: `${T}10`, borderRadius: "50%", width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Icon name="check" size={15} color={T} strokeWidth={2.5} /></div>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -490,79 +628,78 @@ export default function HomePage() {
       {/* ════════════════════════════════
           ZONES D'INTERVENTION
           ════════════════════════════════ */}
-      <section style={{ background: "#fff", padding: "72px 24px" }}>
+      <section style={{ background: "#fff", padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 44 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Toute la Martinique</div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3vw, 38px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5, marginBottom: 10 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 44 }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>Toute la Martinique</div>
+            <h2 className="display" style={{ fontSize: "clamp(26px, 3.2vw, 40px)", marginBottom: 10 }}>
               Zones d&apos;intervention
             </h2>
             <p style={{ fontSize: 15, color: TEXT2 }}>Basée à Rivière-Salée · Nous nous déplaçons partout en Martinique</p>
-          </div>
-          <div className="reveal reveal-delay-1" style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
+          </Reveal>
+          <Reveal delay={90} style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
             {[
-              "📍 Rivière-Salée","📍 Le Lamentin","📍 Le Diamant","📍 Saint-Esprit",
-              "📍 Fort-de-France","📍 Le Vauclin","📍 Sainte-Anne","📍 Le François",
-              "📍 Sainte-Luce","📍 Le Marin","📍 Trois-Îlets","📍 et toute la Martinique"
+              "Rivière-Salée","Le Lamentin","Le Diamant","Saint-Esprit",
+              "Fort-de-France","Le Vauclin","Sainte-Anne","Le François",
+              "Sainte-Luce","Le Marin","Trois-Îlets","et toute la Martinique"
             ].map(z => (
-              <span key={z} style={{ padding: "10px 20px", background: WARM, border: `1.5px solid ${T}20`, borderRadius: 30, fontSize: 13, color: TEXT2, fontWeight: 500, transition: "all 0.2s" }}
+              <span key={z} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 20px", background: WARM, border: `1.5px solid ${T}20`, borderRadius: 30, fontSize: 13, color: TEXT2, fontWeight: 500, transition: "all 0.2s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = T; e.currentTarget.style.color = T; e.currentTarget.style.background = "#fff"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = `${T}20`; e.currentTarget.style.color = TEXT2; e.currentTarget.style.background = WARM; }}>
-                {z}
+                <Icon name="pin" size={13} color="currentColor" /> {z}
               </span>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* ════════════════════════════════
           FAQ
           ════════════════════════════════ */}
-      <section style={{ background: WARM, padding: "88px 24px" }}>
+      <section style={{ background: WARM, padding: "96px 24px" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 56 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 14 }}>Questions fréquentes</div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 700, color: TEXT, letterSpacing: -0.5 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 56 }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>Questions fréquentes</div>
+            <h2 className="display" style={{ fontSize: "clamp(30px, 3.8vw, 48px)" }}>
               Tout ce que vous voulez savoir
             </h2>
-          </div>
-          <div className="reveal reveal-delay-1"><FAQ /></div>
-          <div className="reveal" style={{ textAlign: "center", marginTop: 44 }}>
+          </Reveal>
+          <Reveal delay={90}><FAQ /></Reveal>
+          <Reveal style={{ textAlign: "center", marginTop: 44 }}>
             <p style={{ fontSize: 15, color: TEXT2, marginBottom: 20 }}>Une autre question ? On vous répond en 2 min.</p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
               <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 26px", borderRadius: 30, border: `2px solid ${T}40`, color: T, fontWeight: 700, fontSize: 14, textDecoration: "none", background: "#fff" }}>
-                📞 Appeler
+                <Icon name="phone" size={16} color={T} /> Appeler
               </a>
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 26px", borderRadius: 30, background: "#25D366", color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", boxShadow: "0 4px 16px rgba(37,211,102,0.3)" }}>
-                💬 WhatsApp
+                <Icon name="chat" size={16} color="#fff" /> WhatsApp
               </a>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* ════════════════════════════════
           CTA FINAL — sombre, rassurant
           ════════════════════════════════ */}
-      <section style={{ background: `linear-gradient(135deg, #0D1B2A 0%, #1A2D3D 100%)`, padding: "88px 24px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -100, right: -80, width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${T}14, transparent 70%)`, pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -80, left: -60, width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${P}10, transparent 70%)`, pointerEvents: "none" }} />
+      <section style={{ background: `linear-gradient(135deg, #0D1B2A 0%, #1A2D3D 100%)`, padding: "96px 24px", position: "relative", overflow: "hidden" }}>
+        <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${T}16, transparent 70%)`, pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -80, left: -60, width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${P}12, transparent 70%)`, pointerEvents: "none" }} />
         <div style={{ maxWidth: 720, margin: "0 auto", position: "relative" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2.5, marginBottom: 16 }}>Commencez maintenant</div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(30px, 4vw, 50px)", fontWeight: 700, color: "#F8FAFC", marginBottom: 16, letterSpacing: -0.5, lineHeight: 1.15 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
+            <div className="eyebrow" style={{ justifyContent: "center", color: OCEAN }}>Commencez maintenant</div>
+            <h2 className="display" style={{ fontSize: "clamp(32px, 4.2vw, 54px)", color: "#F8FAFC", marginBottom: 16, lineHeight: 1.12 }}>
               Prêt à déléguer votre quotidien ?
             </h2>
-            <p style={{ fontSize: 16, color: "rgba(248,250,252,0.65)", lineHeight: 1.8 }}>Devis gratuit · Rappel sous 24h · Sans engagement · 50% remboursé</p>
-          </div>
+            <p style={{ fontSize: 16.5, color: "rgba(248,250,252,0.68)", lineHeight: 1.8 }}>Devis gratuit · Rappel sous 24h · Sans engagement · 50% remboursé</p>
+          </Reveal>
 
-          {/* Phone grande */}
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 40 }}>
-            <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 12, padding: "20px 40px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 800, fontSize: 20, textDecoration: "none", boxShadow: `0 10px 36px ${T}50`, letterSpacing: -0.3 }}>
-              📞 {PHONE}
+          <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
+            <a href={PHONE_HREF} className="btn-gradient" style={{ display: "inline-flex", alignItems: "center", gap: 12, padding: "20px 42px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 800, fontSize: 20, textDecoration: "none", boxShadow: `0 12px 40px ${T}55`, letterSpacing: -0.3, border: "none" }}>
+              <Icon name="phone" size={22} color="#fff" /> {PHONE}
             </a>
             <div style={{ fontSize: 13, color: "rgba(248,250,252,0.4)", marginTop: 12 }}>Lun–Ven · 8h–18h · Appel gratuit</div>
-          </div>
+          </Reveal>
 
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 36, color: "rgba(248,250,252,0.3)", fontSize: 13, justifyContent: "center" }}>
             <div style={{ flex: 1, maxWidth: 120, height: 1, background: "rgba(255,255,255,0.12)" }} />
@@ -570,9 +707,32 @@ export default function HomePage() {
             <div style={{ flex: 1, maxWidth: 120, height: 1, background: "rgba(255,255,255,0.12)" }} />
           </div>
 
-          <div className="reveal reveal-delay-2"><QuickForm /></div>
+          <Reveal delay={120}><QuickForm /></Reveal>
         </div>
       </section>
+
+      {/* ── Responsive homepage (mobile safety) ── */}
+      <style>{`
+        @media (max-width: 900px) {
+          .hero-section { min-height: auto !important; }
+          .hero-grid { grid-template-columns: 1fr !important; gap: 40px !important; padding-top: 52px !important; padding-bottom: 8px !important; }
+          .hero-visual { max-width: 480px; margin: 0 auto; width: 100%; }
+          /* Frondes : réduites & discrètes derrière le contenu empilé */
+          .hero-palm { width: 62vw !important; opacity: 0.85; }
+        }
+        @media (max-width: 768px) {
+          .why-grid { grid-template-columns: 1fr !important; }
+          .hero-photo { height: 340px !important; }
+          .band-quote p { font-size: clamp(22px, 6vw, 30px) !important; }
+          /* Stats du moment plein cadre : grille 2×2 lisible, sans séparateurs verticaux */
+          .sea-stats { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 28px 0 !important; max-width: 360px; margin: 0 auto; }
+          .sea-stat-div { display: none !important; }
+        }
+        @media (max-width: 420px) {
+          .hero-photo { height: 300px !important; }
+          .hero-palm { display: none !important; }
+        }
+      `}</style>
 
     </div>
   );

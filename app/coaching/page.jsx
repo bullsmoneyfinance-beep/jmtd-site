@@ -1,11 +1,51 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Reveal from "../../components/Reveal";
+import Icon, { IconTile } from "../../components/Icon";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
+const OCEAN = "#12B5B0";
 const TEXT = "#1A2D3D";
 const MUTED = "#64748B";
+const WARM = "#FFF8F4";
+
+/* ── Imagerie Martinique / tropical-premium (Unsplash) ── */
+const IMG = {
+  heroBg:   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&h=1000&fit=crop&auto=format&q=80", // lagon turquoise
+  palmLeaf: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=900&h=1100&fit=crop&auto=format&q=80",  // frondes de palmier
+};
+
+/* Parallax générique — piloté par [data-parallax] (voir globals.css .parallax) */
+function useParallax() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const layers = Array.from(document.querySelectorAll("[data-parallax]"));
+    if (!layers.length) return;
+    let raf = null;
+    const update = () => {
+      const vh = window.innerHeight;
+      layers.forEach(el => {
+        const speed = parseFloat(el.getAttribute("data-parallax")) || 0.12;
+        const r = el.getBoundingClientRect();
+        const offset = r.top + r.height / 2 - vh / 2;
+        el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(1)}px, 0)`;
+      });
+      raf = null;
+    };
+    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+}
 
 // ── Quiz ──────────────────────────────────────────────────────────────
 const QUESTIONS = [
@@ -106,17 +146,6 @@ const ROOMS = [
   { id: "bureau",    icon: "💻", label: "Bureau",         tasks: ["Bureau dégagé à la fin de la journée","Câbles organisés","Documents classés","Fournitures regroupées","Rien au sol"] },
 ];
 
-function useReveal() {
-  useEffect(() => {
-    const els = document.querySelectorAll(".reveal");
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); } });
-    }, { threshold: 0.1 });
-    els.forEach(el => obs.observe(el));
-    return () => obs.disconnect();
-  }, []);
-}
-
 // ── Composant Quiz ──────────────────────────────────────────────────
 function Quiz() {
   const [step, setStep] = useState(0);
@@ -144,7 +173,7 @@ function Quiz() {
       <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 16 }}>{result.name}</h3>
       <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8, marginBottom: 20, maxWidth: 480, margin: "0 auto 20px" }}>{result.desc}</p>
       <div style={{ background: `${result.color}0d`, border: `1px solid ${result.color}25`, borderRadius: 16, padding: "18px 20px", marginBottom: 28, textAlign: "left" }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: result.color, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>💡 Notre conseil pour vous</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, fontWeight: 700, color: result.color, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}><Icon name="conseils" size={15} color={result.color} /> Notre conseil pour vous</div>
         <p style={{ fontSize: 14, color: TEXT, lineHeight: 1.7 }}>{result.conseil}</p>
       </div>
       <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -250,7 +279,7 @@ function Checklist() {
                     <div style={{ height: "100%", width: `${pct}%`, background: pct === 100 ? T : `${T}88`, borderRadius: 2, transition: "width 0.3s" }} />
                   </div>
                 </div>
-                {pct === 100 && <span style={{ fontSize: 16, flexShrink: 0 }}>✅</span>}
+                {pct === 100 && <Icon name="checkCircle" size={17} color={T} style={{ flexShrink: 0 }} />}
               </button>
             );
           })}
@@ -275,7 +304,7 @@ function Checklist() {
                   <span style={{ fontSize: 14, color: done ? MUTED : TEXT, textDecoration: done ? "line-through" : "none", fontWeight: done ? 400 : 500 }}>
                     {task}
                   </span>
-                  {done && <span style={{ marginLeft: "auto", fontSize: 16 }}>✓</span>}
+                  {done && <Icon name="check" size={16} color={T} strokeWidth={2.5} style={{ marginLeft: "auto" }} />}
                 </label>
               );
             })}
@@ -288,54 +317,67 @@ function Checklist() {
 
 // ── Page principale ─────────────────────────────────────────────────
 export default function CoachingPage() {
-  useReveal();
+  useParallax();
   const [activeCat, setActiveCat] = useState(0);
 
   return (
-    <>
-      {/* Hero */}
-      <section className="inner-hero" style={{ background: "#fff", padding: "88px 24px 72px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -80, right: "5%",  width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${T}12, transparent 70%)`, filter: "blur(70px)", animation: "floatOrb 14s ease-in-out infinite", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -60, left: "8%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${P}09, transparent 70%)`,  filter: "blur(70px)", animation: "floatOrbSlow 18s ease-in-out infinite", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${P}10`, border: `1px solid ${P}28`, borderRadius: 30, padding: "6px 18px", marginBottom: 24 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: P, textTransform: "uppercase", letterSpacing: 1.5 }}>✨ Méthode Marie Kondo</span>
-          </div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(30px, 4.5vw, 52px)", fontWeight: 700, color: TEXT, lineHeight: 1.15, marginBottom: 20 }}>
+    <div style={{ background: "#fff", overflowX: "hidden" }}>
+      {/* ════════════════════════════════
+          HERO — immersif, touche tropicale
+          ════════════════════════════════ */}
+      <section className="inner-hero" style={{ position: "relative", overflow: "hidden", background: `linear-gradient(160deg, ${WARM} 0%, #EAF7F6 100%)`, padding: "clamp(88px, 12vw, 128px) 24px clamp(76px, 9vw, 100px)", textAlign: "center" }}>
+        {/* Calque photo tropical (parallax profond) */}
+        <div aria-hidden data-parallax="0.16" className="parallax" style={{ position: "absolute", top: "-22%", left: 0, right: 0, height: "144%", zIndex: 0 }}>
+          <img src={IMG.heroBg} alt="" width={1600} height={1000} loading="eager"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.20 }} />
+        </div>
+        {/* Frondes de palmier — profondeur */}
+        <div aria-hidden data-parallax="0.06" className="parallax hide-mobile" style={{ position: "absolute", top: "-10%", left: "-6%", width: "clamp(240px, 30vw, 480px)", height: "120%", zIndex: 0, pointerEvents: "none" }}>
+          <img src={IMG.palmLeaf} alt="" width={900} height={1100} loading="eager"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply", maskImage: "linear-gradient(to right, #000 30%, transparent 92%)", WebkitMaskImage: "linear-gradient(to right, #000 30%, transparent 92%)" }} />
+        </div>
+        {/* Voile dégradé — lisibilité */}
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(180deg, rgba(255,248,244,0.92) 0%, rgba(244,250,247,0.84) 55%, rgba(234,247,246,0.72) 100%)" }} />
+        <div aria-hidden style={{ position: "absolute", top: -80, right: "5%", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${T}12, transparent 70%)`, animation: "floatOrb 14s ease-in-out infinite", pointerEvents: "none", zIndex: 1 }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -60, left: "8%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${P}09, transparent 70%)`, animation: "floatOrb 18s ease-in-out infinite reverse", pointerEvents: "none", zIndex: 1 }} />
+
+        <Reveal style={{ maxWidth: 740, margin: "0 auto", position: "relative", zIndex: 2 }}>
+          <div className="eyebrow" style={{ justifyContent: "center", color: P, display: "inline-flex", alignItems: "center", gap: 7 }}><Icon name="sparkles" size={15} color={P} /> Méthode Marie Kondo</div>
+          <h1 className="display" style={{ fontSize: "clamp(32px, 4.8vw, 56px)", lineHeight: 1.12, marginBottom: 20, letterSpacing: -1 }}>
             Transformez votre espace,<br />
-            <span style={{ color: P }}>transformez votre vie</span>
+            <span style={{ background: `linear-gradient(120deg, ${P}, ${OCEAN})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>transformez votre vie</span>
           </h1>
-          <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.8, marginBottom: 36, maxWidth: 560, margin: "0 auto 36px" }}>
+          <p style={{ fontSize: 16.5, color: MUTED, lineHeight: 1.8, marginBottom: 36, maxWidth: 580, margin: "0 auto 36px" }}>
             Découvrez votre profil rangement, suivez vos progrès pièce par pièce, et laissez notre coach vous accompagner vers un intérieur qui vous ressemble vraiment.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="#quiz" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 8px 32px ${T}40` }}>
+            <a href="#quiz" className="btn-gradient" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 30px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 10px 34px ${T}44`, border: "none" }}>
               Faire mon quiz →
             </a>
-            <a href="#checklist" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, border: `1.5px solid ${T}40`, color: T, textDecoration: "none", fontSize: 15, fontWeight: 600 }}>
+            <a href="#checklist" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, border: `1.5px solid ${T}40`, color: T, textDecoration: "none", fontSize: 15, fontWeight: 600, background: "rgba(255,255,255,0.85)" }}>
               Ma checklist
             </a>
           </div>
-        </div>
+        </Reveal>
       </section>
 
-      {/* Les 5 catégories KonMari */}
+      {/* ════════════════════════════════
+          LES 5 CATÉGORIES KONMARI
+          ════════════════════════════════ */}
       <section className="main-section" style={{ background: "#F8FAFB", padding: "80px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>La méthode KonMari</span>
-            </div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>La méthode KonMari</div>
+            <h2 className="display" style={{ fontSize: "clamp(26px, 3.6vw, 40px)", marginBottom: 12 }}>
               5 catégories, dans cet ordre précis
             </h2>
-            <p style={{ fontSize: 15, color: MUTED, maxWidth: 540, margin: "0 auto" }}>
-              Marie Kondo a découvert que l'ordre des catégories n'est pas anodin. Il est conçu pour affûter progressivement votre sensibilité à la joie.
+            <p style={{ fontSize: 15, color: MUTED, maxWidth: 540, margin: "0 auto", lineHeight: 1.7 }}>
+              Marie Kondo a découvert que l&apos;ordre des catégories n&apos;est pas anodin. Il est conçu pour affûter progressivement votre sensibilité à la joie.
             </p>
-          </div>
+          </Reveal>
 
           {/* Tabs */}
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginBottom: 32 }}>
+          <Reveal delay={80} style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginBottom: 32 }}>
             {KONMARI.map((cat, i) => (
               <button key={i} onClick={() => setActiveCat(i)}
                 style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 18px", borderRadius: 30, border: `1.5px solid ${activeCat === i ? cat.color : "rgba(13,169,164,0.15)"}`, background: activeCat === i ? `${cat.color}12` : "#fff", color: activeCat === i ? cat.color : MUTED, fontWeight: activeCat === i ? 700 : 500, fontSize: 14, cursor: "pointer", transition: "all 0.2s" }}>
@@ -343,13 +385,13 @@ export default function CoachingPage() {
                 {activeCat === i && <span style={{ fontSize: 10, background: cat.color, color: "#fff", borderRadius: 10, padding: "2px 7px", fontWeight: 700 }}>{cat.num}</span>}
               </button>
             ))}
-          </div>
+          </Reveal>
 
           {/* Active cat detail */}
           {(() => {
             const cat = KONMARI[activeCat];
             return (
-              <div style={{ background: "#fff", border: `1.5px solid ${cat.color}25`, borderRadius: 24, padding: "36px 40px", boxShadow: `0 4px 32px ${cat.color}0d`, display: "grid", gridTemplateColumns: "auto 1fr", gap: 32, alignItems: "start" }}>
+              <div className="konmari-detail lift" style={{ background: "#fff", border: `1.5px solid ${cat.color}25`, borderRadius: 24, padding: "36px 40px", boxShadow: `0 8px 40px ${cat.color}12`, display: "grid", gridTemplateColumns: "auto 1fr", gap: 32, alignItems: "start" }}>
                 <div style={{ width: 80, height: 80, borderRadius: 20, background: `${cat.color}14`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, flexShrink: 0 }}>
                   {cat.icon}
                 </div>
@@ -371,60 +413,69 @@ export default function CoachingPage() {
         </div>
       </section>
 
-      {/* Quiz */}
+      {/* ════════════════════════════════
+          QUIZ
+          ════════════════════════════════ */}
       <section id="quiz" className="main-section" style={{ background: "#fff", padding: "80px 24px" }}>
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 40 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${P}10`, border: `1px solid ${P}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: P, textTransform: "uppercase", letterSpacing: 1.5 }}>Quiz · 5 questions</span>
-            </div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
+            <div className="eyebrow" style={{ justifyContent: "center", color: P }}>Quiz · 5 questions</div>
+            <h2 className="display" style={{ fontSize: "clamp(26px, 3.6vw, 40px)", marginBottom: 12 }}>
               Quel est votre profil rangement ?
             </h2>
             <p style={{ fontSize: 15, color: MUTED }}>En 2 minutes, découvrez votre style et nos recommandations personnalisées.</p>
-          </div>
-          <Quiz />
+          </Reveal>
+          <Reveal delay={100}><Quiz /></Reveal>
         </div>
       </section>
 
-      {/* Checklist */}
+      {/* ════════════════════════════════
+          CHECKLIST
+          ════════════════════════════════ */}
       <section id="checklist" className="main-section" style={{ background: "#F8FAFB", padding: "80px 24px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: 40 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Suivi de progression</span>
-            </div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>Suivi de progression</div>
+            <h2 className="display" style={{ fontSize: "clamp(26px, 3.6vw, 40px)", marginBottom: 12 }}>
               Ma checklist pièce par pièce
             </h2>
             <p style={{ fontSize: 15, color: MUTED }}>Cochez au fur et à mesure. Votre progression est sauvegardée automatiquement.</p>
-          </div>
-          <Checklist />
+          </Reveal>
+          <Reveal delay={100}><Checklist /></Reveal>
         </div>
       </section>
 
-      {/* CTA final */}
+      {/* ════════════════════════════════
+          CTA FINAL
+          ════════════════════════════════ */}
       <section className="main-section" style={{ background: "#fff", padding: "80px 24px" }}>
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
-          <div className="reveal" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "52px 40px", textAlign: "center" }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>🗂️</div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+          <Reveal className="lift" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "56px 40px", textAlign: "center", boxShadow: "0 20px 60px rgba(13,169,164,0.10)" }}>
+            <IconTile name="rangement" size={64} icon={32} from={T} to={P} radius={20} style={{ margin: "0 auto 20px" }} />
+            <h2 className="display" style={{ fontSize: "clamp(26px, 3.4vw, 38px)", marginBottom: 12 }}>
               Prêt·e pour la vraie transformation ?
             </h2>
             <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8, marginBottom: 32 }}>
-              Le quiz et la checklist sont un bon début. Mais rien ne remplace l'œil expert d'un coach pour vous guider pas à pas dans votre propre espace.
+              Le quiz et la checklist sont un bon début. Mais rien ne remplace l&apos;œil expert d&apos;un coach pour vous guider pas à pas dans votre propre espace.
             </p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-              <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 8px 32px ${T}40` }}>
+              <Link href="/contact" className="btn-gradient" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 30px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 10px 34px ${T}44`, border: "none" }}>
                 Réserver mon diagnostic gratuit →
               </Link>
               <Link href="/coach" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 24px", borderRadius: 30, border: `1.5px solid ${T}40`, color: T, textDecoration: "none", fontSize: 15, fontWeight: 600 }}>
                 Voir les formules
               </Link>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
-    </>
+
+      {/* ── Responsive (mobile safety) ── */}
+      <style>{`
+        @media (max-width: 640px) {
+          .konmari-detail { grid-template-columns: 1fr !important; gap: 20px !important; padding: 28px 24px !important; }
+        }
+      `}</style>
+    </div>
   );
 }

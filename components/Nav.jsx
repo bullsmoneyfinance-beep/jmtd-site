@@ -2,14 +2,15 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Icon from "./Icon";
 import { PHONE, PHONE_HREF, SERVICES, YOUTUBE } from "../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
 
 const TEAM_LINKS = [
-  { href: "/pointage", icon: "⏱️", label: "Pointage",           desc: "Démarrer / terminer une session" },
-  { href: "/admin",    icon: "📊", label: "Dashboard admin",     desc: "Suivi des sessions & équipes" },
+  { href: "/pointage", icon: "clock",    label: "Pointage",           desc: "Démarrer / terminer une session" },
+  { href: "/admin",    icon: "trending", label: "Dashboard admin",     desc: "Suivi des sessions & équipes" },
 ];
 
 /* ── Logo inline — s'adapte à la hauteur du nav ── */
@@ -89,11 +90,11 @@ export default function Nav() {
           borderBottom: scrolled ? "none" : "1px solid rgba(13,169,164,0.07)",
         }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 24, padding: "6px 24px", flexWrap: "nowrap", overflow: "hidden" }}>
-            <span style={{ fontSize: 12, color: "#64748B", whiteSpace: "nowrap" }}>📍 Rivière-Salée, Martinique</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748B", whiteSpace: "nowrap" }}><Icon name="pin" size={13} color="#64748B" /> Rivière-Salée, Martinique</span>
             <span className="hide-mobile" style={{ fontSize: 12, color: "#CBD5E1" }}>·</span>
-            <span className="hide-mobile" style={{ fontSize: 12, color: "#64748B", whiteSpace: "nowrap" }}>⏰ Lun–Ven 08h–18h</span>
+            <span className="hide-mobile" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748B", whiteSpace: "nowrap" }}><Icon name="clock" size={13} color="#64748B" /> Lun–Ven 08h–18h</span>
             <span className="hide-mobile" style={{ fontSize: 12, color: "#CBD5E1" }}>·</span>
-            <a href={PHONE_HREF} style={{ fontSize: 12, color: T, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" }}>📞 {PHONE}</a>
+            <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: T, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" }}><Icon name="phone" size={13} color={T} /> {PHONE}</a>
           </div>
         </div>
 
@@ -131,7 +132,7 @@ export default function Nav() {
                         style={{ display: "flex", alignItems: "center", gap: 14, padding: "11px 20px", fontSize: 13, color: "#64748B", textDecoration: "none", transition: "all 0.15s" }}
                         onMouseEnter={e => { e.currentTarget.style.background = `${T}0a`; e.currentTarget.style.color = T; }}
                         onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#64748B"; }}>
-                        <span style={{ fontSize: 20, width: 28, textAlign: "center" }}>{s.icon}</span>
+                        <span style={{ width: 28, display: "flex", justifyContent: "center", color: "inherit" }}><Icon name={s.id} size={19} color="currentColor" /></span>
                         <div>
                           <div style={{ fontWeight: 600, color: "#1A2D3D", fontSize: 13 }}>{s.title}</div>
                           <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 1 }}>{s.short}</div>
@@ -143,18 +144,18 @@ export default function Nav() {
               )}
             </div>
 
-            <Link href="/conciergerie" className="nav-link-hover" style={linkStyle(isActive("/conciergerie"))}>🔑 Conciergerie</Link>
+            <Link href="/conciergerie" className="nav-link-hover" style={{ ...linkStyle(isActive("/conciergerie")), display: "inline-flex", alignItems: "center", gap: 6 }}><Icon name="cle" size={16} color="currentColor" /> Conciergerie</Link>
             <Link href="/coach"    className="nav-link-hover" style={linkStyle(isActive("/coach"))}>Coach rangement</Link>
             <Link href="/coaching" className="nav-link-hover" style={linkStyle(isActive("/coaching"))}>Mon coaching</Link>
             <Link href="/tarifs"   className="nav-link-hover" style={linkStyle(isActive("/tarifs"))}>Tarifs</Link>
-            <Link href="/conseils" className="nav-link-hover" style={linkStyle(isActive("/conseils"))}>💡 Conseils</Link>
+            <Link href="/conseils" className="nav-link-hover" style={{ ...linkStyle(isActive("/conseils")), display: "inline-flex", alignItems: "center", gap: 6 }}><Icon name="conseils" size={16} color="currentColor" /> Conseils</Link>
             <Link href="/contact"  className="nav-link-hover" style={linkStyle(isActive("/contact"))}>Contact</Link>
 
             {/* Espace Équipe */}
             <div ref={teamRef} style={{ position: "relative", marginLeft: 6 }}>
               <button onClick={() => setTeamOpen(o => !o)}
                 style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 22, background: isTeamActive || teamOpen ? `${T}12` : "rgba(13,169,164,0.05)", border: `1.5px solid ${isTeamActive || teamOpen ? T : "rgba(13,169,164,0.18)"}`, cursor: "pointer", fontSize: 13, fontWeight: 600, color: isTeamActive || teamOpen ? T : "#475569", transition: "all 0.2s", whiteSpace: "nowrap" }}>
-                🔐 <span>Espace équipe</span>
+                <Icon name="lock" size={15} color="currentColor" /> <span>Espace équipe</span>
                 <span style={{ fontSize: 9, color: "#94A3B8", transform: teamOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>▾</span>
               </button>
               {teamOpen && (
@@ -168,8 +169,8 @@ export default function Nav() {
                       style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 18px", textDecoration: "none", transition: "background 0.15s" }}
                       onMouseEnter={e => { e.currentTarget.style.background = `${T}08`; }}
                       onMouseLeave={e => { e.currentTarget.style.background = "none"; }}>
-                      <div style={{ width: 38, height: 38, borderRadius: 10, background: item.href.includes("veille") ? `linear-gradient(135deg,${P}22,${T}11)` : `${T}10`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
-                        {item.icon}
+                      <div style={{ width: 38, height: 38, borderRadius: 10, background: item.href.includes("veille") ? `linear-gradient(135deg,${P}22,${T}11)` : `${T}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <Icon name={item.icon} size={18} color={T} />
                       </div>
                       <div>
                         <div style={{ fontWeight: 600, color: "#1A2D3D", fontSize: 13 }}>{item.label}</div>
@@ -208,16 +209,16 @@ export default function Nav() {
         {/* ── Menu mobile déroulant ── */}
         {mobileOpen && (
           <div style={{ background: "#fff", borderTop: `1px solid rgba(13,169,164,0.1)`, padding: "16px 24px 24px", animation: "slideDown 0.22s ease" }}>
-            {[["/","🏠 Accueil"],["/services","🛠 Nos prestations"],["/conciergerie","🔑 Conciergerie locative"],["/coach","🗂️ Coach rangement"],["/coaching","✨ Mon coaching"],["/tarifs","💰 Tarifs"],["/conseils","💡 Conseils & astuces"],["/faq","❓ FAQ"],["/contact","✉️ Contact & Devis"],["/recrutement","💼 Rejoindre l'équipe"]].map(([href, label]) => (
-              <Link key={href} href={href} style={{ display: "block", padding: "13px 0", borderBottom: "1px solid rgba(13,169,164,0.07)", fontSize: 15, color: pathname === href ? T : "#475569", fontWeight: pathname === href ? 600 : 400, textDecoration: "none" }}>
-                {label}
+            {[["/","home","Accueil"],["/services","maintenance","Nos prestations"],["/conciergerie","cle","Conciergerie locative"],["/coach","rangement","Coach rangement"],["/coaching","sparkles","Mon coaching"],["/tarifs","wallet","Tarifs"],["/conseils","conseils","Conseils & astuces"],["/faq","faq","FAQ"],["/contact","mail","Contact & Devis"],["/recrutement","users","Rejoindre l'équipe"]].map(([href, ic, label]) => (
+              <Link key={href} href={href} style={{ display: "flex", alignItems: "center", gap: 11, padding: "13px 0", borderBottom: "1px solid rgba(13,169,164,0.07)", fontSize: 15, color: pathname === href ? T : "#475569", fontWeight: pathname === href ? 600 : 400, textDecoration: "none" }}>
+                <Icon name={ic} size={18} color={pathname === href ? T : "#94A3B8"} /> {label}
               </Link>
             ))}
             <div style={{ marginTop: 14, background: `${T}07`, border: `1px solid ${T}18`, borderRadius: 16, padding: "14px 16px" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 10 }}>🔐 Espace équipe</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 10 }}><Icon name="lock" size={14} color="#94A3B8" /> Espace équipe</div>
               {TEAM_LINKS.map(item => (
                 <Link key={item.href} href={item.href} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: "1px solid rgba(13,169,164,0.06)", textDecoration: "none" }}>
-                  <span style={{ fontSize: 20 }}>{item.icon}</span>
+                  <span style={{ display: "flex", width: 24, justifyContent: "center" }}><Icon name={item.icon} size={19} color={T} /></span>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: "#1A2D3D" }}>{item.label}</div>
                     <div style={{ fontSize: 11, color: "#94A3B8" }}>{item.desc}</div>
@@ -229,7 +230,7 @@ export default function Nav() {
               </Link>
             </div>
             <a href={PHONE_HREF} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 14, background: `linear-gradient(135deg,${T},${P})`, color: "#fff", padding: "14px 0", borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
-              📞 {PHONE}
+              <Icon name="phone" size={17} color="#fff" /> {PHONE}
             </a>
           </div>
         )}
@@ -243,11 +244,11 @@ export default function Nav() {
         boxShadow: "0 -2px 20px rgba(13,169,164,0.1)",
       }}>
         {[
-          { href: "/",         icon: "🏠", label: "Accueil"  },
-          { href: "/conseils", icon: "💡", label: "Conseils" },
-          { href: PHONE_HREF,  icon: "📞", label: "Appeler",  ext: true, color: T },
-          { href: "/contact",  icon: "✉️", label: "Devis"    },
-          { href: "/portail",  icon: "🔐", label: "Équipe"   },
+          { href: "/",         icon: "home",     label: "Accueil"  },
+          { href: "/conseils", icon: "conseils", label: "Conseils" },
+          { href: PHONE_HREF,  icon: "phone",    label: "Appeler",  ext: true, color: T },
+          { href: "/contact",  icon: "mail",     label: "Devis"    },
+          { href: "/portail",  icon: "lock",     label: "Équipe"   },
         ].map(item => {
           const active = !item.ext && pathname === item.href;
           const col = item.color ?? (active ? T : "#94A3B8");
@@ -256,7 +257,7 @@ export default function Nav() {
             <El key={item.label} href={item.href}
               style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "10px 0", fontSize: 9.5, fontWeight: active ? 700 : 500, color: col, textDecoration: "none", gap: 4, transition: "color 0.15s", position: "relative" }}>
               {active && <span style={{ position: "absolute", top: 0, width: 28, height: 2.5, background: T, borderRadius: "0 0 3px 3px" }} />}
-              <span style={{ fontSize: 20 }}>{item.icon}</span>
+              <Icon name={item.icon} size={21} color={col} />
               {item.label}
             </El>
           );

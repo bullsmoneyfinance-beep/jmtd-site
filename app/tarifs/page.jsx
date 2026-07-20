@@ -1,13 +1,54 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PHONE_HREF, WHATSAPP, SERVICES } from "../../lib/data";
 import SapBadge from "../../components/SapBadge";
+import Reveal from "../../components/Reveal";
+import Icon, { IconTile } from "../../components/Icon";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
+const OCEAN = "#12B5B0";
 const TEXT = "#1A2D3D";
 const MUTED = "#64748B";
+const WARM = "#FFF8F4";
+
+/* ── Imagerie Martinique / tropical-premium (Unsplash) ── */
+const IMG = {
+  sea:  "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1600&h=1000&fit=crop&auto=format&q=80", // mer turquoise vue du ciel
+  palm: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=900&h=1100&fit=crop&auto=format&q=80",  // frondes de palmier, lumière douce
+  greenery: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1600&h=900&fit=crop&auto=format&q=80", // feuillage vert rétroéclairé
+};
+
+/* Parallax générique — piloté par [data-parallax] (voir globals.css .parallax) */
+function useParallax() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const layers = Array.from(document.querySelectorAll("[data-parallax]"));
+    if (!layers.length) return;
+    let raf = null;
+    const update = () => {
+      const vh = window.innerHeight;
+      layers.forEach(el => {
+        const speed = parseFloat(el.getAttribute("data-parallax")) || 0.12;
+        const r = el.getBoundingClientRect();
+        const offset = r.top + r.height / 2 - vh / 2;
+        el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(1)}px, 0)`;
+      });
+      raf = null;
+    };
+    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+}
 
 // Prix net après crédit d'impôt 50 % — formatage FR (virgule décimale)
 const net = (v) => (v / 2).toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
@@ -23,7 +64,7 @@ const ABONNEMENTS = [
 const TARIFS = [
   {
     id: "entretien",
-    icon: "🏠",
+    icon: "entretien",
     title: "Entretien & Ménage",
     from: 32,
     unit: "h",
@@ -35,7 +76,7 @@ const TARIFS = [
   },
   {
     id: "repas",
-    icon: "🍽️",
+    icon: "repas",
     title: "Préparation des repas",
     from: 32,
     unit: "h",
@@ -46,7 +87,7 @@ const TARIFS = [
   },
   {
     id: "courses",
-    icon: "🛒",
+    icon: "courses",
     title: "Livraison de courses",
     from: 28,
     unit: "prestation",
@@ -57,7 +98,7 @@ const TARIFS = [
   },
   {
     id: "assistance",
-    icon: "📋",
+    icon: "assistance",
     title: "Assistance administrative",
     from: 34,
     unit: "h",
@@ -68,7 +109,7 @@ const TARIFS = [
   },
   {
     id: "jardinage",
-    icon: "🌿",
+    icon: "jardinage",
     title: "Entretien extérieur & jardinage",
     from: 36,
     unit: "h",
@@ -80,7 +121,7 @@ const TARIFS = [
   },
   {
     id: "rangement",
-    icon: "🗂️",
+    icon: "rangement",
     title: "Coach en rangement",
     from: null,
     unit: null,
@@ -106,7 +147,7 @@ function SimulateurCredit() {
   return (
     <div style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}25`, borderRadius: 24, padding: "32px 28px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-        <span style={{ fontSize: 28 }}>🧮</span>
+        <Icon name="calc" size={26} color={T} strokeWidth={2} />
         <h3 style={{ fontSize: 20, fontWeight: 700, color: TEXT, margin: 0 }}>Simulateur crédit d'impôt</h3>
       </div>
 
@@ -156,13 +197,15 @@ function SimulateurCredit() {
 
 export default function TarifsPage() {
   const [open, setOpen] = useState(null);
+  useParallax();
 
   return (
     <>
       <style>{`
         @keyframes floatOrb { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
         @media (max-width: 768px) {
-          .tarifs-hero { padding: 40px 16px 32px !important; }
+          .tarifs-hero { padding: 44px 16px 36px !important; }
+          .hero-palm { opacity: 0.5 !important; }
           .tarifs-section { padding: 32px 16px 80px !important; }
           .tarifs-grid { grid-template-columns: 1fr !important; }
           .abo-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
@@ -176,14 +219,27 @@ export default function TarifsPage() {
       `}</style>
 
       {/* ── Hero ── */}
-      <section className="tarifs-hero" style={{ background: "#fff", padding: "80px 24px 60px", textAlign: "center", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -80, right: "8%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${T}14, transparent 70%)`, filter: "blur(50px)", animation: "floatOrb 14s ease-in-out infinite", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -60, left: "5%", width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${P}10, transparent 70%)`, filter: "blur(50px)", animation: "floatOrb 18s ease-in-out infinite", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 680, margin: "0 auto", position: "relative" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 18px", marginBottom: 20 }}>
+      <section className="tarifs-hero" style={{ background: `linear-gradient(160deg, ${WARM} 0%, #EAF7F6 100%)`, padding: "88px 24px 64px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        {/* Calque mer turquoise (parallax profond) */}
+        <div aria-hidden data-parallax="0.16" className="parallax" style={{ position: "absolute", top: "-24%", left: 0, right: 0, height: "148%", zIndex: 0 }}>
+          <img src={IMG.sea} alt="" width={1600} height={1000} loading="eager"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.20 }} />
+        </div>
+        {/* Frondes de palmier — accent tropical (droite) */}
+        <div aria-hidden data-parallax="0.06" className="parallax hero-palm" style={{ position: "absolute", top: "-8%", right: "-6%", width: "clamp(200px, 30vw, 440px)", height: "116%", zIndex: 0, pointerEvents: "none" }}>
+          <img src={IMG.palm} alt="" width={900} height={1100} loading="eager"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.13, mixBlendMode: "multiply", maskImage: "linear-gradient(to left, #000 18%, transparent 90%)", WebkitMaskImage: "linear-gradient(to left, #000 18%, transparent 90%)" }} />
+        </div>
+        {/* Voile clair pour lisibilité */}
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(180deg, rgba(255,248,244,0.90) 0%, rgba(248,250,247,0.82) 46%, rgba(234,247,246,0.74) 100%)" }} />
+        <div style={{ position: "absolute", top: -80, right: "8%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${T}14, transparent 70%)`, filter: "blur(50px)", animation: "floatOrb 14s ease-in-out infinite", pointerEvents: "none", zIndex: 1 }} />
+        <div style={{ position: "absolute", bottom: -60, left: "5%", width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${P}10, transparent 70%)`, filter: "blur(50px)", animation: "floatOrb 18s ease-in-out infinite", pointerEvents: "none", zIndex: 1 }} />
+        <div style={{ maxWidth: 680, margin: "0 auto", position: "relative", zIndex: 2 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: `1.5px solid ${T}28`, borderRadius: 30, padding: "7px 18px", marginBottom: 20, boxShadow: "0 2px 14px rgba(13,169,164,0.12)" }}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: T, display: "inline-block" }} />
             <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Tarifs & Devis</span>
           </div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 5vw, 50px)", fontWeight: 700, color: TEXT, lineHeight: 1.15, marginBottom: 18 }}>
+          <h1 className="display" style={{ fontSize: "clamp(30px, 5vw, 52px)", color: TEXT, lineHeight: 1.15, marginBottom: 18 }}>
             Des tarifs clairs,{" "}
             <span style={{ background: `linear-gradient(135deg, ${T}, ${P})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               remboursés à 50%
@@ -197,7 +253,7 @@ export default function TarifsPage() {
               Devis gratuit →
             </Link>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 30, background: "#25D366", color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
-              💬 WhatsApp rapide
+              <Icon name="chat" size={17} color="#fff" /> WhatsApp rapide
             </a>
           </div>
           <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}>
@@ -209,60 +265,61 @@ export default function TarifsPage() {
       {/* ── Crédit d'impôt explication ── */}
       <section style={{ background: "#F8FAFB", padding: "56px 24px" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 36 }}>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(22px, 3vw, 34px)", fontWeight: 700, color: TEXT, marginBottom: 10 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>Crédit d&apos;impôt SAP</div>
+            <h2 className="display" style={{ fontSize: "clamp(22px, 3vw, 34px)", color: TEXT, marginBottom: 10 }}>
               Comment fonctionne le crédit d'impôt ?
             </h2>
             <p style={{ fontSize: 15, color: MUTED }}>L'État rembourse 50% de vos dépenses SAP — automatiquement sur votre déclaration d'impôts.</p>
-          </div>
+          </Reveal>
 
           <div className="credit-explainer" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20, marginBottom: 40 }}>
             {[
-              { step: "1", icon: "📋", title: "Vous commandez", desc: "Choisissez votre prestation et fréquence" },
-              { step: "2", icon: "🏠", title: "On intervient", desc: "Nos professionnelles viennent chez vous" },
-              { step: "3", icon: "🧾", title: "Attestation fiscale", desc: "Remise chaque année en janvier" },
-              { step: "4", icon: "💳", title: "50% remboursé", desc: "Crédit sur votre déclaration d'impôts" },
-            ].map(item => (
-              <div key={item.step} style={{ textAlign: "center", padding: "24px 16px", background: "#fff", borderRadius: 20, border: `1px solid rgba(13,169,164,0.1)` }}>
+              { step: "1", icon: "assistance", title: "Vous commandez", desc: "Choisissez votre prestation et fréquence" },
+              { step: "2", icon: "home", title: "On intervient", desc: "Nos professionnelles viennent chez vous" },
+              { step: "3", icon: "sap", title: "Attestation fiscale", desc: "Remise chaque année en janvier" },
+              { step: "4", icon: "credit", title: "50% remboursé", desc: "Crédit sur votre déclaration d'impôts" },
+            ].map((item, i) => (
+              <Reveal key={item.step} delay={i * 90} className="lift" style={{ textAlign: "center", padding: "24px 16px", background: "#fff", borderRadius: 20, border: `1px solid rgba(13,169,164,0.1)`, boxShadow: "0 4px 22px rgba(13,169,164,0.06)" }}>
                 <div style={{ width: 48, height: 48, borderRadius: "50%", background: `linear-gradient(135deg, ${T}, ${P})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", color: "#fff", fontWeight: 800, fontSize: 18 }}>{item.step}</div>
-                <div style={{ fontSize: 24, marginBottom: 8 }}>{item.icon}</div>
+                <Icon name={item.icon} size={24} color={T} style={{ margin: "0 auto 8px" }} />
                 <div style={{ fontSize: 14, fontWeight: 700, color: TEXT, marginBottom: 4 }}>{item.title}</div>
                 <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.6 }}>{item.desc}</div>
-              </div>
+              </Reveal>
             ))}
           </div>
 
-          <SimulateurCredit />
+          <Reveal delay={120}><SimulateurCredit /></Reveal>
         </div>
       </section>
 
       {/* ── Grille tarifs ── */}
       <section className="tarifs-section" style={{ background: "#fff", padding: "72px 24px 80px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 40px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>Nos prestations</div>
+            <h2 className="display" style={{ fontSize: "clamp(24px, 3.5vw, 40px)", color: TEXT, marginBottom: 12 }}>
               Nos prestations & tarifs indicatifs
             </h2>
             <p style={{ fontSize: 15, color: MUTED, maxWidth: 520, margin: "0 auto" }}>
               Devis précis et personnalisé gratuit sur demande. Tarifs avant crédit d'impôt.
             </p>
-          </div>
+          </Reveal>
 
           <div className="tarifs-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24 }}>
-            {TARIFS.map(t => (
-              <div key={t.id}
+            {TARIFS.map((t, i) => (
+              <Reveal key={t.id} delay={(i % 3) * 90}
                 style={{ background: "#fff", borderRadius: 22, border: t.popular ? `2px solid ${P}` : `1px solid rgba(13,169,164,0.12)`, boxShadow: t.popular ? `0 8px 40px ${P}18` : "0 4px 24px rgba(13,169,164,0.06)", padding: "28px 26px", position: "relative", display: "flex", flexDirection: "column", gap: 16 }}
-                className="tarifs-card-pad">
+                className="tarifs-card-pad lift">
                 {t.popular && (
-                  <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${P}, ${T})`, color: "#fff", fontSize: 11, fontWeight: 800, padding: "4px 18px", borderRadius: 20, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.8 }}>
-                    ⭐ Le plus demandé
+                  <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${P}, ${T})`, color: "#fff", fontSize: 11, fontWeight: 800, padding: "4px 18px", borderRadius: 20, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.8, display: "inline-flex", alignItems: "center", gap: 5 }}>
+                    <Icon name="star" size={12} color="#fff" strokeWidth={2.5} /> Le plus demandé
                   </div>
                 )}
 
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                  <div style={{ width: 52, height: 52, borderRadius: 14, background: t.color + "18", border: `1.5px solid ${t.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, flexShrink: 0 }}>
-                    {t.icon}
-                  </div>
+                  <IconTile name={t.icon} size={52} icon={25} from={t.color} to={t.color} radius={14} />
+
                   <div style={{ flex: 1 }}>
                     <h3 style={{ fontSize: 17, fontWeight: 700, color: TEXT, margin: 0, lineHeight: 1.3 }}>{t.title}</h3>
                     {t.from ? (
@@ -304,7 +361,7 @@ export default function TarifsPage() {
                   <ul style={{ margin: 0, paddingLeft: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 7 }}>
                     {t.includes.map(item => (
                       <li key={item} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: MUTED }}>
-                        <span style={{ color: t.color, fontWeight: 800, flexShrink: 0 }}>✓</span> {item}
+                        <Icon name="check" size={16} color={t.color} strokeWidth={2.6} /> {item}
                       </li>
                     ))}
                   </ul>
@@ -314,13 +371,13 @@ export default function TarifsPage() {
                   style={{ display: "block", textAlign: "center", padding: "12px", borderRadius: 30, background: t.popular ? `linear-gradient(135deg, ${P}, ${T})` : `${t.color}12`, border: t.popular ? "none" : `1px solid ${t.color}30`, color: t.popular ? "#fff" : t.color, fontWeight: 700, fontSize: 14, textDecoration: "none", marginTop: "auto", transition: "all 0.2s" }}>
                   Demander un devis →
                 </Link>
-              </div>
+              </Reveal>
             ))}
           </div>
 
           <div style={{ textAlign: "center", marginTop: 36, padding: "20px 24px", background: `${T}08`, border: `1px solid ${T}20`, borderRadius: 18 }}>
             <p style={{ fontSize: 14, color: MUTED, margin: 0 }}>
-              💡 <strong style={{ color: TEXT }}>Devis gratuit et sans engagement</strong> — Nous nous déplaçons pour évaluer vos besoins avant tout engagement.{" "}
+              <Icon name="conseils" size={16} color={T} style={{ display: "inline-block", verticalAlign: "-3px", marginRight: 4 }} /> <strong style={{ color: TEXT }}>Devis gratuit et sans engagement</strong> — Nous nous déplaçons pour évaluer vos besoins avant tout engagement.{" "}
               <Link href="/contact" style={{ color: T, fontWeight: 700 }}>Prendre rendez-vous →</Link>
             </p>
           </div>
@@ -330,30 +387,32 @@ export default function TarifsPage() {
       {/* ── Formules d'abonnement ménage ── */}
       <section className="abo-section" style={{ background: `linear-gradient(180deg, #F8FAFB, #fff)`, padding: "72px 24px 80px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 12 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${P}10`, border: `1px solid ${P}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
-              <span style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: 1.2 }}>Ménage régulier · plus vous confiez, moins c'est cher</span>
+          <Reveal style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center", marginBottom: 12 }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${P}10`, border: `1px solid ${P}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: 1.2 }}>Ménage régulier · plus vous confiez, moins c'est cher</span>
+              </div>
             </div>
-          </div>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 40px)", fontWeight: 700, color: TEXT, textAlign: "center", marginBottom: 12 }}>
-            Formules d'abonnement
-          </h2>
-          <p style={{ fontSize: 15, color: MUTED, maxWidth: 560, margin: "0 auto 44px", textAlign: "center" }}>
-            Un tarif dégressif selon votre volume hebdomadaire. Intervenante attitrée et créneau réservé dès la formule Essentiel.
-          </p>
+            <h2 className="display" style={{ fontSize: "clamp(24px, 3.5vw, 40px)", color: TEXT, textAlign: "center", marginBottom: 12 }}>
+              Formules d'abonnement
+            </h2>
+            <p style={{ fontSize: 15, color: MUTED, maxWidth: 560, margin: "0 auto 44px", textAlign: "center" }}>
+              Un tarif dégressif selon votre volume hebdomadaire. Intervenante attitrée et créneau réservé dès la formule Essentiel.
+            </p>
+          </Reveal>
 
           <div className="abo-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18, alignItems: "stretch" }}>
-            {ABONNEMENTS.map(a => (
-              <div key={a.key} style={{
+            {ABONNEMENTS.map((a, i) => (
+              <Reveal key={a.key} delay={i * 90} className={a.popular ? "" : "lift"} style={{
                 background: "#fff", borderRadius: 22, padding: "26px 22px", position: "relative",
                 border: a.popular ? `2px solid ${P}` : "1px solid rgba(13,169,164,0.14)",
                 boxShadow: a.popular ? `0 12px 44px ${P}20` : "0 4px 22px rgba(13,169,164,0.07)",
                 display: "flex", flexDirection: "column", gap: 14,
-                transform: a.popular ? "scale(1.03)" : "none", zIndex: a.popular ? 2 : 1,
+                zIndex: a.popular ? 2 : 1, ...(a.popular ? { transform: "scale(1.03)" } : {}),
               }}>
                 {a.popular && (
-                  <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${P}, ${T})`, color: "#fff", fontSize: 10.5, fontWeight: 800, padding: "4px 16px", borderRadius: 20, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.8 }}>
-                    ⭐ Le plus choisi
+                  <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${P}, ${T})`, color: "#fff", fontSize: 10.5, fontWeight: 800, padding: "4px 16px", borderRadius: 20, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.8, display: "inline-flex", alignItems: "center", gap: 5 }}>
+                    <Icon name="star" size={12} color="#fff" strokeWidth={2.5} /> Le plus choisi
                   </div>
                 )}
                 <div>
@@ -373,7 +432,7 @@ export default function TarifsPage() {
                 <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
                   {a.features.map(f => (
                     <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12.5, color: TEXT }}>
-                      <span style={{ color: a.popular ? P : T, fontWeight: 900, flexShrink: 0 }}>✓</span> {f}
+                      <Icon name="check" size={15} color={a.popular ? P : T} strokeWidth={2.6} style={{ marginTop: 2 }} /> {f}
                     </li>
                   ))}
                 </ul>
@@ -385,7 +444,7 @@ export default function TarifsPage() {
                 }}>
                   Choisir cette formule →
                 </Link>
-              </div>
+              </Reveal>
             ))}
           </div>
 
@@ -395,12 +454,32 @@ export default function TarifsPage() {
         </div>
       </section>
 
+      {/* ── Bande immersive tropicale ── */}
+      <section style={{ position: "relative", overflow: "hidden", height: "clamp(260px, 38vw, 400px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div aria-hidden data-parallax="0.14" className="parallax" style={{ position: "absolute", top: "-18%", left: 0, right: 0, height: "136%", zIndex: 0 }}>
+          <img src={IMG.greenery} alt="" width={1600} height={900} loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(120deg, rgba(10,40,40,0.80), rgba(13,27,42,0.66))" }} />
+        <Reveal y={30} style={{ position: "relative", zIndex: 2, maxWidth: 820, padding: "0 28px", textAlign: "center" }}>
+          <Icon name="jardinage" size={32} color="#fff" style={{ margin: "0 auto 16px" }} />
+          <p className="display" style={{ fontSize: "clamp(22px, 3.2vw, 36px)", color: "#fff", lineHeight: 1.3, fontWeight: 600 }}>
+            « Un intérieur toujours net,<br />sans y penser. »
+          </p>
+          <div style={{ fontSize: 13.5, color: "rgba(255,255,255,0.72)", marginTop: 16, letterSpacing: 0.5 }}>
+            Un tarif dégressif, un confort durable · J&apos;MTD Martinique
+          </div>
+        </Reveal>
+      </section>
+
       {/* ── FAQ mini ── */}
       <section style={{ background: "#F8FAFB", padding: "56px 24px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 700, color: TEXT, textAlign: "center", marginBottom: 32 }}>
-            Questions fréquentes sur les tarifs
-          </h2>
+          <Reveal>
+            <h2 className="display" style={{ fontSize: "clamp(22px, 3vw, 32px)", color: TEXT, textAlign: "center", marginBottom: 32 }}>
+              Questions fréquentes sur les tarifs
+            </h2>
+          </Reveal>
           {[
             { q: "Le crédit d'impôt, c'est pour tout le monde ?", a: "Oui, pour tous les foyers fiscaux français (résidents en Martinique inclus), qu'ils soient imposables ou non. Si vous ne payez pas d'impôts, le crédit devient un remboursement direct." },
             { q: "Comment se passe le paiement ?", a: "Paiement par virement, chèque ou espèces après chaque intervention. Nous remettons une facture détaillée qui sert de justificatif pour votre déclaration d'impôts." },
@@ -429,8 +508,8 @@ export default function TarifsPage() {
 
       {/* ── CTA final ── */}
       <section style={{ background: "#fff", padding: "64px 24px" }}>
-        <div style={{ maxWidth: 680, margin: "0 auto", textAlign: "center" }}>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(22px, 3.5vw, 36px)", fontWeight: 700, color: TEXT, marginBottom: 16 }}>
+        <Reveal style={{ maxWidth: 680, margin: "0 auto", textAlign: "center" }}>
+          <h2 className="display" style={{ fontSize: "clamp(22px, 3.5vw, 36px)", color: TEXT, marginBottom: 16 }}>
             Prêt à nous confier votre domicile ?
           </h2>
           <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8, marginBottom: 32 }}>
@@ -441,10 +520,10 @@ export default function TarifsPage() {
               Devis gratuit →
             </Link>
             <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 24px", borderRadius: 30, border: `1.5px solid ${T}40`, color: T, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
-              📞 Appeler directement
+              <Icon name="phone" size={17} color={T} /> Appeler directement
             </a>
           </div>
-        </div>
+        </Reveal>
       </section>
     </>
   );

@@ -1,7 +1,39 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Reveal from "../../components/Reveal";
+import Icon, { IconTile } from "../../components/Icon";
 import { PHONE, PHONE_HREF, WHATSAPP } from "../../lib/data";
+
+/* Parallax générique — piloté par [data-parallax] (voir globals.css .parallax) */
+function useParallax() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const layers = Array.from(document.querySelectorAll("[data-parallax]"));
+    if (!layers.length) return;
+    let raf = null;
+    const update = () => {
+      const vh = window.innerHeight;
+      layers.forEach(el => {
+        const speed = parseFloat(el.getAttribute("data-parallax")) || 0.12;
+        const r = el.getBoundingClientRect();
+        const offset = r.top + r.height / 2 - vh / 2;
+        el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(1)}px, 0)`;
+      });
+      raf = null;
+    };
+    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+}
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -16,30 +48,30 @@ const IMG = (id, w = 800, h = 600) => `https://images.unsplash.com/${id}?w=${w}&
 
 // ── Opportunité marché ──
 const MARCHE = [
-  { n: "+1 M", l: "de touristes par an en Martinique", ic: "✈️" },
-  { n: "×3", l: "de meublés de tourisme en 5 ans", ic: "📈" },
-  { n: "70 %+", l: "de taux d'occupation en haute saison", ic: "🗓️" },
-  { n: "24/7", l: "de demande voyageurs à gérer", ic: "🌙" },
+  { n: "+1 M", l: "de touristes par an en Martinique", ic: "plane" },
+  { n: "×3", l: "de meublés de tourisme en 5 ans", ic: "trending" },
+  { n: "70 %+", l: "de taux d'occupation en haute saison", ic: "annonces" },
+  { n: "24/7", l: "de demande voyageurs à gérer", ic: "moon" },
 ];
 
 // ── Services conciergerie ──
 const SERVICES_CONCIERGE = [
-  { icon: "🧹", title: "Ménage entre séjours", desc: "Remise en état hôtelière après chaque départ : sols, sanitaires, cuisine, poussières, aération.", color: T },
-  { icon: "🛏️", title: "Blanchisserie & linge hôtelier", desc: "Fourniture, lavage et mise en place du linge de lit et de toilette, pliage soigné façon hôtel.", color: P },
-  { icon: "🔑", title: "Accueil & remise des clés", desc: "Check-in / check-out des voyageurs, remise des clés, présentation du logement et des consignes.", color: "#0EA5A0" },
-  { icon: "📋", title: "États des lieux", desc: "Inventaire photographique à l'entrée et à la sortie, signalement immédiat de tout dégât.", color: "#F59E0B" },
-  { icon: "🌿", title: "Entretien extérieur & piscine", desc: "Jardin, terrasse, piscine, abords : votre bien reste impeccable à chaque arrivée.", color: "#16A34A" },
-  { icon: "🔧", title: "Maintenance & petits travaux", desc: "Coordination des interventions (plomberie, électricité, électroménager) et petits dépannages.", color: "#6366F1" },
-  { icon: "📅", title: "Gestion des annonces", desc: "Multi-plateformes (Airbnb, Booking, Abritel), calendrier synchronisé et messagerie voyageurs.", color: "#0284C7" },
-  { icon: "💬", title: "Relation voyageurs 7j/7", desc: "Réponses rapides, gestion des avis et des demandes pendant le séjour, disponibilité continue.", color: P },
+  { icon: "menage", title: "Ménage entre séjours", desc: "Remise en état hôtelière après chaque départ : sols, sanitaires, cuisine, poussières, aération.", color: T },
+  { icon: "linge", title: "Blanchisserie & linge hôtelier", desc: "Fourniture, lavage et mise en place du linge de lit et de toilette, pliage soigné façon hôtel.", color: P },
+  { icon: "cle", title: "Accueil & remise des clés", desc: "Check-in / check-out des voyageurs, remise des clés, présentation du logement et des consignes.", color: "#0EA5A0" },
+  { icon: "etatdeslieux", title: "États des lieux", desc: "Inventaire photographique à l'entrée et à la sortie, signalement immédiat de tout dégât.", color: "#F59E0B" },
+  { icon: "exterieur", title: "Entretien extérieur & piscine", desc: "Jardin, terrasse, piscine, abords : votre bien reste impeccable à chaque arrivée.", color: "#16A34A" },
+  { icon: "maintenance", title: "Maintenance & petits travaux", desc: "Coordination des interventions (plomberie, électricité, électroménager) et petits dépannages.", color: "#6366F1" },
+  { icon: "annonces", title: "Gestion des annonces", desc: "Multi-plateformes (Airbnb, Booking, Abritel), calendrier synchronisé et messagerie voyageurs.", color: "#0284C7" },
+  { icon: "chat", title: "Relation voyageurs 7j/7", desc: "Réponses rapides, gestion des avis et des demandes pendant le séjour, disponibilité continue.", color: P },
 ];
 
 // ── Rotation opérationnelle ──
 const ROTATION = [
-  { n: "1", ic: "🚪", t: "Départ voyageur", d: "Check-out et récupération des clés, premier contrôle du logement." },
-  { n: "2", ic: "🧴", t: "Ménage & linge", d: "Nettoyage complet, linge hôtelier frais, réassort des consommables." },
-  { n: "3", ic: "🔍", t: "Contrôle qualité", d: "Inspection photo, signalement d'incident, mise en scène du logement." },
-  { n: "4", ic: "✨", t: "Prêt à accueillir", d: "Logement irréprochable, accueil du prochain voyageur assuré." },
+  { n: "1", ic: "cle", t: "Départ voyageur", d: "Check-out et récupération des clés, premier contrôle du logement." },
+  { n: "2", ic: "menage", t: "Ménage & linge", d: "Nettoyage complet, linge hôtelier frais, réassort des consommables." },
+  { n: "3", ic: "search", t: "Contrôle qualité", d: "Inspection photo, signalement d'incident, mise en scène du logement." },
+  { n: "4", ic: "sparkles", t: "Prêt à accueillir", d: "Logement irréprochable, accueil du prochain voyageur assuré." },
 ];
 
 // ── Formules ──
@@ -107,7 +139,7 @@ function SimulateurRevenus() {
   return (
     <div style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${GOLD}44`, borderRadius: 24, padding: "34px 30px", backdropFilter: "blur(10px)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 26 }}>
-        <span style={{ fontSize: 26 }}>📊</span>
+        <Icon name="trending" size={24} color={GOLD} strokeWidth={2} />
         <h3 style={{ fontSize: 20, fontWeight: 800, color: "#fff", margin: 0 }}>Estimez vos revenus locatifs</h3>
       </div>
       <div className="cg-simu-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 26, marginBottom: 30 }}>
@@ -148,6 +180,7 @@ function ResCard({ label, value, color, big }) {
 
 export default function ConciergeriePage() {
   const [openFaq, setOpenFaq] = useState(null);
+  useParallax();
 
   return (
     <>
@@ -186,10 +219,16 @@ export default function ConciergeriePage() {
       <div className="cg-wrap">
         {/* ── Hero ── */}
         <section className="cg-hero" style={{ background: `linear-gradient(155deg, ${NAVY} 0%, ${NAVY2} 100%)`, padding: "78px 24px 72px", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: -80, right: "4%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${T}30, transparent 70%)`, filter: "blur(60px)", animation: "floatOrb 16s ease-in-out infinite", pointerEvents: "none" }} />
+          {/* Calque photo tropical (parallax profond — mer turquoise, fondu dans le navy) */}
+          <div aria-hidden data-parallax="0.14" className="parallax" style={{ position: "absolute", top: "-20%", left: 0, right: 0, height: "140%", zIndex: 0 }}>
+            <img src={IMG("photo-1505142468610-359e7d316be0", 1600, 900)} alt="" width={1600} height={900} loading="eager"
+              style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.14 }} />
+          </div>
+          <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 0, background: `linear-gradient(155deg, ${NAVY}e6 0%, ${NAVY2}e0 100%)` }} />
+          <div style={{ position: "absolute", top: -80, right: "4%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${T}30, transparent 70%)`, filter: "blur(60px)", animation: "floatOrb 16s ease-in-out infinite", pointerEvents: "none", zIndex: 1 }} />
           <div style={{ position: "absolute", bottom: -100, left: "0%", width: 360, height: 360, borderRadius: "50%", background: `radial-gradient(circle, ${GOLD}26, transparent 70%)`, filter: "blur(60px)", animation: "floatOrb 20s ease-in-out infinite", pointerEvents: "none" }} />
 
-          <div className="cg-hero-grid cg-reveal" style={{ maxWidth: 1160, margin: "0 auto", position: "relative" }}>
+          <div className="cg-hero-grid cg-reveal" style={{ maxWidth: 1160, margin: "0 auto", position: "relative", zIndex: 2 }}>
             <div>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: `1px solid ${GOLD}55`, borderRadius: 30, padding: "6px 16px", marginBottom: 22 }}>
                 <span style={{ width: 7, height: 7, borderRadius: "50%", background: GOLD }} />
@@ -207,7 +246,7 @@ export default function ConciergeriePage() {
                   Estimer mes revenus →
                 </Link>
                 <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "15px 26px", borderRadius: 30, background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
-                  📞 {PHONE}
+                  <Icon name="phone" size={17} color="#fff" /> {PHONE}
                 </a>
               </div>
               <div style={{ display: "flex", gap: 22, marginTop: 34, flexWrap: "wrap" }}>
@@ -222,12 +261,12 @@ export default function ConciergeriePage() {
 
             {/* Image hero */}
             <div style={{ position: "relative" }}>
-              <div style={{ borderRadius: 24, overflow: "hidden", boxShadow: "0 30px 80px rgba(0,0,0,0.45)", border: "1px solid rgba(255,255,255,0.12)" }}>
-                <img src={IMG("photo-1512917774080-9991f1c4c750", 720, 560)} alt="Villa avec piscine en location en Martinique" loading="eager"
-                  style={{ width: "100%", height: 420, objectFit: "cover", display: "block" }} />
+              <div className="img-zoom-wrap lift" style={{ borderRadius: 24, boxShadow: "0 30px 80px rgba(0,0,0,0.45)", border: "1px solid rgba(255,255,255,0.12)" }}>
+                <img src={IMG("photo-1512917774080-9991f1c4c750", 720, 560)} alt="Villa avec piscine en location en Martinique" width={720} height={560} loading="eager" className="img-zoom"
+                  style={{ width: "100%", height: 420, objectFit: "cover", display: "block", borderRadius: 24 }} />
               </div>
               <div style={{ position: "absolute", bottom: -22, left: -18, background: "#fff", borderRadius: 16, padding: "14px 18px", boxShadow: "0 16px 40px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontSize: 26 }}>💰</span>
+                <IconTile name="wallet" size={44} icon={22} from={GOLD} to={GOLD2} radius={12} color={NAVY} />
                 <div>
                   <div style={{ fontSize: 12, color: MUTED, fontWeight: 600 }}>Revenus optimisés</div>
                   <div style={{ fontSize: 15, fontWeight: 800, color: NAVY }}>+ de réservations, 0 tracas</div>
@@ -239,10 +278,10 @@ export default function ConciergeriePage() {
 
         {/* ── Opportunité marché Martinique ── */}
         <section className="cg-section" style={{ background: "#fff", padding: "76px 24px" }}>
-          <div className="cg-marche-grid" style={{ maxWidth: 1140, margin: "0 auto" }}>
-            <div style={{ borderRadius: 24, overflow: "hidden", boxShadow: "0 20px 60px rgba(13,169,164,0.14)" }}>
-              <img src={IMG("photo-1507525428034-b723cf961d3e", 700, 620)} alt="Plage de Martinique, destination touristique" loading="lazy"
-                style={{ width: "100%", height: 440, objectFit: "cover", display: "block" }} />
+          <Reveal className="cg-marche-grid" style={{ maxWidth: 1140, margin: "0 auto" }}>
+            <div className="img-zoom-wrap lift" style={{ borderRadius: 24, boxShadow: "0 20px 60px rgba(13,169,164,0.14)" }}>
+              <img src={IMG("photo-1507525428034-b723cf961d3e", 700, 620)} alt="Plage de Martinique, destination touristique" width={700} height={620} loading="lazy" className="img-zoom"
+                style={{ width: "100%", height: 440, objectFit: "cover", display: "block", borderRadius: 24 }} />
             </div>
             <div>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 18 }}>
@@ -257,14 +296,14 @@ export default function ConciergeriePage() {
               <div className="cg-stats">
                 {MARCHE.map(m => (
                   <div key={m.l} style={{ background: "#F8FAFB", border: "1px solid rgba(13,169,164,0.12)", borderRadius: 16, padding: "18px 16px", textAlign: "center" }}>
-                    <div style={{ fontSize: 22, marginBottom: 6 }}>{m.ic}</div>
+                    <Icon name={m.ic} size={24} color={T} style={{ margin: "0 auto 8px" }} />
                     <div style={{ fontSize: 22, fontWeight: 900, color: T }}>{m.n}</div>
                     <div style={{ fontSize: 11.5, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>{m.l}</div>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
+          </Reveal>
         </section>
 
         {/* ── Services à la carte ── */}
@@ -278,17 +317,17 @@ export default function ConciergeriePage() {
                 Le même soin et le même professionnalisme que nos prestations à domicile — au service de votre rentabilité.
               </p>
             </div>
-            <div className="cg-services-grid">
+            <Reveal className="cg-services-grid">
               {SERVICES_CONCIERGE.map(s => (
                 <div key={s.title} style={{ background: "#fff", borderRadius: 18, border: "1px solid rgba(13,169,164,0.12)", borderTop: `3px solid ${s.color}`, padding: "24px 20px", boxShadow: "0 4px 20px rgba(13,169,164,0.06)", transition: "transform 0.2s, box-shadow 0.2s" }}
                   onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-5px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(13,169,164,0.14)"; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(13,169,164,0.06)"; }}>
-                  <div style={{ width: 48, height: 48, borderRadius: 13, background: `${s.color}14`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 14 }}>{s.icon}</div>
+                  <IconTile name={s.icon} size={52} icon={25} from={s.color} to={s.color} radius={14} style={{ marginBottom: 14 }} />
                   <h3 style={{ fontSize: 15.5, fontWeight: 800, color: TEXT, margin: "0 0 8px" }}>{s.title}</h3>
                   <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, margin: 0 }}>{s.desc}</p>
                 </div>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -301,17 +340,17 @@ export default function ConciergeriePage() {
               </h2>
               <p style={{ fontSize: 15, color: MUTED, maxWidth: 540, margin: "0 auto" }}>Un logement toujours prêt, propre et accueillant — sans que vous ayez à y penser.</p>
             </div>
-            <div className="cg-rotation">
+            <Reveal className="cg-rotation">
               {ROTATION.map((r, i) => (
-                <div key={r.n} style={{ position: "relative", background: "#F8FAFB", border: "1px solid rgba(13,169,164,0.1)", borderRadius: 18, padding: "26px 20px", textAlign: "center" }}>
-                  <div style={{ width: 52, height: 52, borderRadius: "50%", background: `linear-gradient(135deg, ${T}, ${P})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", fontSize: 24, boxShadow: `0 8px 22px ${T}33` }}>{r.ic}</div>
+                <div key={r.n} className="lift" style={{ position: "relative", background: "#F8FAFB", border: "1px solid rgba(13,169,164,0.1)", borderRadius: 18, padding: "26px 20px", textAlign: "center" }}>
+                  <div style={{ width: 52, height: 52, borderRadius: "50%", background: `linear-gradient(135deg, ${T}, ${P})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", boxShadow: `0 8px 22px ${T}33` }}><Icon name={r.ic} size={24} color="#fff" strokeWidth={2} /></div>
                   <div style={{ fontSize: 11, fontWeight: 800, color: T, textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>Étape {r.n}</div>
                   <h3 style={{ fontSize: 16, fontWeight: 800, color: TEXT, margin: "0 0 8px" }}>{r.t}</h3>
                   <p style={{ fontSize: 12.5, color: MUTED, lineHeight: 1.6, margin: 0 }}>{r.d}</p>
                   {i < ROTATION.length - 1 && <div className="hide-mobile" style={{ position: "absolute", top: 46, right: -12, fontSize: 20, color: `${T}66`, zIndex: 2 }}>→</div>}
                 </div>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -349,9 +388,9 @@ export default function ConciergeriePage() {
               </p>
             </div>
 
-            <div className="cg-formules-grid">
+            <Reveal className="cg-formules-grid">
               {FORMULES.map(f => (
-                <div key={f.key} style={{
+                <div key={f.key} className={f.highlight ? undefined : "lift"} style={{
                   background: f.highlight ? NAVY : "#fff", borderRadius: 22, padding: "30px 26px", position: "relative",
                   border: f.highlight ? `2px solid ${GOLD}` : "1px solid rgba(13,169,164,0.14)",
                   boxShadow: f.highlight ? `0 16px 50px ${NAVY}33` : "0 4px 22px rgba(13,169,164,0.07)",
@@ -359,8 +398,8 @@ export default function ConciergeriePage() {
                   transform: f.highlight ? "scale(1.03)" : "none",
                 }}>
                   {f.highlight && (
-                    <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})`, color: NAVY, fontSize: 10.5, fontWeight: 800, padding: "4px 16px", borderRadius: 20, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.8 }}>
-                      ⭐ Le plus populaire
+                    <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})`, color: NAVY, fontSize: 10.5, fontWeight: 800, padding: "4px 16px", borderRadius: 20, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.8, display: "inline-flex", alignItems: "center", gap: 5 }}>
+                      <Icon name="star" size={12} color={NAVY} strokeWidth={2.5} /> Le plus populaire
                     </div>
                   )}
                   <div>
@@ -375,7 +414,7 @@ export default function ConciergeriePage() {
                   <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 9, flex: 1 }}>
                     {f.features.map(feat => (
                       <li key={feat} style={{ display: "flex", alignItems: "flex-start", gap: 9, fontSize: 13, color: f.highlight ? "rgba(255,255,255,0.9)" : TEXT }}>
-                        <span style={{ color: f.highlight ? GOLD : T, fontWeight: 900, flexShrink: 0 }}>✓</span> {feat}
+                        <Icon name="check" size={16} color={f.highlight ? GOLD : T} strokeWidth={2.6} style={{ marginTop: 2 }} /> {feat}
                       </li>
                     ))}
                   </ul>
@@ -389,7 +428,7 @@ export default function ConciergeriePage() {
                   </Link>
                 </div>
               ))}
-            </div>
+            </Reveal>
             <p style={{ fontSize: 12.5, color: "#94A3B8", textAlign: "center", marginTop: 24 }}>
               Le % s'applique au chiffre d'affaires locatif encaissé. Sans abonnement fixe : nous sommes rémunérés quand votre bien rapporte.
             </p>
@@ -405,18 +444,18 @@ export default function ConciergeriePage() {
               </h2>
               <p style={{ fontSize: 15, color: MUTED }}>Villa, appartement, studio ou bungalow — on s'adapte à votre patrimoine.</p>
             </div>
-            <div className="cg-biens">
-              {BIENS.map(b => (
-                <div key={b.label} style={{ position: "relative", borderRadius: 18, overflow: "hidden", boxShadow: "0 8px 28px rgba(13,27,42,0.12)", cursor: "default" }}>
-                  <img src={IMG(b.img, 500, 420)} alt={b.label} loading="lazy" style={{ width: "100%", height: 240, objectFit: "cover", display: "block" }} />
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,27,42,0.85) 0%, transparent 55%)" }} />
-                  <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
+            <Reveal className="cg-biens">
+              {BIENS.map((b, i) => (
+                <div key={b.label} className="img-zoom-wrap lift" style={{ position: "relative", borderRadius: 18, boxShadow: "0 8px 28px rgba(13,27,42,0.12)", cursor: "default" }}>
+                  <img src={IMG(b.img, 500, 420)} alt={b.label} width={500} height={420} loading="lazy" className="img-zoom" style={{ width: "100%", height: 240, objectFit: "cover", display: "block", borderRadius: 18 }} />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,27,42,0.85) 0%, transparent 55%)", pointerEvents: "none" }} />
+                  <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, pointerEvents: "none" }}>
                     <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>{b.label}</div>
                     <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>{b.sub}</div>
                   </div>
                 </div>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -470,9 +509,9 @@ export default function ConciergeriePage() {
               </h2>
               <p style={{ fontSize: 15, color: MUTED }}>Des propriétaires sereins, des voyageurs conquis.</p>
             </div>
-            <div className="cg-temoins">
+            <Reveal className="cg-temoins">
               {TEMOIGNAGES.map(t => (
-                <div key={t.nom} style={{ background: "#fff", borderRadius: 20, padding: "28px 26px", border: "1px solid rgba(13,169,164,0.1)", boxShadow: "0 6px 26px rgba(13,169,164,0.07)", position: "relative" }}>
+                <div key={t.nom} className="lift" style={{ background: "#fff", borderRadius: 20, padding: "28px 26px", border: "1px solid rgba(13,169,164,0.1)", boxShadow: "0 6px 26px rgba(13,169,164,0.07)", position: "relative" }}>
                   <div style={{ fontFamily: "Georgia, serif", fontSize: 60, color: `${GOLD}44`, lineHeight: 0.6, height: 26 }}>“</div>
                   <div style={{ display: "flex", gap: 2, marginBottom: 12 }}>{"★★★★★".split("").map((s, i) => <span key={i} style={{ color: GOLD, fontSize: 15 }}>{s}</span>)}</div>
                   <p style={{ fontSize: 14.5, color: "#374151", lineHeight: 1.8, marginBottom: 18 }}>{t.txt}</p>
@@ -480,7 +519,7 @@ export default function ConciergeriePage() {
                   <div style={{ fontSize: 12.5, color: MUTED }}>{t.loc}</div>
                 </div>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -499,21 +538,21 @@ export default function ConciergeriePage() {
                 Un bien mais aucune idée de par où commencer ? On vous accompagne du diagnostic à la première réservation.
               </p>
             </div>
-            <div className="cg-lancement-grid">
+            <Reveal className="cg-lancement-grid">
               {[
-                { n: "1", icon: "🔍", title: "Audit du bien", desc: "Visite, estimation du potentiel locatif et des travaux éventuels." },
-                { n: "2", icon: "📸", title: "Mise en valeur", desc: "Home-staging léger, photos professionnelles, rédaction des annonces." },
-                { n: "3", icon: "🚀", title: "Mise en ligne", desc: "Création et paramétrage des annonces, tarification optimisée." },
-                { n: "4", icon: "📈", title: "Pilotage", desc: "Suivi des performances, ajustement des prix, optimisation continue." },
+                { n: "1", icon: "search", title: "Audit du bien", desc: "Visite, estimation du potentiel locatif et des travaux éventuels." },
+                { n: "2", icon: "camera", title: "Mise en valeur", desc: "Home-staging léger, photos professionnelles, rédaction des annonces." },
+                { n: "3", icon: "rocket", title: "Mise en ligne", desc: "Création et paramétrage des annonces, tarification optimisée." },
+                { n: "4", icon: "trending", title: "Pilotage", desc: "Suivi des performances, ajustement des prix, optimisation continue." },
               ].map(s => (
-                <div key={s.n} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 18, padding: "24px 20px", textAlign: "center" }}>
+                <div key={s.n} className="lift" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 18, padding: "24px 20px", textAlign: "center" }}>
                   <div style={{ width: 46, height: 46, borderRadius: "50%", background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", color: NAVY, fontWeight: 900, fontSize: 18 }}>{s.n}</div>
-                  <div style={{ fontSize: 26, marginBottom: 8 }}>{s.icon}</div>
+                  <Icon name={s.icon} size={26} color={GOLD} style={{ margin: "0 auto 8px" }} />
                   <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 6 }}>{s.title}</div>
                   <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>{s.desc}</div>
                 </div>
               ))}
-            </div>
+            </Reveal>
             <div style={{ textAlign: "center", marginTop: 36 }}>
               <div style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: `1px solid ${GOLD}40`, borderRadius: 16, padding: "16px 26px" }}>
                 <span style={{ fontSize: 14, color: "rgba(255,255,255,0.85)" }}>Audit + plan de mise en location : </span>
@@ -563,7 +602,7 @@ export default function ConciergeriePage() {
                 Être rappelé →
               </Link>
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
-                💬 WhatsApp
+                <Icon name="chat" size={18} color="#fff" /> WhatsApp
               </a>
             </div>
           </div>

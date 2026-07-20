@@ -6,6 +6,774 @@
   - Local:        http://localhost:3001
 
  ✓ Starting...
- ✓ Ready in 1457ms
+ ✓ Ready in 4s
  ○ Compiling / ...
- ✓ Compiled / in 3.2s (551 modules)
+ ✓ Compiled / in 10.9s (553 modules)
+ GET / 200 in 11421ms
+ ✓ Compiled in 670ms (539 modules)
+ ○ Compiling /manifest.webmanifest ...
+ ✓ Compiled /manifest.webmanifest in 553ms (319 modules)
+ GET /manifest.webmanifest 200 in 627ms
+ ✓ Compiled /icon.svg in 85ms (321 modules)
+ GET /icon.svg?0a4bb7f4abccad1e 200 in 129ms
+ ✓ Compiled /conciergerie in 390ms (580 modules)
+ GET /conciergerie 200 in 565ms
+ ✓ Compiled /pointage in 309ms (588 modules)
+ GET /pointage 200 in 418ms
+ ✓ Compiled /admin in 454ms (600 modules)
+ GET /admin 200 in 533ms
+ ✓ Compiled in 188ms (275 modules)
+ ✓ Compiled in 114ms (275 modules)
+ GET /manifest.webmanifest 200 in 18ms
+ ✓ Compiled in 493ms (593 modules)
+ ✓ Compiled in 371ms (562 modules)
+ GET / 200 in 86ms
+ GET / 200 in 70ms
+ GET / 200 in 28ms
+ GET / 200 in 55ms
+ GET / 200 in 49ms
+ ✓ Compiled /manifest.webmanifest in 105ms (319 modules)
+ GET /manifest.webmanifest 200 in 152ms
+ ✓ Compiled /conciergerie in 71ms (323 modules)
+ GET /manifest.webmanifest 200 in 13ms
+ ✓ Compiled in 381ms (566 modules)
+ ✓ Compiled in 268ms (566 modules)
+ ✓ Compiled in 280ms (566 modules)
+ ✓ Compiled in 331ms (566 modules)
+ ✓ Compiled in 276ms (566 modules)
+ ✓ Compiled in 80ms (276 modules)
+ ✓ Compiled in 93ms (276 modules)
+ ✓ Compiled in 298ms (566 modules)
+ ✓ Compiled in 272ms (566 modules)
+ ✓ Compiled in 94ms (276 modules)
+ ✓ Compiled in 89ms (276 modules)
+ ✓ Compiled in 96ms (276 modules)
+ ✓ Compiled in 87ms (276 modules)
+ ✓ Compiled in 90ms (276 modules)
+ ✓ Compiled in 94ms (276 modules)
+ ✓ Compiled in 77ms (276 modules)
+ ✓ Compiled in 81ms (276 modules)
+ ✓ Compiled in 92ms (276 modules)
+ ✓ Compiled in 83ms (276 modules)
+ ✓ Compiled in 91ms (276 modules)
+ ✓ Compiled in 80ms (276 modules)
+ ✓ Compiled in 85ms (276 modules)
+ ✓ Compiled in 84ms (276 modules)
+ ✓ Compiled in 344ms (566 modules)
+ ✓ Compiled in 89ms (276 modules)
+ ✓ Compiled in 79ms (276 modules)
+ ✓ Compiled in 90ms (276 modules)
+ ✓ Compiled in 278ms (566 modules)
+ ✓ Compiled in 89ms (276 modules)
+ ✓ Compiled in 94ms (276 modules)
+ ✓ Compiled in 95ms (276 modules)
+ ✓ Compiled in 83ms (276 modules)
+ ✓ Compiled in 85ms (276 modules)
+ ✓ Compiled in 84ms (276 modules)
+ ✓ Compiled in 247ms (566 modules)
+ ✓ Compiled in 74ms (276 modules)
+ ✓ Compiled in 86ms (276 modules)
+ ✓ Compiled in 68ms (276 modules)
+ ✓ Compiled in 81ms (276 modules)
+ ✓ Compiled in 68ms (276 modules)
+ ✓ Compiled in 97ms (276 modules)
+ ✓ Compiled in 161ms (566 modules)
+ ✓ Compiled in 93ms (276 modules)
+ ✓ Compiled in 89ms (276 modules)
+ ✓ Compiled in 279ms (566 modules)
+ ✓ Compiled in 76ms (276 modules)
+ ✓ Compiled in 80ms (276 modules)
+ ✓ Compiled in 86ms (276 modules)
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:302:1]
+ [2m302[0m |                 ))}
+ [2m303[0m |               </div>
+ [2m304[0m |             </div>
+ [2m305[0m |           </div>
+     : [31;1m          ^^^^^^[0m
+ [2m306[0m |         </section>
+ [2m307[0m | 
+ [2m308[0m |         {/* ── Services à la carte ── */}
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ ○ Compiling /_error ...
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:302:1]
+ [2m302[0m |                 ))}
+ [2m303[0m |               </div>
+ [2m304[0m |             </div>
+ [2m305[0m |           </div>
+     : [31;1m          ^^^^^^[0m
+ [2m306[0m |         </section>
+ [2m307[0m | 
+ [2m308[0m |         {/* ── Services à la carte ── */}
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET / 500 in 8ms
+ GET /conciergerie 500 in 10ms
+ ✓ Compiled /_error in 84ms (458 modules)
+ ✓ Compiled in 80ms (458 modules)
+ GET /conciergerie 500 in 70ms
+ GET / 500 in 73ms
+ GET /conciergerie 500 in 12ms
+ GET / 500 in 13ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\rovel\JMTD\.next\cache\webpack\client-development-fallback\0.pack.gz_' -> 'C:\Users\rovel\JMTD\.next\cache\webpack\client-development-fallback\0.pack.gz'
+ ✓ Compiled in 82ms (458 modules)
+ GET /conciergerie 500 in 11ms
+ GET / 500 in 12ms
+ ✓ Compiled in 98ms (458 modules)
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:302:1]
+ [2m302[0m |                 ))}
+ [2m303[0m |               </div>
+ [2m304[0m |             </div>
+ [2m305[0m |           </div>
+     : [31;1m          ^^^^^^[0m
+ [2m306[0m |         </section>
+ [2m307[0m | 
+ [2m308[0m |         {/* ── Services à la carte ── */}
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET / 500 in 353ms
+ GET /conciergerie 500 in 352ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 277ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 4ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /conciergerie 500 in 11ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET / 500 in 8ms
+ GET /conciergerie 500 in 10ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 305ms (792 modules)
+ ✓ Compiled (778 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /conciergerie 200 in 113ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 404 in 460ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 404 in 7ms
+ GET / 200 in 177ms
+ GET /conciergerie 200 in 70ms
+ ✓ Compiled /manifest.webmanifest in 84ms (364 modules)
+ GET /manifest.webmanifest 200 in 139ms
+ GET /manifest.webmanifest 200 in 10ms
+ ✓ Compiled /icon.svg in 51ms (366 modules)
+ GET /icon.svg?0a4bb7f4abccad1e 200 in 72ms
+ GET /icon.svg?0a4bb7f4abccad1e 200 in 6ms
+ GET /icon.svg?0a4bb7f4abccad1e 200 in 8ms
+ GET /manifest.webmanifest 200 in 28ms
+ ✓ Compiled in 103ms (461 modules)
+ ✓ Compiled in 109ms (461 modules)
+ GET /manifest.webmanifest 200 in 19ms
+ GET /manifest.webmanifest 200 in 6ms
+ ✓ Compiled /coach in 192ms (819 modules)
+ ✓ Compiled in 147ms (463 modules)
+ GET /manifest.webmanifest 200 in 10ms
+ ✓ Compiled in 107ms (463 modules)
+ ✓ Compiled in 108ms (463 modules)
+ ✓ Compiled in 315ms (833 modules)
+ GET /manifest.webmanifest 200 in 8ms
+ ✓ Compiled in 90ms (461 modules)
+ ✓ Compiled in 101ms (461 modules)
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:349:1]
+ [2m349[0m |                   {i < ROTATION.length - 1 && <div className="hide-mobile" style={{ position: "absolute", top: 46, right: -12, fontSize: 20, color: `${T}66`, zIndex: 2 }}>→</div>}
+ [2m350[0m |                 </div>
+ [2m351[0m |               ))}
+ [2m352[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m353[0m |           </div>
+ [2m354[0m |         </section>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET / 500 in 10ms
+ GET /conciergerie 500 in 12ms
+ ✓ Compiled in 85ms (460 modules)
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:349:1]
+ [2m349[0m |                   {i < ROTATION.length - 1 && <div className="hide-mobile" style={{ position: "absolute", top: 46, right: -12, fontSize: 20, color: `${T}66`, zIndex: 2 }}>→</div>}
+ [2m350[0m |                 </div>
+ [2m351[0m |               ))}
+ [2m352[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m353[0m |           </div>
+ [2m354[0m |         </section>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET / 500 in 248ms
+ GET /conciergerie 500 in 249ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 171ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 3ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET / 200 in 5ms
+ GET /conciergerie 500 in 10ms
+ GET / 500 in 10ms
+ GET /conciergerie 500 in 12ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 369ms (831 modules)
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 370ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /conciergerie 200 in 51ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 404 in 71ms
+ GET / 200 in 72ms
+ GET /conciergerie 200 in 71ms
+ GET /manifest.webmanifest 200 in 12ms
+ GET /manifest.webmanifest 200 in 10ms
+ GET /manifest.webmanifest 200 in 35ms
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:518:1]
+ [2m518[0m |                   <div style={{ fontSize: 12.5, color: MUTED }}>{t.loc}</div>
+ [2m519[0m |                 </div>
+ [2m520[0m |               ))}
+ [2m521[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m522[0m |           </div>
+ [2m523[0m |         </section>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET / 500 in 12ms
+ GET /conciergerie 500 in 12ms
+ ✓ Compiled in 80ms (462 modules)
+ ✓ Compiled in 84ms (462 modules)
+ GET / 200 in 69ms
+ GET /conciergerie 500 in 69ms
+ GET /conciergerie 500 in 11ms
+ GET / 500 in 13ms
+ ✓ Compiled in 220ms (817 modules)
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 283ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET / 200 in 67ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /conciergerie 200 in 163ms
+ GET / 200 in 59ms
+ GET /manifest.webmanifest 200 in 11ms
+ GET /manifest.webmanifest 200 in 7ms
+ GET /manifest.webmanifest 200 in 6ms
+ ✓ Compiled in 99ms (463 modules)
+ GET /manifest.webmanifest 200 in 8ms
+ GET /manifest.webmanifest 200 in 9ms
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:551:1]
+ [2m551[0m |                   <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>{s.desc}</div>
+ [2m552[0m |                 </div>
+ [2m553[0m |               ))}
+ [2m554[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m555[0m |             <div style={{ textAlign: "center", marginTop: 36 }}>
+ [2m556[0m |               <div style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: `1px solid ${GOLD}40`, borderRadius: 16, padding: "16px 26px" }}>
+ [2m557[0m |                 <span style={{ fontSize: 14, color: "rgba(255,255,255,0.85)" }}>Audit + plan de mise en location : </span>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET /conciergerie 500 in 10ms
+ GET / 500 in 8ms
+ ✓ Compiled in 319ms (831 modules)
+ ✓ Compiled (817 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /conciergerie 200 in 81ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 404 in 447ms
+ GET / 200 in 147ms
+ GET /conciergerie 200 in 89ms
+ GET /manifest.webmanifest 200 in 12ms
+ GET /manifest.webmanifest 200 in 9ms
+ GET /manifest.webmanifest 200 in 8ms
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:427:1]
+ [2m427[0m |                   </Link>
+ [2m428[0m |                 </div>
+ [2m429[0m |               ))}
+ [2m430[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m431[0m |             <p style={{ fontSize: 12.5, color: "#94A3B8", textAlign: "center", marginTop: 24 }}>
+ [2m432[0m |               Le % s'applique au chiffre d'affaires locatif encaissé. Sans abonnement fixe : nous sommes rémunérés quand votre bien rapporte.
+ [2m433[0m |             </p>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET /conciergerie 500 in 11ms
+ GET / 500 in 8ms
+ ✓ Compiled in 101ms (462 modules)
+ GET / 500 in 11ms
+ GET /conciergerie 500 in 14ms
+ ✓ Compiled in 289ms (817 modules)
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 287ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 404 in 46ms
+ GET /conciergerie 200 in 77ms
+ GET / 200 in 69ms
+ GET /manifest.webmanifest 200 in 17ms
+ GET /manifest.webmanifest 200 in 8ms
+ GET /manifest.webmanifest 200 in 7ms
+ ✓ Compiled in 108ms (463 modules)
+ ✓ Compiled in 102ms (463 modules)
+ GET /manifest.webmanifest 200 in 17ms
+ GET /manifest.webmanifest 200 in 6ms
+ ✓ Compiled /contact in 190ms (824 modules)
+ GET /manifest.webmanifest 200 in 8ms
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:326:1]
+ [2m326[0m |                   <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, margin: 0 }}>{s.desc}</p>
+ [2m327[0m |                 </div>
+ [2m328[0m |               ))}
+ [2m329[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m330[0m |           </div>
+ [2m331[0m |         </section>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET /contact 500 in 10ms
+ GET / 500 in 11ms
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:326:1]
+ [2m326[0m |                   <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, margin: 0 }}>{s.desc}</p>
+ [2m327[0m |                 </div>
+ [2m328[0m |               ))}
+ [2m329[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m330[0m |           </div>
+ [2m331[0m |         </section>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 199ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 4ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET / 200 in 7ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /contact 500 in 14ms
+ GET / 500 in 9ms
+ GET /contact 500 in 11ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 100ms (464 modules)
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:326:1]
+ [2m326[0m |                   <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, margin: 0 }}>{s.desc}</p>
+ [2m327[0m |                 </div>
+ [2m328[0m |               ))}
+ [2m329[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m330[0m |           </div>
+ [2m331[0m |         </section>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET / 500 in 250ms
+ GET /contact 500 in 250ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 169ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 3ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /contact 200 in 5ms
+ GET / 500 in 9ms
+ GET /contact 500 in 9ms
+ GET / 500 in 12ms
+ ✓ Compiled in 109ms (464 modules)
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:326:1]
+ [2m326[0m |                   <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, margin: 0 }}>{s.desc}</p>
+ [2m327[0m |                 </div>
+ [2m328[0m |               ))}
+ [2m329[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m330[0m |           </div>
+ [2m331[0m |         </section>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET / 500 in 309ms
+ GET /contact 500 in 308ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 217ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 7ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET / 500 in 21ms
+ GET /contact 500 in 13ms
+ GET / 500 in 8ms
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:326:1]
+ [2m326[0m |                   <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, margin: 0 }}>{s.desc}</p>
+ [2m327[0m |                 </div>
+ [2m328[0m |               ))}
+ [2m329[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m330[0m |           </div>
+ [2m331[0m |         </section>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 228ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 3ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /contact 500 in 9ms
+ GET / 500 in 9ms
+ ✓ Compiled in 97ms (464 modules)
+ ⨯ ./app/conciergerie/page.jsx
+Error: 
+  [31mx[0m Expected corresponding JSX closing tag for <Reveal>
+     ,-[[36;1;4mC:\Users\rovel\JMTD\app\conciergerie\page.jsx[0m:326:1]
+ [2m326[0m |                   <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, margin: 0 }}>{s.desc}</p>
+ [2m327[0m |                 </div>
+ [2m328[0m |               ))}
+ [2m329[0m |             </div>
+     : [31;1m            ^^^^^^[0m
+ [2m330[0m |           </div>
+ [2m331[0m |         </section>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/conciergerie/page.jsx
+ GET /contact 500 in 255ms
+ GET / 500 in 257ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 168ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 500 in 3ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /contact 500 in 9ms
+ GET / 500 in 11ms
+ GET /contact 500 in 8ms
+ GET / 500 in 11ms
+ GET /coach 500 in 8ms
+ ✓ Compiled in 337ms (805 modules)
+ ✓ Compiled (791 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /contact 200 in 170ms
+ GET / 200 in 193ms
+ GET /_next/static/webpack/d4845423bda562f8.webpack.hot-update.json 404 in 515ms
+ GET /contact 200 in 54ms
+ ✓ Compiled /manifest.webmanifest in 63ms (373 modules)
+ GET /manifest.webmanifest 200 in 112ms
+ GET /manifest.webmanifest 200 in 15ms
+ GET /manifest.webmanifest 200 in 31ms
+ GET /coach 200 in 110ms
+ ✓ Compiled in 340ms (838 modules)
+ GET /manifest.webmanifest 200 in 8ms
+ GET /manifest.webmanifest 200 in 8ms
+ ✓ Compiled in 105ms (465 modules)
+ ✓ Compiled in 105ms (465 modules)
+ ✓ Compiled in 204ms (835 modules)
+ ✓ Compiled in 308ms (835 modules)
+ ✓ Compiled in 158ms (463 modules)
+ ✓ Compiled /services in 195ms (827 modules)
+ GET /services 200 in 269ms
+ GET /coach 200 in 29ms
+ ✓ Compiled /coaching in 215ms (833 modules)
+ GET /coaching 200 in 275ms
+ GET /conciergerie 200 in 86ms
+ GET /conciergerie 200 in 73ms
+ GET /services 200 in 79ms
+ GET / 200 in 66ms
+ GET /services 200 in 73ms
+ GET /coach 200 in 41ms
+ GET /coaching 200 in 46ms
+ GET /conciergerie 200 in 30ms
+ ✓ Compiled /tarifs in 290ms (806 modules)
+ GET /tarifs 200 in 411ms
+ GET /contact 200 in 86ms
+ ✓ Compiled /faq in 177ms (812 modules)
+ GET /faq 200 in 265ms
+ ✓ Compiled /conseils in 212ms (818 modules)
+ GET /conseils 200 in 262ms
+ ✓ Compiled in 215ms (473 modules)
+ ✓ Compiled in 135ms (473 modules)
+ ✓ Compiled in 588ms (924 modules)
+ ✓ Compiled in 162ms (529 modules)
+ ✓ Compiled in 375ms (924 modules)
+ ✓ Compiled in 305ms (924 modules)
+ ✓ Compiled in 273ms (924 modules)
+ ✓ Compiled in 339ms (924 modules)
+ ✓ Compiled in 535ms (924 modules)
+ ✓ Compiled in 602ms (924 modules)
+ ✓ Compiled in 402ms (924 modules)
+ ✓ Compiled in 370ms (924 modules)
+ ✓ Compiled in 336ms (924 modules)
+ ✓ Compiled in 371ms (924 modules)
+ ✓ Compiled in 356ms (924 modules)
+ ✓ Compiled in 363ms (924 modules)
+ ✓ Compiled in 272ms (924 modules)
+ ✓ Compiled in 135ms (529 modules)
+ ✓ Compiled in 139ms (529 modules)
+ ✓ Compiled in 341ms (924 modules)
+ ✓ Compiled in 294ms (924 modules)
+ ✓ Compiled in 328ms (924 modules)
+ ✓ Compiled in 222ms (924 modules)
+ ✓ Compiled in 303ms (924 modules)
+ ✓ Compiled in 449ms (924 modules)
+ ✓ Compiled in 334ms (924 modules)
+ ✓ Compiled in 397ms (924 modules)
+ ✓ Compiled in 291ms (924 modules)
+ ✓ Compiled in 380ms (924 modules)
+ ✓ Compiled in 235ms (924 modules)
+ ✓ Compiled in 372ms (924 modules)
+ ✓ Compiled in 239ms (924 modules)
+ ✓ Compiled in 302ms (924 modules)
+ ✓ Compiled in 291ms (924 modules)
+ ✓ Compiled in 357ms (924 modules)
+ ✓ Compiled in 437ms (924 modules)
+ ✓ Compiled in 359ms (924 modules)
+ ✓ Compiled in 418ms (924 modules)
+ ✓ Compiled in 127ms (529 modules)
+ ✓ Compiled in 194ms (529 modules)
+ ✓ Compiled in 135ms (529 modules)
+ ✓ Compiled in 154ms (529 modules)
+ ✓ Compiled in 259ms (924 modules)
+ ✓ Compiled in 126ms (529 modules)
+ ✓ Compiled in 181ms (529 modules)
+ ✓ Compiled in 373ms (924 modules)
+ ✓ Compiled in 139ms (529 modules)
+ ✓ Compiled in 180ms (529 modules)
+ ✓ Compiled in 287ms (924 modules)
+ ✓ Compiled in 127ms (529 modules)
+ ✓ Compiled in 155ms (529 modules)
+ ✓ Compiled in 293ms (924 modules)
+ ✓ Compiled in 197ms (529 modules)
+ ✓ Compiled in 322ms (924 modules)
+ ✓ Compiled in 171ms (529 modules)
+ ✓ Compiled in 454ms (924 modules)
+ ✓ Compiled in 139ms (529 modules)
+ ✓ Compiled in 348ms (924 modules)
+ ✓ Compiled in 146ms (529 modules)
+ ✓ Compiled in 135ms (529 modules)
+ ✓ Compiled in 96ms (529 modules)
+ ✓ Compiled in 138ms (529 modules)
+ ✓ Compiled in 221ms (924 modules)
+ ✓ Compiled in 91ms (529 modules)
+ ✓ Compiled in 126ms (529 modules)
+ ✓ Compiled in 233ms (924 modules)
+ ✓ Compiled in 85ms (529 modules)
+ ✓ Compiled in 116ms (529 modules)
+ ✓ Compiled in 328ms (924 modules)
+ ✓ Compiled in 111ms (529 modules)
+ ✓ Compiled in 183ms (529 modules)
+ ✓ Compiled in 118ms (529 modules)
+ ✓ Compiled in 153ms (529 modules)
+ ✓ Compiled in 414ms (924 modules)
+ ✓ Compiled in 122ms (529 modules)
+ ✓ Compiled in 136ms (529 modules)
+ ✓ Compiled in 279ms (924 modules)
+ ✓ Compiled in 101ms (529 modules)
+ ✓ Compiled in 126ms (529 modules)
+ ✓ Compiled in 115ms (529 modules)
+ ✓ Compiled in 198ms (529 modules)
+ ✓ Compiled in 370ms (924 modules)
+ ✓ Compiled in 293ms (924 modules)
+ ✓ Compiled in 391ms (924 modules)
+ ✓ Compiled in 243ms (924 modules)
+ ✓ Compiled in 277ms (924 modules)
+ ✓ Compiled in 286ms (924 modules)
+ ✓ Compiled in 407ms (924 modules)
+ ✓ Compiled in 211ms (924 modules)
+ ✓ Compiled in 272ms (924 modules)
+ ✓ Compiled in 222ms (924 modules)
+ ✓ Compiled in 121ms (529 modules)
+ ✓ Compiled in 144ms (529 modules)
+ ✓ Compiled in 131ms (529 modules)
+ ✓ Compiled in 155ms (529 modules)
+ ✓ Compiled in 127ms (529 modules)
+ ✓ Compiled in 130ms (529 modules)
+ ✓ Compiled in 129ms (529 modules)
+ ✓ Compiled in 115ms (529 modules)
+ ✓ Compiled in 149ms (529 modules)
+ ✓ Compiled in 132ms (529 modules)
+ ✓ Compiled in 136ms (529 modules)
+ ✓ Compiled in 129ms (529 modules)
+ ✓ Compiled in 268ms (924 modules)
+ ✓ Compiled in 154ms (529 modules)
+ ✓ Compiled in 125ms (529 modules)
+ ✓ Compiled in 289ms (924 modules)
+ ✓ Compiled in 284ms (924 modules)
+ ✓ Compiled in 115ms (529 modules)
+ ✓ Compiled in 142ms (529 modules)
+ ✓ Compiled in 264ms (924 modules)
+ ✓ Compiled in 354ms (924 modules)
+ ✓ Compiled in 147ms (529 modules)
+ ✓ Compiled in 318ms (924 modules)
+ ✓ Compiled in 339ms (924 modules)
+ ✓ Compiled in 102ms (529 modules)
+ ✓ Compiled in 122ms (529 modules)
+ ✓ Compiled in 349ms (924 modules)
+ ✓ Compiled in 332ms (924 modules)
+ ✓ Compiled in 114ms (529 modules)
+ ✓ Compiled in 150ms (529 modules)
+ ✓ Compiled in 161ms (529 modules)
+ ✓ Compiled in 209ms (529 modules)
+ ✓ Compiled in 108ms (529 modules)
+ ✓ Compiled in 171ms (529 modules)
+ ✓ Compiled in 109ms (529 modules)
+ ✓ Compiled in 131ms (529 modules)
+ ✓ Compiled in 103ms (529 modules)
+ ✓ Compiled in 151ms (529 modules)
+ ✓ Compiled in 127ms (529 modules)
+ ✓ Compiled in 105ms (529 modules)
+ ✓ Compiled in 128ms (529 modules)
+ ✓ Compiled in 137ms (529 modules)
+ ✓ Compiled in 115ms (529 modules)
+ ✓ Compiled in 131ms (529 modules)
+ ✓ Compiled in 112ms (529 modules)
+ ✓ Compiled in 118ms (529 modules)
+ ✓ Compiled in 134ms (529 modules)
+ ✓ Compiled in 133ms (529 modules)
+ ✓ Compiled in 122ms (529 modules)
+ ✓ Compiled in 129ms (529 modules)
+ ✓ Compiled in 104ms (529 modules)
+ ✓ Compiled in 148ms (529 modules)
+ ✓ Compiled in 120ms (529 modules)
+ ✓ Compiled in 137ms (529 modules)
+ ✓ Compiled in 109ms (529 modules)
+ ✓ Compiled in 131ms (529 modules)
+ ✓ Compiled in 124ms (529 modules)
+ ⨯ SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at loadManifest (C:\Users\rovel\JMTD\node_modules\next\dist\server\load-manifest.js:35:27)
+    at DevServer.getNextFontManifest (C:\Users\rovel\JMTD\node_modules\next\dist\server\next-server.js:745:47)
+    at DevServer.findPageComponents (C:\Users\rovel\JMTD\node_modules\next\dist\server\dev\next-dev-server.js:571:43)
+    at async DevServer.renderPageComponent (C:\Users\rovel\JMTD\node_modules\next\dist\server\base-server.js:1917:24)
+    at async DevServer.renderToResponseImpl (C:\Users\rovel\JMTD\node_modules\next\dist\server\base-server.js:1969:32)
+    at async DevServer.pipeImpl (C:\Users\rovel\JMTD\node_modules\next\dist\server\base-server.js:920:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\rovel\JMTD\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\rovel\JMTD\node_modules\next\dist\server\base-server.js:816:17)
+    at async C:\Users\rovel\JMTD\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\rovel\JMTD\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\rovel\JMTD\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\rovel\JMTD\node_modules\next\dist\server\lib\router-server.js:174:21)
+    at async handleRequest (C:\Users\rovel\JMTD\node_modules\next\dist\server\lib\router-server.js:353:24)
+    at async requestHandlerImpl (C:\Users\rovel\JMTD\node_modules\next\dist\server\lib\router-server.js:377:13)
+    at async Server.requestListener (C:\Users\rovel\JMTD\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  page: '/'
+}
+ ✓ Compiled in 317ms (910 modules)
+ GET / 200 in 107ms
+ ✓ Compiled /manifest.webmanifest in 163ms (428 modules)
+ GET /manifest.webmanifest 200 in 210ms
+ GET /manifest.webmanifest 200 in 7ms
+ ✓ Compiled in 130ms (529 modules)
+ GET /manifest.webmanifest 200 in 6ms
+ ✓ Compiled in 112ms (529 modules)
+ ✓ Compiled in 144ms (529 modules)
+ ✓ Compiled in 131ms (529 modules)
+ ✓ Compiled in 103ms (529 modules)
+ ✓ Compiled in 124ms (529 modules)
+ ✓ Compiled in 128ms (529 modules)
+ ✓ Compiled in 129ms (529 modules)
+ ✓ Compiled in 144ms (529 modules)
+ ✓ Compiled in 118ms (529 modules)
+ ✓ Compiled in 136ms (529 modules)
+ ✓ Compiled in 111ms (529 modules)
+ ✓ Compiled in 165ms (529 modules)
+ ✓ Compiled in 109ms (529 modules)
+ ✓ Compiled in 141ms (529 modules)
+ ✓ Compiled in 130ms (529 modules)
+ ✓ Compiled in 143ms (529 modules)
+ ✓ Compiled in 118ms (529 modules)
+ ✓ Compiled in 125ms (529 modules)
+ ✓ Compiled in 110ms (529 modules)
+ ✓ Compiled in 183ms (529 modules)
+ ✓ Compiled in 138ms (529 modules)
+ ✓ Compiled in 158ms (529 modules)
+ ✓ Compiled in 603ms (926 modules)
+ ✓ Compiled in 365ms (926 modules)
+ GET / 200 in 89ms
+ ✓ Compiled /services in 120ms (400 modules)
+ GET /services 200 in 222ms
+ GET /coach 200 in 50ms
+ ✓ Compiled /coaching in 91ms (404 modules)
+ GET /coaching 200 in 179ms
+ GET /conciergerie 200 in 77ms
+ ✓ Compiled /tarifs in 168ms (408 modules)
+ GET /tarifs 200 in 275ms
+ GET /contact 200 in 74ms
+ ✓ Compiled /faq in 94ms (412 modules)
+ GET /faq 200 in 167ms
+ ✓ Compiled /conseils in 106ms (416 modules)
+ GET /conseils 200 in 189ms
+[?25h

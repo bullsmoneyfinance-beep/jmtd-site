@@ -1,13 +1,53 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PHONE, PHONE_HREF, WHATSAPP, EMAIL, ADDRESS, HORAIRES, SERVICES } from "../../lib/data";
 import { load, save } from "../../lib/storage";
+import Reveal from "../../components/Reveal";
+import Icon, { IconTile } from "../../components/Icon";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
+const OCEAN = "#12B5B0";
 const TEXT = "#1A2D3D";
 const MUTED = "#64748B";
+const WARM = "#FFF8F4";
+
+/* ── Imagerie Martinique / tropical-premium (Unsplash) ── */
+const IMG = {
+  lagon: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&h=1200&fit=crop&auto=format&q=80", // lagon turquoise, lumière claire
+  palm:  "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=900&h=1100&fit=crop&auto=format&q=80",  // frondes de palmier
+};
+
+/* Parallax générique — piloté par [data-parallax] (voir globals.css .parallax) */
+function useParallax() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const layers = Array.from(document.querySelectorAll("[data-parallax]"));
+    if (!layers.length) return;
+    let raf = null;
+    const update = () => {
+      const vh = window.innerHeight;
+      layers.forEach(el => {
+        const speed = parseFloat(el.getAttribute("data-parallax")) || 0.12;
+        const r = el.getBoundingClientRect();
+        const offset = r.top + r.height / 2 - vh / 2;
+        el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(1)}px, 0)`;
+      });
+      raf = null;
+    };
+    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+}
 
 const inp = {
   width: "100%", padding: "13px 16px", borderRadius: 12,
@@ -32,6 +72,7 @@ export default function ContactPage() {
   const [sent, setSent]   = useState(false);
   const [loading, setLoading] = useState(false);
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+  useParallax();
 
   const submit = async e => {
     e.preventDefault();
@@ -64,22 +105,36 @@ export default function ContactPage() {
         @media (max-width: 768px) {
           .contact-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
           .fields-2col  { grid-template-columns: 1fr !important; gap: 12px !important; }
-          .contact-hero { padding: 40px 16px 32px !important; }
+          .contact-hero { padding: 44px 16px 36px !important; }
           .contact-section { padding: 24px 16px 80px !important; }
           .contact-form { padding: 24px 18px !important; }
           .contact-sidebar { order: -1; }
+          .hero-palm { opacity: 0.5 !important; }
         }
       `}</style>
 
       {/* ── Hero ── */}
-      <section className="contact-hero" style={{ background: "#fff", padding: "72px 24px 56px", textAlign: "center", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -60, right: "10%", width: 280, height: 280, borderRadius: "50%", background: `radial-gradient(circle, ${T}18, transparent 70%)`, filter: "blur(40px)", animation: "floatOrb 12s ease-in-out infinite", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -40, left: "5%", width: 240, height: 240, borderRadius: "50%", background: `radial-gradient(circle, ${P}12, transparent 70%)`, filter: "blur(40px)", animation: "floatOrbSlow 14s ease-in-out infinite", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 580, margin: "0 auto", position: "relative" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}30`, borderRadius: 30, padding: "6px 16px", marginBottom: 18 }}>
+      <section className="contact-hero" style={{ background: `linear-gradient(160deg, ${WARM} 0%, #EAF7F6 100%)`, padding: "80px 24px 60px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        {/* Calque lagon turquoise (parallax profond) */}
+        <div aria-hidden data-parallax="0.16" className="parallax" style={{ position: "absolute", top: "-24%", left: 0, right: 0, height: "148%", zIndex: 0 }}>
+          <img src={IMG.lagon} alt="" width={1600} height={1200} loading="eager"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.20 }} />
+        </div>
+        {/* Frondes de palmier — accent tropical (droite) */}
+        <div aria-hidden data-parallax="0.06" className="parallax hero-palm" style={{ position: "absolute", top: "-8%", right: "-8%", width: "clamp(180px, 28vw, 380px)", height: "116%", zIndex: 0, pointerEvents: "none" }}>
+          <img src={IMG.palm} alt="" width={900} height={1100} loading="eager"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply", maskImage: "linear-gradient(to left, #000 18%, transparent 90%)", WebkitMaskImage: "linear-gradient(to left, #000 18%, transparent 90%)" }} />
+        </div>
+        {/* Voile clair pour lisibilité */}
+        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(180deg, rgba(255,248,244,0.90) 0%, rgba(248,250,247,0.82) 46%, rgba(234,247,246,0.74) 100%)" }} />
+        <div style={{ position: "absolute", top: -60, right: "10%", width: 280, height: 280, borderRadius: "50%", background: `radial-gradient(circle, ${T}18, transparent 70%)`, filter: "blur(40px)", animation: "floatOrb 12s ease-in-out infinite", pointerEvents: "none", zIndex: 1 }} />
+        <div style={{ position: "absolute", bottom: -40, left: "5%", width: 240, height: 240, borderRadius: "50%", background: `radial-gradient(circle, ${P}12, transparent 70%)`, filter: "blur(40px)", animation: "floatOrbSlow 14s ease-in-out infinite", pointerEvents: "none", zIndex: 1 }} />
+        <div style={{ maxWidth: 580, margin: "0 auto", position: "relative", zIndex: 2 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: `1.5px solid ${T}30`, borderRadius: 30, padding: "7px 16px", marginBottom: 18, boxShadow: "0 2px 14px rgba(13,169,164,0.12)" }}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: T, display: "inline-block" }} />
             <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Contact & Devis</span>
           </div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 5vw, 46px)", fontWeight: 700, color: TEXT, marginBottom: 14, lineHeight: 1.2 }}>
+          <h1 className="display" style={{ fontSize: "clamp(28px, 5vw, 48px)", color: TEXT, marginBottom: 14, lineHeight: 1.2 }}>
             Obtenez votre <span style={{ color: P }}>devis gratuit</span>
           </h1>
           <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8 }}>
@@ -93,10 +148,10 @@ export default function ContactPage() {
         <div className="contact-grid" style={{ maxWidth: 1080, margin: "0 auto" }}>
 
           {/* Formulaire */}
-          <div>
+          <Reveal>
             {sent ? (
               <div style={{ textAlign: "center", padding: "56px 24px", background: "#fff", border: `1px solid ${T}20`, borderRadius: 24 }}>
-                <div style={{ fontSize: 56, marginBottom: 16 }}>✅</div>
+                <Icon name="checkCircle" size={56} color={T} strokeWidth={2} style={{ margin: "0 auto 16px" }} />
                 <h2 style={{ fontSize: 22, fontWeight: 700, color: TEXT, marginBottom: 10 }}>Demande envoyée !</h2>
                 <p style={{ color: MUTED, marginBottom: 24, lineHeight: 1.7 }}>Merci {form.prenom || form.nom}. Nous vous contactons sous 24h ouvrées.</p>
                 <button onClick={() => { setSent(false); setForm({ nom: "", prenom: "", tel: "", email: "", service: "", message: "", zone: "", rgpd: false }); }}
@@ -178,23 +233,23 @@ export default function ContactPage() {
                 </p>
               </form>
             )}
-          </div>
+          </Reveal>
 
           {/* Sidebar */}
-          <div className="contact-sidebar" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <Reveal className="contact-sidebar" delay={120} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
             {/* Contact rapide */}
-            <div style={{ background: "#fff", border: `1px solid rgba(13,169,164,0.12)`, borderRadius: 20, padding: "24px", boxShadow: `0 4px 20px ${T}08` }}>
+            <div className="lift" style={{ background: "#fff", border: `1px solid rgba(13,169,164,0.12)`, borderRadius: 20, padding: "24px", boxShadow: `0 4px 20px ${T}08` }}>
               <h3 style={{ fontSize: 15, fontWeight: 700, color: TEXT, marginBottom: 18 }}>Contact direct</h3>
               {[
-                { href: PHONE_HREF, bg: `linear-gradient(135deg,${T},${P})`, icon: "📞", title: PHONE, sub: "Appel direct" },
-                { href: WHATSAPP, bg: "#25D366", icon: "💬", title: "WhatsApp", sub: "Message rapide", target: "_blank" },
-                { href: `mailto:${EMAIL}`, bg: `${T}14`, icon: "✉️", title: EMAIL, sub: "Email", border: `1px solid ${T}22` },
+                { href: PHONE_HREF, bg: `linear-gradient(135deg,${T},${P})`, icon: "phone", iconColor: "#fff", title: PHONE, sub: "Appel direct" },
+                { href: WHATSAPP, bg: "#25D366", icon: "chat", iconColor: "#fff", title: "WhatsApp", sub: "Message rapide", target: "_blank" },
+                { href: `mailto:${EMAIL}`, bg: `${T}14`, icon: "mail", iconColor: T, title: EMAIL, sub: "Email", border: `1px solid ${T}22` },
               ].map(item => (
                 <a key={item.href} href={item.href} target={item.target} rel={item.target ? "noopener noreferrer" : undefined}
                   style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14, textDecoration: "none", WebkitTapHighlightColor: "transparent" }}>
-                  <div style={{ width: 46, height: 46, borderRadius: "50%", background: item.bg, border: item.border, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>
-                    {item.icon}
+                  <div style={{ width: 46, height: 46, borderRadius: "50%", background: item.bg, border: item.border, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Icon name={item.icon} size={20} color={item.iconColor} />
                   </div>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: TEXT }}>{item.title}</div>
@@ -205,15 +260,15 @@ export default function ContactPage() {
             </div>
 
             {/* Infos */}
-            <div style={{ background: "#fff", border: `1px solid rgba(13,169,164,0.12)`, borderRadius: 20, padding: "24px", boxShadow: `0 4px 20px ${T}08` }}>
+            <div className="lift" style={{ background: "#fff", border: `1px solid rgba(13,169,164,0.12)`, borderRadius: 20, padding: "24px", boxShadow: `0 4px 20px ${T}08` }}>
               <h3 style={{ fontSize: 15, fontWeight: 700, color: TEXT, marginBottom: 16 }}>Informations</h3>
               {[
-                { icon: "⏰", label: "Horaires", value: HORAIRES },
-                { icon: "📍", label: "Adresse", value: ADDRESS },
-                { icon: "✓",  label: "Réponse garantie", value: "Sous 24h ouvrées", color: T },
+                { icon: "clock", label: "Horaires", value: HORAIRES },
+                { icon: "pin", label: "Adresse", value: ADDRESS },
+                { icon: "check",  label: "Réponse garantie", value: "Sous 24h ouvrées", color: T },
               ].map(item => (
                 <div key={item.label} style={{ display: "flex", gap: 12, marginBottom: 14 }}>
-                  <span style={{ color: item.color || T, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
+                  <Icon name={item.icon} size={18} color={item.color || T} strokeWidth={2} style={{ marginTop: 1 }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: TEXT }}>{item.label}</div>
                     <div style={{ fontSize: 13, color: MUTED, lineHeight: 1.5 }}>{item.value}</div>
@@ -223,14 +278,14 @@ export default function ContactPage() {
             </div>
 
             {/* Crédit impôt */}
-            <div style={{ background: `linear-gradient(135deg,${T}12,${P}08)`, border: `1px solid ${T}25`, borderRadius: 20, padding: "22px" }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>💳</div>
+            <div className="lift" style={{ background: `linear-gradient(135deg,${T}12,${P}08)`, border: `1px solid ${T}25`, borderRadius: 20, padding: "22px" }}>
+              <IconTile name="credit" size={46} icon={23} from={T} to={OCEAN} radius={13} style={{ marginBottom: 10 }} />
               <div style={{ fontSize: 15, fontWeight: 700, color: TEXT, marginBottom: 6 }}>50% remboursé</div>
               <div style={{ fontSize: 13, color: MUTED, lineHeight: 1.7 }}>
                 Toutes nos prestations ouvrent droit au crédit d&apos;impôt SAP. Attestation fiscale remise chaque année.
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
     </>

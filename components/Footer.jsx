@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PHONE, PHONE_HREF, EMAIL, ADDRESS, HORAIRES, FONDATRICE, SIRET, AMBER, PINK, SERVICES, DECLARATION_SAP } from "../lib/data";
 import Logo from "./Logo";
+import Icon from "./Icon";
 import { SapMark } from "./SapBadge";
 
 const T = "#0DA9A4";
@@ -38,10 +39,10 @@ export default function Footer() {
           <div style={{ fontSize: 12, fontWeight: 700, color: "#1A2D3D", textTransform: "uppercase", letterSpacing: 1, marginBottom: 14 }}>Nos prestations</div>
           {SERVICES.map(s => (
             <Link key={s.id} href={s.id === "rangement" ? "/coach" : `/services#${s.id}`}
-              style={{ display: "block", fontSize: 13, color: "#64748B", padding: "4px 0", textDecoration: "none", transition: "color 0.15s" }}
-              onMouseEnter={e => e.target.style.color = T}
-              onMouseLeave={e => e.target.style.color = "#64748B"}>
-              {s.icon} {s.title}
+              style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 13, color: "#64748B", padding: "4px 0", textDecoration: "none", transition: "color 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.color = T}
+              onMouseLeave={e => e.currentTarget.style.color = "#64748B"}>
+              <Icon name={s.id} size={16} color={T} /> {s.title}
             </Link>
           ))}
         </div>
@@ -50,23 +51,23 @@ export default function Footer() {
         <div>
           <div style={{ fontSize: 12, fontWeight: 700, color: "#1A2D3D", textTransform: "uppercase", letterSpacing: 1, marginBottom: 14 }}>Navigation</div>
           {[
-            ["/", "Accueil"],
-            ["/services", "Nos prestations"],
-            ["/conciergerie", "🔑 Conciergerie locative"],
-            ["/tarifs", "💰 Tarifs"],
-            ["/coach", "Coach rangement"],
-            ["/conseils", "💡 Conseils & astuces"],
-            ["/faq", "❓ FAQ"],
-            ["/contact", "Contact & Devis"],
-            ["/recrutement", "💼 Rejoindre l'équipe"],
-            ["/mentions-legales", "Mentions légales"],
-            ["/politique-confidentialite", "Politique de confidentialité"],
-          ].map(([href, label]) => (
+            ["/", "Accueil", null],
+            ["/services", "Nos prestations", null],
+            ["/conciergerie", "Conciergerie locative", "cle"],
+            ["/tarifs", "Tarifs", "wallet"],
+            ["/coach", "Coach rangement", null],
+            ["/conseils", "Conseils & astuces", "conseils"],
+            ["/faq", "FAQ", "faq"],
+            ["/contact", "Contact & Devis", null],
+            ["/recrutement", "Rejoindre l'équipe", "users"],
+            ["/mentions-legales", "Mentions légales", null],
+            ["/politique-confidentialite", "Politique de confidentialité", null],
+          ].map(([href, label, ic]) => (
             <Link key={href} href={href}
-              style={{ display: "block", fontSize: 13, color: "#64748B", padding: "4px 0", textDecoration: "none", transition: "color 0.15s" }}
-              onMouseEnter={e => e.target.style.color = T}
-              onMouseLeave={e => e.target.style.color = "#64748B"}>
-              {label}
+              style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748B", padding: "4px 0", textDecoration: "none", transition: "color 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.color = T}
+              onMouseLeave={e => e.currentTarget.style.color = "#64748B"}>
+              {ic && <Icon name={ic} size={15} color={T} />} {label}
             </Link>
           ))}
         </div>
@@ -74,9 +75,9 @@ export default function Footer() {
         {/* Contact */}
         <div>
           <div style={{ fontSize: 12, fontWeight: 700, color: "#1A2D3D", textTransform: "uppercase", letterSpacing: 1, marginBottom: 14 }}>Contact</div>
-          <a href={PHONE_HREF} style={{ display: "block", color: T, fontSize: 15, fontWeight: 700, marginBottom: 6, textDecoration: "none" }}>📞 {PHONE}</a>
-          <div style={{ fontSize: 13, color: "#64748B", marginBottom: 4 }}>⏰ {HORAIRES}</div>
-          <div style={{ fontSize: 13, color: "#64748B", marginBottom: 16 }}>✉️ {EMAIL}</div>
+          <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, color: T, fontSize: 15, fontWeight: 700, marginBottom: 6, textDecoration: "none" }}><Icon name="phone" size={16} color={T} /> {PHONE}</a>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748B", marginBottom: 4 }}><Icon name="clock" size={15} color="#94A3B8" /> {HORAIRES}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748B", marginBottom: 16 }}><Icon name="mail" size={15} color="#94A3B8" /> {EMAIL}</div>
           <div style={{ fontSize: 12, color: "#94A3B8", lineHeight: 1.7 }}>{ADDRESS}</div>
         </div>
       </div>
@@ -93,13 +94,13 @@ export default function Footer() {
             onMouseEnter={e => e.target.style.color = T} onMouseLeave={e => e.target.style.color = "#94A3B8"}>
             Confidentialité
           </Link>
-          <Link href="/espace-client" style={{ fontSize: 11, color: "#94A3B8", textDecoration: "none", transition: "color 0.15s" }}
-            onMouseEnter={e => e.target.style.color = T} onMouseLeave={e => e.target.style.color = "#94A3B8"}>
-            👤 Espace client
+          <Link href="/espace-client" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, color: "#94A3B8", textDecoration: "none", transition: "color 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.color = T} onMouseLeave={e => e.currentTarget.style.color = "#94A3B8"}>
+            <Icon name="users" size={13} color="currentColor" /> Espace client
           </Link>
-          <Link href="/portail" style={{ fontSize: 11, color: "#94A3B8", textDecoration: "none", transition: "color 0.15s" }}
-            onMouseEnter={e => e.target.style.color = T} onMouseLeave={e => e.target.style.color = "#94A3B8"}>
-            🔐 Espace équipe
+          <Link href="/portail" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, color: "#94A3B8", textDecoration: "none", transition: "color 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.color = T} onMouseLeave={e => e.currentTarget.style.color = "#94A3B8"}>
+            <Icon name="lock" size={13} color="currentColor" /> Espace équipe
           </Link>
         </div>
       </div>

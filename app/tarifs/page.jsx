@@ -2,56 +2,81 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PHONE_HREF, WHATSAPP, SERVICES } from "../../lib/data";
+import SapBadge from "../../components/SapBadge";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
 const TEXT = "#1A2D3D";
 const MUTED = "#64748B";
 
+// Prix net après crédit d'impôt 50 % — formatage FR (virgule décimale)
+const net = (v) => (v / 2).toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+
+// Formules d'abonnement ménage — dégressif selon le volume hebdomadaire (positionnement premium)
+const ABONNEMENTS = [
+  { key: "ponctuel", label: "Ponctuel", tag: "Sans engagement", taux: 32, desc: "À la demande, quand vous voulez", features: ["Intervention à la carte", "Minimum 2h par passage", "Idéal pour un grand ménage"] },
+  { key: "essentiel", label: "Essentiel", tag: "2 h / semaine", taux: 30, desc: "Le rythme confort pour un intérieur toujours net", features: ["Intervenante attitrée", "Créneau fixe réservé", "Produits fournis"] },
+  { key: "confort", label: "Confort", tag: "3 à 4 h / semaine", taux: 29, popular: true, desc: "Notre formule la plus choisie", features: ["Intervenante attitrée", "Priorité sur le planning", "Repassage inclus", "Suivi qualité"] },
+  { key: "premium", label: "Premium", tag: "6 h et + / semaine", taux: 28, desc: "Prise en charge complète de la maison", features: ["Référent dédié", "Planning sur-mesure", "Remplacement garanti", "Bilan mensuel"] },
+];
+
 const TARIFS = [
   {
     id: "entretien",
     icon: "🏠",
-    title: "Entretien & Nettoyage",
-    from: 18,
+    title: "Entretien & Ménage",
+    from: 32,
     unit: "h",
-    popular: false,
-    desc: "Ménage complet, repassage, nettoyage des vitres et surfaces, désinfection.",
-    includes: ["Ménage complet", "Repassage & linge", "Nettoyage vitres", "Sols aspiration + lavage"],
+    popular: true,
+    desc: "Ménage complet, repassage, vitres et surfaces, désinfection. Intervenante attitrée, produits professionnels fournis.",
+    includes: ["Ménage complet du domicile", "Repassage & entretien du linge", "Nettoyage vitres & surfaces", "Sols : aspiration + lavage", "Désinfection pièces humides"],
     color: T,
+    note: "Formules d'abonnement dégressives ci-dessous",
   },
   {
     id: "repas",
     icon: "🍽️",
-    title: "Préparation de repas",
-    from: 18,
+    title: "Préparation des repas",
+    from: 32,
     unit: "h",
     popular: false,
-    desc: "Cuisine à domicile selon vos goûts, régimes alimentaires et contraintes.",
-    includes: ["Repas équilibrés & savoureux", "Respect des régimes", "Aide personnes à mobilité réduite", "Rangement après cuisson"],
+    desc: "Cuisine faite maison à votre domicile, selon vos goûts, régimes et contraintes diététiques.",
+    includes: ["Repas équilibrés & savoureux", "Respect des régimes alimentaires", "Aide aux personnes à mobilité réduite", "Rangement & nettoyage après cuisson"],
     color: P,
   },
   {
     id: "courses",
     icon: "🛒",
     title: "Livraison de courses",
-    from: 20,
-    unit: "livraison",
+    from: 28,
+    unit: "prestation",
     popular: false,
-    desc: "Courses selon votre liste, livrées à domicile sur toute la Martinique.",
-    includes: ["Courses sur liste personnalisée", "Livraison à domicile", "Gestion produits frais", "Rangement à domicile"],
+    desc: "Vos commissions faites selon votre liste et livrées chez vous, partout en Martinique.",
+    includes: ["Courses sur liste personnalisée", "Livraison à domicile", "Gestion produits frais & surgelés", "Rangement des courses à domicile"],
     color: "#10B981",
   },
   {
     id: "assistance",
     icon: "📋",
     title: "Assistance administrative",
-    from: 18,
+    from: 34,
     unit: "h",
     popular: false,
-    desc: "Tri du courrier, démarches en ligne, saisie informatique, classement.",
-    includes: ["Tri & classement courrier", "Aide saisie informatique", "Démarches en ligne", "Archivage documents"],
+    desc: "Tri du courrier, démarches en ligne, saisie informatique, classement et archivage.",
+    includes: ["Tri & classement du courrier", "Aide à la saisie informatique", "Accompagnement démarches en ligne", "Archivage de documents"],
     color: "#F59E0B",
+  },
+  {
+    id: "jardinage",
+    icon: "🌿",
+    title: "Entretien extérieur & jardinage",
+    from: 36,
+    unit: "h",
+    popular: false,
+    desc: "Petits travaux de jardinage et entretien des extérieurs de votre domicile.",
+    includes: ["Tonte, taille & désherbage", "Entretien des massifs & terrasses", "Ramassage & évacuation des déchets verts", "Nettoyage des abords"],
+    color: "#16A34A",
+    cap: "Plafond crédit d'impôt : 5 000 €/an/foyer",
   },
   {
     id: "rangement",
@@ -59,21 +84,21 @@ const TARIFS = [
     title: "Coach en rangement",
     from: null,
     unit: null,
-    popular: true,
-    desc: "Méthode Marie Kondo — 3 formules adaptées à votre intérieur.",
-    includes: ["Diagnostic initial offert", "Recommandations personnalisées", "Accompagnement multi-séances", "Prestation intégrale disponible"],
+    popular: false,
+    desc: "Méthode Marie Kondo — 3 formules adaptées à votre intérieur et votre rythme.",
+    includes: [],
     color: P,
     formules: [
-      { label: "Diagnostic", price: "Offert", desc: "Visite + recommandations" },
-      { label: "Accompagnement", price: "Sur devis", desc: "Multi-séances guidées" },
-      { label: "Intégral", price: "Sur devis", desc: "Prise en charge complète" },
+      { label: "Diagnostic conseil", price: "Offert", desc: "Visite + plan de rangement personnalisé" },
+      { label: "Séance accompagnée", price: "165€ / 3h", desc: "Rangement guidé, pièce par pièce" },
+      { label: "Rangement intégral", price: "Sur devis", desc: "Prise en charge complète du domicile" },
     ],
   },
 ];
 
 function SimulateurCredit() {
-  const [tauxH, setTauxH] = useState(18);
-  const [heures, setHeures] = useState(4);
+  const [tauxH, setTauxH] = useState(30);
+  const [heures, setHeures] = useState(8);
   const brut = tauxH * heures;
   const credit = Math.round(brut * 0.5);
   const net = brut - credit;
@@ -90,7 +115,7 @@ function SimulateurCredit() {
           <label style={{ fontSize: 12, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, display: "block", marginBottom: 8 }}>
             Taux horaire (€/h)
           </label>
-          <input type="range" min="15" max="30" value={tauxH} onChange={e => setTauxH(+e.target.value)}
+          <input type="range" min="20" max="40" value={tauxH} onChange={e => setTauxH(+e.target.value)}
             style={{ width: "100%", accentColor: T, cursor: "pointer" }} />
           <div style={{ textAlign: "center", fontSize: 22, fontWeight: 800, color: T, marginTop: 6 }}>{tauxH}€/h</div>
         </div>
@@ -140,6 +165,9 @@ export default function TarifsPage() {
           .tarifs-hero { padding: 40px 16px 32px !important; }
           .tarifs-section { padding: 32px 16px 80px !important; }
           .tarifs-grid { grid-template-columns: 1fr !important; }
+          .abo-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+          .abo-grid > div { transform: none !important; }
+          .abo-section { padding: 48px 16px 64px !important; }
           .simu-grid { grid-template-columns: 1fr !important; }
           .simu-results { grid-template-columns: 1fr !important; }
           .credit-explainer { grid-template-columns: 1fr !important; gap: 16px !important; }
@@ -171,6 +199,9 @@ export default function TarifsPage() {
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 30, background: "#25D366", color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
               💬 WhatsApp rapide
             </a>
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}>
+            <SapBadge variant="inline" />
           </div>
         </div>
       </section>
@@ -248,6 +279,15 @@ export default function TarifsPage() {
 
                 <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.7, margin: 0 }}>{t.desc}</p>
 
+                {t.cap && (
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 700, color: "#16A34A", background: "#16A34A12", border: "1px solid #16A34A28", borderRadius: 20, padding: "4px 11px", alignSelf: "flex-start" }}>
+                    ⓘ {t.cap}
+                  </div>
+                )}
+                {t.note && (
+                  <div style={{ fontSize: 11.5, fontWeight: 700, color: T, marginTop: -4 }}>↓ {t.note}</div>
+                )}
+
                 {t.formules ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {t.formules.map(f => (
@@ -284,6 +324,74 @@ export default function TarifsPage() {
               <Link href="/contact" style={{ color: T, fontWeight: 700 }}>Prendre rendez-vous →</Link>
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* ── Formules d'abonnement ménage ── */}
+      <section className="abo-section" style={{ background: `linear-gradient(180deg, #F8FAFB, #fff)`, padding: "72px 24px 80px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 12 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${P}10`, border: `1px solid ${P}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
+              <span style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: 1.2 }}>Ménage régulier · plus vous confiez, moins c'est cher</span>
+            </div>
+          </div>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 40px)", fontWeight: 700, color: TEXT, textAlign: "center", marginBottom: 12 }}>
+            Formules d'abonnement
+          </h2>
+          <p style={{ fontSize: 15, color: MUTED, maxWidth: 560, margin: "0 auto 44px", textAlign: "center" }}>
+            Un tarif dégressif selon votre volume hebdomadaire. Intervenante attitrée et créneau réservé dès la formule Essentiel.
+          </p>
+
+          <div className="abo-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18, alignItems: "stretch" }}>
+            {ABONNEMENTS.map(a => (
+              <div key={a.key} style={{
+                background: "#fff", borderRadius: 22, padding: "26px 22px", position: "relative",
+                border: a.popular ? `2px solid ${P}` : "1px solid rgba(13,169,164,0.14)",
+                boxShadow: a.popular ? `0 12px 44px ${P}20` : "0 4px 22px rgba(13,169,164,0.07)",
+                display: "flex", flexDirection: "column", gap: 14,
+                transform: a.popular ? "scale(1.03)" : "none", zIndex: a.popular ? 2 : 1,
+              }}>
+                {a.popular && (
+                  <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${P}, ${T})`, color: "#fff", fontSize: 10.5, fontWeight: 800, padding: "4px 16px", borderRadius: 20, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.8 }}>
+                    ⭐ Le plus choisi
+                  </div>
+                )}
+                <div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: TEXT }}>{a.label}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: a.popular ? P : T, textTransform: "uppercase", letterSpacing: 0.5, marginTop: 2 }}>{a.tag}</div>
+                </div>
+                <div>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                    <span style={{ fontSize: 34, fontWeight: 900, color: TEXT, lineHeight: 1 }}>{a.taux}€</span>
+                    <span style={{ fontSize: 14, color: MUTED, fontWeight: 600 }}>/heure</span>
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: T, marginTop: 6, background: `${T}10`, borderRadius: 10, padding: "6px 10px", display: "inline-block" }}>
+                    soit {net(a.taux)}€/h après crédit d'impôt
+                  </div>
+                </div>
+                <p style={{ fontSize: 12.5, color: MUTED, lineHeight: 1.6, margin: 0 }}>{a.desc}</p>
+                <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
+                  {a.features.map(f => (
+                    <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12.5, color: TEXT }}>
+                      <span style={{ color: a.popular ? P : T, fontWeight: 900, flexShrink: 0 }}>✓</span> {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/contact" style={{
+                  display: "block", textAlign: "center", padding: "12px", borderRadius: 30, marginTop: "auto",
+                  background: a.popular ? `linear-gradient(135deg, ${P}, ${T})` : `${T}12`,
+                  border: a.popular ? "none" : `1px solid ${T}30`,
+                  color: a.popular ? "#fff" : T, fontWeight: 700, fontSize: 13.5, textDecoration: "none",
+                }}>
+                  Choisir cette formule →
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ fontSize: 12.5, color: "#94A3B8", textAlign: "center", marginTop: 24 }}>
+            Repas, courses, administratif et jardinage peuvent être ajoutés à toute formule. Tarifs indicatifs avant crédit d'impôt · engagement mensuel, résiliable avec préavis.
+          </p>
         </div>
       </section>
 

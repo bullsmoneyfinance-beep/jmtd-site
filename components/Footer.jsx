@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { PHONE, PHONE_HREF, EMAIL, ADDRESS, HORAIRES, FONDATRICE, SIRET, AMBER, PINK, SERVICES } from "../lib/data";
+import { PHONE, PHONE_HREF, EMAIL, ADDRESS, HORAIRES, FONDATRICE, SIRET, AMBER, PINK, SERVICES, DECLARATION_SAP } from "../lib/data";
 import Logo from "./Logo";
+import { SapMark } from "./SapBadge";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -19,9 +20,16 @@ export default function Footer() {
           <p style={{ fontSize: 13, color: "#64748B", lineHeight: 1.8, marginBottom: 12 }}>
             Société de services à la personne basée à Rivière-Salée, Martinique. Fondée par {FONDATRICE}.
           </p>
-          <div style={{ fontSize: 11, color: "#94A3B8" }}>
+          <div style={{ fontSize: 11, color: "#94A3B8", marginBottom: 14 }}>
             <div>SIRET {SIRET}</div>
-            <div>Agréé Services à la Personne (SAP)</div>
+          </div>
+          {/* Badge conformité SAP */}
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", border: `1.5px solid ${AMBER}30`, borderRadius: 10, padding: "7px 12px" }}>
+            <SapMark size={26} />
+            <div style={{ lineHeight: 1.25 }}>
+              <div style={{ fontSize: 10.5, fontWeight: 800, color: "#1A2D3D" }}>Déclaré Services à la Personne</div>
+              <div style={{ fontSize: 10.5, color: "#64748B", fontWeight: 600 }}>N° {DECLARATION_SAP}</div>
+            </div>
           </div>
         </div>
 
@@ -44,6 +52,7 @@ export default function Footer() {
           {[
             ["/", "Accueil"],
             ["/services", "Nos prestations"],
+            ["/conciergerie", "🔑 Conciergerie locative"],
             ["/tarifs", "💰 Tarifs"],
             ["/coach", "Coach rangement"],
             ["/conseils", "💡 Conseils & astuces"],

@@ -12,7 +12,7 @@ const SITE_URL =
 
 export const metadata = {
   title: "J'MTD — Société de services sur mesure en Martinique",
-  description: "Entretien, préparation de repas, livraison de courses, assistance administrative, coach rangement à Rivière-Salée et toute la Martinique. Agrément SAP. Devis gratuit.",
+  description: "Entretien, préparation de repas, livraison de courses, assistance administrative, coach rangement à Rivière-Salée et toute la Martinique. Déclaré SAP — 50% crédit d'impôt. Devis gratuit.",
   keywords: "services à la personne, aide à domicile, ménage, coach rangement, Martinique, Rivière-Salée, services sur mesure",
   authors: [{ name: "J'MTD" }],
   metadataBase: new URL(SITE_URL),
@@ -35,7 +35,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "J'MTD — Société de services sur mesure en Martinique",
-    description: "Ménage, repas, courses, coach rangement en Martinique. Agrément SAP — 50% crédit d'impôt.",
+    description: "Ménage, repas, courses, coach rangement en Martinique. Déclaré SAP — 50% crédit d'impôt.",
     images: [`${SITE_URL}/opengraph-image`],
   },
   robots: { index: true, follow: true },
@@ -53,7 +53,7 @@ const LOCAL_BUSINESS_SCHEMA = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   "name": "J'MTD",
-  "description": "Société de services à la personne agréée SAP en Martinique. Entretien, préparation de repas, livraison de courses, assistance administrative, coach rangement.",
+  "description": "Société de services à la personne déclarée SAP en Martinique. Entretien, préparation de repas, livraison de courses, assistance administrative, coach rangement.",
   "url": "https://jmtd.fr",
   "logo": "https://jmtd.fr/logo.png",
   "image": "https://jmtd.fr/logo.png",

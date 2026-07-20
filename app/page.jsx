@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PHONE, PHONE_HREF, WHATSAPP, SERVICES, TESTIMONIALS, ZONES } from "../lib/data";
+import { PHONE, PHONE_HREF, WHATSAPP, SERVICES, TESTIMONIALS, ZONES, DECLARATION_SAP } from "../lib/data";
 
 const WA_SVG = (<svg width="18" height="18" viewBox="0 0 32 32" fill="none" style={{display:"block",flexShrink:0}}><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.5 8.5A10.4 10.4 0 0 0 16 5.5C10.2 5.5 5.5 10.2 5.5 16c0 1.85.48 3.65 1.4 5.25L5.5 26.5l5.4-1.4A10.4 10.4 0 0 0 16 26.5c5.8 0 10.5-4.7 10.5-10.5 0-2.8-1.1-5.43-3-7.5zm-7.5 16.1a8.6 8.6 0 0 1-4.4-1.2l-.3-.2-3.2.84.86-3.1-.2-.33A8.6 8.6 0 1 1 16 24.6zm4.7-6.4c-.26-.13-1.53-.75-1.77-.84-.23-.08-.4-.13-.56.13-.17.26-.64.84-.79 1.01-.14.17-.29.19-.54.06-.26-.13-1.08-.4-2.06-1.27-.76-.68-1.28-1.52-1.43-1.77-.15-.26-.01-.4.11-.52.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.08-.17.04-.32-.02-.45-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.26-.87.85-.87 2.07s.89 2.4 1.01 2.57c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.47-.07 1.53-.63 1.74-1.23.22-.6.22-1.12.15-1.23-.06-.12-.23-.19-.49-.31z" fill="#fff"/></svg>);
 
@@ -27,7 +27,7 @@ function useReveal() {
 }
 
 const TICKS = [
-  "✦ Agrément SAP officiel","✦ 5/5 Google","✦ +200 foyers","✦ Méthode Marie Kondo",
+  "✦ Déclaré SAP officiel","✦ 5/5 Google","✦ +200 foyers","✦ Méthode Marie Kondo",
   "✦ 50% crédit d'impôt","✦ Toute la Martinique","✦ Réponse en 24h","✦ Devis gratuit",
 ];
 
@@ -141,7 +141,7 @@ function QuickForm() {
 }
 
 const FAQ_ITEMS = [
-  { q: "Êtes-vous agréés Services à la Personne ?", a: "Oui, J'MTD est officiellement agréé SAP. Cet agrément vous donne droit au crédit d'impôt de 50% sur toutes nos prestations." },
+  { q: "Êtes-vous déclarés Services à la Personne ?", a: "Oui, J'MTD est officiellement déclaré SAP (N° " + DECLARATION_SAP + "). Cette déclaration vous donne droit au crédit d'impôt de 50% sur toutes nos prestations à domicile." },
   { q: "Comment fonctionne le crédit d'impôt ?", a: "L'État rembourse 50% de vos dépenses SAP via votre déclaration d'impôts. Nous vous fournissons une attestation fiscale annuelle. Applicable même si vous n'êtes pas imposable." },
   { q: "Dans quelles communes intervenez-vous ?", a: "J'MTD intervient partout en Martinique : Rivière-Salée (siège), Le Lamentin, Le Diamant, Saint-Esprit, Fort-de-France, Le Vauclin, Sainte-Anne, Le François et toutes les communes environnantes." },
   { q: "Comment se passe le premier contact ?", a: "Remplissez le formulaire ou appelez-nous. Nous vous rappelons sous 24h pour comprendre vos besoins, puis établissons un devis gratuit et sans engagement." },
@@ -190,7 +190,7 @@ export default function HomePage() {
             {/* Badge SAP */}
             <div className="anim-fade-up" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", border: `1.5px solid ${T}30`, borderRadius: 30, padding: "8px 18px", marginBottom: 32, boxShadow: "0 2px 12px rgba(13,169,164,0.1)" }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: T, display: "inline-block", animation: "softPulse 2.5s infinite" }} />
-              <span style={{ fontSize: 13, color: T, fontWeight: 700 }}>Agréé Services à la Personne · SAP</span>
+              <span style={{ fontSize: 13, color: T, fontWeight: 700 }}>Déclaré Services à la Personne · N° {DECLARATION_SAP}</span>
             </div>
 
             {/* H1 */}
@@ -255,7 +255,7 @@ export default function HomePage() {
             {/* Badges confiance */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {[
-                { icon: "🏅", title: "Agréé SAP", sub: "Crédit impôt 50%", bg: `${T}10`, border: `${T}22` },
+                { icon: "🏅", title: "Déclaré SAP", sub: "Crédit impôt 50%", bg: `${T}10`, border: `${T}22` },
                 { icon: "⭐", title: "5/5 Google", sub: "Avis vérifiés", bg: "#FFF9F0", border: "#F59E0B33" },
                 { icon: "🏠", title: "Toute la Martinique", sub: "Déplacement inclus", bg: `${P}08`, border: `${P}20` },
                 { icon: "⏰", title: "Réponse 24h", sub: "Lun–Ven 8h–18h", bg: WARM, border: `${T}15` },
@@ -308,7 +308,7 @@ export default function HomePage() {
             {[
               { icon: "🔒", title: "Personnel rigoureusement sélectionné", text: "Chaque intervenante passe par un entretien approfondi, une vérification des références et une formation aux standards J'MTD avant sa première intervention.", color: T },
               { icon: "🕐", title: "Vous récupérez votre temps", text: "Ménage, repas, courses… Confiez-nous les tâches qui vous pèsent et retrouvez du temps pour ce qui compte vraiment : votre famille, vos loisirs, vous-même.", color: P },
-              { icon: "💳", title: "50% remboursé par l'État", text: "L'agrément SAP vous permet de récupérer la moitié de vos dépenses via le crédit d'impôt. Nous vous remettons une attestation fiscale chaque année.", color: T },
+              { icon: "💳", title: "50% remboursé par l'État", text: "Notre déclaration SAP vous permet de récupérer la moitié de vos dépenses via le crédit d'impôt. Nous vous remettons une attestation fiscale chaque année.", color: T },
             ].map((c, i) => (
               <div key={c.title} className={`reveal reveal-delay-${i + 1}`}
                 style={{ padding: "36px 30px", background: "#fff", borderRadius: 22, boxShadow: WARM_SHADOW, borderLeft: `4px solid ${c.color}`, transition: "transform 0.25s, box-shadow 0.25s" }}

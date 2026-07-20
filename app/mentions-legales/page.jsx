@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EMAIL, PHONE, ADDRESS, SIRET, FONDATRICE } from "../../lib/data";
+import { EMAIL, PHONE, ADDRESS, SIRET, FONDATRICE, DECLARATION_SAP, TUTELLE_SAP } from "../../lib/data";
 
 const T = "#0DA9A4";
 const TEXT = "#1A2D3D";
@@ -18,8 +18,8 @@ const SECTIONS = [
       "Raison sociale : J'MTD",
       "Forme juridique : Entreprise individuelle",
       `Dirigeante : ${FONDATRICE}`,
-      `SIRET : ${SIRET}`,
-      "Agrément SAP : Agrément Services à la Personne",
+      `SIREN : ${SIRET}`,
+      `Déclaration Services à la Personne : N° ${DECLARATION_SAP} (${TUTELLE_SAP})`,
       `Adresse : ${ADDRESS}`,
       `Téléphone : ${PHONE}`,
       `Email : ${EMAIL}`,

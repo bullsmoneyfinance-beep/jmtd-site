@@ -1,4 +1,5 @@
 import { serverGet, serverSet } from "../../../lib/server-store";
+import { scoreCandidature } from "../../../lib/scoring";
 
 export async function POST(request) {
   try {
@@ -58,14 +59,10 @@ export async function POST(request) {
         const expStr = EXPERIENCE_LABELS[experience] || experience || "Non précisé";
         const situStr = SITUATION_LABELS[situation] || situation || "Non précisée";
 
-        // Score rapide de la candidature (sur 5)
-        let score = 0;
-        if (experience && experience !== "aucune") score++;
-        if (transport && transport !== "non") score++;
-        if (motivation && motivation.length > 100) score++;
-        if (discretion && discretion.length > 60) score++;
-        if (references === "oui") score++;
-        const stars = "⭐".repeat(score) + "☆".repeat(5 - score);
+        // Score de la candidature (modèle partagé /100 + catégorie de tri)
+        const sc = scoreCandidature(candidature);
+        const stars = `${sc.tier.emoji} ${sc.tier.label}`;
+        const breakdownStr = sc.breakdown.map(b => `${b.label} ${b.score}/${b.max}`).join(" · ");
 
         await fetch("https://api.resend.com/emails", {
           method: "POST",
@@ -77,7 +74,7 @@ export async function POST(request) {
             from: "recrutement@jmtd.fr",
             to: ["contact@jmtd.fr"],
             reply_to: email || undefined,
-            subject: `👤 Nouvelle candidature — ${prenom} ${nom} (${postesStr}) ${stars}`,
+            subject: `${sc.tier.emoji} Candidature ${sc.total}/100 — ${prenom} ${nom} (${postesStr})`,
             html: `
 <!DOCTYPE html>
 <html lang="fr">
@@ -107,9 +104,8 @@ export async function POST(request) {
     <h1>👤 Nouvelle candidature</h1>
     <p>Reçue le ${new Date().toLocaleString("fr-FR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
     <div class="score">
-      <strong>Score rapide :</strong> ${stars} (${score}/5)
-      &nbsp;·&nbsp; Expérience : ${expStr}
-      &nbsp;·&nbsp; Transport : ${transport || "Non précisé"}
+      <strong>Score : ${sc.total}/100</strong> &nbsp;·&nbsp; ${stars} (${sc.tier.short})
+      <div style="font-size:11px;color:rgba(255,255,255,0.55);margin-top:6px;line-height:1.6;">${breakdownStr}</div>
     </div>
   </div>
   <div class="body">

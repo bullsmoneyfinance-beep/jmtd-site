@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { loadSession, clearSession, load, save } from "../../lib/storage";
 import { DEMO_EMPS, AMBER, PINK, NAVY, EMERALD, PHONE, EMAIL, ADDRESS, FONDATRICE, SIRET } from "../../lib/data";
+import { scoreCandidature, triageCandidatures, scoreToStars, TIERS, POSTE_LABELS, EXP_LABELS, TRANSPORT_LABELS, DISPO_LABELS } from "../../lib/scoring";
 
 const T = AMBER;   // teal
 const P = PINK;    // rose
@@ -213,6 +214,12 @@ export default function AdminPage() {
   /* Session filters */
   const [filterEmp, setFilterEmp] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
+
+  /* Triage candidatures */
+  const [candSort, setCandSort] = useState("score");   // "score" | "date"
+  const [candTier, setCandTier] = useState("all");     // "all" | tier key
+  const [candPoste, setCandPoste] = useState("all");   // "all" | poste key
+  const [candStatus, setCandStatus] = useState("all"); // "all" | status key
 
   const refreshData = useCallback(async (initial = false) => {
     const [s, e, q, a, m] = await Promise.all([
@@ -1084,7 +1091,7 @@ export default function AdminPage() {
               </a>
             </div>
 
-            {/* Statuts */}
+            {/* Triage automatique */}
             {(() => {
               const STATUS_CFG = {
                 nouveau:   { label: "Nouveau", color: "#F59E0B", bg: "rgba(245,158,11,0.12)" },
@@ -1093,8 +1100,6 @@ export default function AdminPage() {
                 retenu:    { label: "Retenu·e ✓", color: EMERALD, bg: "rgba(16,185,129,0.12)" },
                 refuse:    { label: "Refusé·e", color: "#475569", bg: "rgba(255,255,255,0.04)" },
               };
-              const POSTE_LABELS = { menage: "🏠 Ménage", repas: "🍽️ Repas", courses: "🛒 Courses", assistance: "📋 Admin", rangement: "🗂️ Rangement" };
-              const EXP_LABELS = { aucune: "Aucune exp.", moins1: "<1 an", "1-3": "1–3 ans", "3-5": "3–5 ans", plus5: "5+ ans" };
 
               if (candidatures.length === 0) return (
                 <div style={{ textAlign: "center", padding: "80px 24px", color: "#475569" }}>
@@ -1104,18 +1109,54 @@ export default function AdminPage() {
                 </div>
               );
 
+              // Comptes par catégorie (tri automatique)
+              const counts = { prioritaire: 0, etudier: 0, faible: 0 };
+              candidatures.forEach(c => { counts[scoreCandidature(c).tier.key]++; });
+              const triaged = triageCandidatures(candidatures, { sort: candSort, tier: candTier, poste: candPoste, status: candStatus });
+
+              const selStyle = { padding: "8px 12px", background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#94A3B8", fontSize: 12.5, cursor: "pointer" };
+              const chip = (active, col) => ({
+                padding: "9px 14px", borderRadius: 12, cursor: "pointer", fontSize: 12.5, fontWeight: 700,
+                border: `1px solid ${active ? col : "rgba(255,255,255,0.1)"}`,
+                background: active ? `${col}1f` : "rgba(255,255,255,0.03)", color: active ? col : "#94A3B8",
+                display: "flex", alignItems: "center", gap: 7, transition: "all 0.15s",
+              });
+
               return (
+                <>
+                  {/* Résumé tri automatique */}
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
+                    <div onClick={() => setCandTier("all")} style={chip(candTier === "all", "#94A3B8")}>Toutes · {candidatures.length}</div>
+                    {Object.values(TIERS).map(ti => (
+                      <div key={ti.key} onClick={() => setCandTier(candTier === ti.key ? "all" : ti.key)} style={chip(candTier === ti.key, ti.color)}>
+                        {ti.emoji} {ti.label} · {counts[ti.key]}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Filtres */}
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", marginBottom: 20, paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: 0.8 }}>Trier</span>
+                    <select value={candSort} onChange={e => setCandSort(e.target.value)} style={selStyle}>
+                      <option value="score">⭐ Score décroissant</option>
+                      <option value="date">🕑 Plus récentes</option>
+                    </select>
+                    <select value={candPoste} onChange={e => setCandPoste(e.target.value)} style={selStyle}>
+                      <option value="all">Tous les postes</option>
+                      {Object.entries(POSTE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                    </select>
+                    <select value={candStatus} onChange={e => setCandStatus(e.target.value)} style={selStyle}>
+                      <option value="all">Tous les statuts</option>
+                      {Object.entries(STATUS_CFG).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+                    </select>
+                    <span style={{ fontSize: 12, color: "#475569", marginLeft: "auto" }}>{triaged.length} affichée{triaged.length !== 1 ? "s" : ""}</span>
+                  </div>
+
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                  {candidatures.map(c => {
+                  {triaged.map(c => {
                     const s = c.status || "nouveau";
                     const cfg = STATUS_CFG[s] || STATUS_CFG.nouveau;
-                    const score = [
-                      c.experience && c.experience !== "aucune",
-                      c.transport && c.transport !== "non",
-                      c.motivation && c.motivation.length > 100,
-                      c.discretion && c.discretion.length > 60,
-                      c.references === "oui",
-                    ].filter(Boolean).length;
+                    const sc = c._score;
 
                     return (
                       <div key={c.id}
@@ -1126,14 +1167,27 @@ export default function AdminPage() {
                           <div style={{ flex: 1 }}>
                             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, flexWrap: "wrap" }}>
                               <span style={{ fontSize: 17, fontWeight: 700, color: "#F8FAFC" }}>{c.prenom} {c.nom}</span>
+                              <span style={{ padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 800, background: `${sc.tier.color}1f`, color: sc.tier.color, border: `1px solid ${sc.tier.color}44` }}>{sc.tier.emoji} {sc.total}/100 · {sc.tier.short}</span>
                               <span style={{ padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
-                              <span style={{ fontSize: 12, color: "#475569" }}>{"⭐".repeat(score)}{"☆".repeat(5 - score)}</span>
                             </div>
                             <div style={{ display: "flex", gap: 16, flexWrap: "wrap", fontSize: 12, color: "#64748B" }}>
                               <span>📍 {c.commune}</span>
                               <span>💼 {EXP_LABELS[c.experience] || c.experience || "—"}</span>
-                              <span>🚗 {c.transport || "—"}</span>
-                              <span>⏰ {c.dispo_heures || "—"}</span>
+                              <span>{TRANSPORT_LABELS[c.transport] || "🚗 —"}</span>
+                              <span>⏰ {DISPO_LABELS[c.dispo_heures] || "—"}</span>
+                            </div>
+                            {/* Détail du score */}
+                            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
+                              {sc.breakdown.map(b => {
+                                const pct = b.score / b.max;
+                                const col = pct >= 0.7 ? EMERALD : pct >= 0.4 ? "#F59E0B" : "#475569";
+                                return (
+                                  <span key={b.key} title={`${b.label} : ${b.score}/${b.max}`} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "2px 8px", borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", fontSize: 10.5, color: "#94A3B8" }}>
+                                    {b.label}
+                                    <span style={{ fontWeight: 800, color: col }}>{b.score}</span>
+                                  </span>
+                                );
+                              })}
                             </div>
                           </div>
                           <div style={{ fontSize: 11, color: "#334155", textAlign: "right", flexShrink: 0 }}>
@@ -1198,6 +1252,7 @@ export default function AdminPage() {
                     );
                   })}
                 </div>
+                </>
               );
             })()}
           </div>

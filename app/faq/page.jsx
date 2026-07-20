@@ -23,7 +23,7 @@ const FAQ_DATA = [
     cat: "🏠 Nos prestations",
     items: [
       { q: "Quelles prestations proposez-vous exactement ?", a: "J'MTD propose 5 services : entretien & nettoyage du domicile, préparation de repas à domicile, livraison de courses, assistance administrative et coaching en rangement (méthode Marie Kondo). Ces services peuvent être combinés selon vos besoins." },
-      { q: "Intervenez-vous aussi pour les professionnels ?", a: "Notre agrément SAP est destiné aux particuliers. Pour les professionnels (bureaux, locaux), nous pouvons étudier votre demande au cas par cas. Contactez-nous pour en discuter." },
+      { q: "Intervenez-vous aussi pour les professionnels ?", a: "Notre déclaration SAP concerne les prestations aux particuliers (crédit d'impôt). Pour les professionnels — locaux, bureaux, ou gestion de biens en location — nous proposons une offre dédiée : découvrez notre conciergerie locative ou contactez-nous." },
       { q: "Que couvre exactement l'entretien ménager ?", a: "L'entretien comprend le ménage complet (dépoussiérage, aspiration, lavage des sols), le nettoyage des surfaces et plans de travail, la désinfection des pièces humides (WC, salle de bain), le nettoyage des vitres et le repassage. Chaque intervention est adaptée à votre domicile et vos priorités." },
       { q: "Puis-je avoir plusieurs services en même temps ?", a: "Absolument ! Vous pouvez combiner par exemple ménage + préparation de repas lors d'une même visite, ou courses + rangement. Nous organisons l'intervention selon la durée et vos priorités." },
       { q: "Le coaching rangement, c'est quoi exactement ?", a: "Notre coach certifiée méthode Marie Kondo commence par un diagnostic gratuit de votre intérieur. Selon vos besoins, elle vous propose un accompagnement (plusieurs séances guidées) ou une prestation intégrale où elle prend tout en charge. L'objectif : un espace ordonné et fonctionnel qui correspond à votre mode de vie." },
@@ -45,7 +45,7 @@ const FAQ_DATA = [
       { q: "Vos intervenantes sont-elles qualifiées ?", a: "Toutes nos intervenantes sont recrutées pour leur sérieux, leur discrétion et leur expérience. Elles bénéficient d'une formation continue aux méthodes professionnelles de nettoyage, rangement et aide à la personne." },
       { q: "Êtes-vous assurés en cas de casse ou d'accident ?", a: "Oui, J'MTD dispose d'une assurance responsabilité civile professionnelle. En cas de casse ou de dommage lors d'une intervention, vous êtes couvert. Signalez tout incident dans les 24h." },
       { q: "Mes données personnelles sont-elles protégées ?", a: "Vos données sont traitées conformément au RGPD. Elles ne sont jamais partagées avec des tiers, sont conservées 3 ans maximum et vous pouvez demander leur suppression à tout moment. Consultez notre politique de confidentialité." },
-      { q: "J'MTD est-il agréé SAP ?", a: "Oui, J'MTD possède l'agrément Services à la Personne (SAP) délivré par la DIECCTE. Cet agrément est la condition nécessaire pour que vous bénéficiez du crédit d'impôt. Notre numéro SIRET : 802 877 779." },
+      { q: "J'MTD est-il déclaré Services à la Personne ?", a: "Oui, J'MTD est déclaré Services à la Personne (SAP) auprès de la DEETS Martinique, sous le numéro SAP802877779. Cette déclaration est la condition qui vous permet de bénéficier du crédit d'impôt de 50%. Notre numéro SIREN : 802 877 779." },
     ],
   },
 ];

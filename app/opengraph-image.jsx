@@ -74,7 +74,7 @@ export default async function Image() {
               background: T, display: "flex", flexShrink: 0,
             }} />
             <span style={{ fontSize: 20, fontWeight: 700, color: T, letterSpacing: 1.5 }}>
-              Agréé Services à la Personne · SAP
+              Déclaré Services à la Personne · SAP
             </span>
           </div>
 

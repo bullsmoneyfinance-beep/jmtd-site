@@ -9,3 +9,17 @@
  ✓ Ready in 4.7s
  ○ Compiling /tarifs ...
  ✓ Compiled /tarifs in 2.3s (551 modules)
+ GET /tarifs 200 in 2452ms
+ ✓ Compiled in 198ms (265 modules)
+ GET /tarifs 200 in 39ms
+ ✓ Compiled /icon.svg in 159ms (315 modules)
+ GET /icon.svg?0a4bb7f4abccad1e 200 in 203ms
+ ✓ Compiled in 144ms (265 modules)
+ ✓ Compiled in 114ms (536 modules)
+ ✓ Compiled in 331ms (550 modules)
+ ✓ Compiled in 216ms (550 modules)
+ ✓ Compiled in 129ms (550 modules)
+ ✓ Compiled in 228ms (550 modules)
+ ✓ Compiled /conciergerie in 115ms (542 modules)
+ GET /conciergerie 200 in 190ms
+ ✓ Compiled in 75ms (267 modules)

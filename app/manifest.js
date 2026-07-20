@@ -2,7 +2,7 @@ export default function manifest() {
   return {
     name: "J'MTD — Services à la personne Martinique",
     short_name: "J'MTD",
-    description: "Entretien, repas, courses, coach rangement à domicile en Martinique. Agrément SAP — 50% crédit d'impôt.",
+    description: "Entretien, repas, courses, coach rangement à domicile en Martinique. Déclaré SAP — 50% crédit d'impôt.",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",

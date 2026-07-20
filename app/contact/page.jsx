@@ -134,7 +134,7 @@ export default function ContactPage() {
         </div>
         {/* Frondes de palmier — accent tropical (droite) */}
         <div aria-hidden data-parallax="0.06" className="parallax hero-palm" style={{ position: "absolute", top: "-8%", right: "-8%", width: "clamp(180px, 28vw, 380px)", height: "116%", zIndex: 0, pointerEvents: "none" }}>
-          <img src={IMG.palm} alt="" width={900} height={1100} loading="eager"
+          <img src={IMG.palm} alt="" width={900} height={1100} loading="lazy"
             style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply", maskImage: "linear-gradient(to left, #000 18%, transparent 90%)", WebkitMaskImage: "linear-gradient(to left, #000 18%, transparent 90%)" }} />
         </div>
         {/* Voile clair pour lisibilité */}

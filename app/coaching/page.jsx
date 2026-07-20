@@ -333,7 +333,7 @@ export default function CoachingPage() {
         </div>
         {/* Frondes de palmier — profondeur */}
         <div aria-hidden data-parallax="0.06" className="parallax hide-mobile" style={{ position: "absolute", top: "-10%", left: "-6%", width: "clamp(240px, 30vw, 480px)", height: "120%", zIndex: 0, pointerEvents: "none" }}>
-          <img src={IMG.palmLeaf} alt="" width={900} height={1100} loading="eager"
+          <img src={IMG.palmLeaf} alt="" width={900} height={1100} loading="lazy"
             style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply", maskImage: "linear-gradient(to right, #000 30%, transparent 92%)", WebkitMaskImage: "linear-gradient(to right, #000 30%, transparent 92%)" }} />
         </div>
         {/* Voile dégradé — lisibilité */}

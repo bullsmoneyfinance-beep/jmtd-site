@@ -23,3 +23,9 @@
  ✓ Compiled in 165ms (329 modules)
  ✓ Compiled /faq in 89ms (345 modules)
  GET /faq 200 in 197ms
+ ✓ Compiled in 285ms (329 modules)
+ ✓ Compiled in 289ms (329 modules)
+ ✓ Compiled in 113ms (329 modules)
+ ✓ Compiled in 133ms (329 modules)
+ ✓ Compiled / in 138ms (344 modules)
+ GET / 200 in 266ms

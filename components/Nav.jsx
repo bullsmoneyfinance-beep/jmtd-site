@@ -262,13 +262,13 @@ export default function Nav() {
           { href: "/conseils", icon: "conseils", label: "Conseils" },
           { href: PHONE_HREF,  icon: "phone",    label: "Appeler",  ext: true, color: T },
           { href: "/contact",  icon: "mail",     label: "Devis"    },
-          { href: "/portail",  icon: "lock",     label: "Équipe"   },
+          { href: WHATSAPP,    icon: "chat",     label: "WhatsApp", ext: true, color: "#25D366", target: "_blank" },
         ].map(item => {
           const active = !item.ext && pathname === item.href;
           const col = item.color ?? (active ? T : "#94A3B8");
           const El = item.ext ? "a" : Link;
           return (
-            <El key={item.label} href={item.href}
+            <El key={item.label} href={item.href} target={item.target} rel={item.target ? "noopener noreferrer" : undefined}
               style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "10px 0", fontSize: 9.5, fontWeight: active ? 700 : 500, color: col, textDecoration: "none", gap: 4, transition: "color 0.15s", position: "relative" }}>
               {active && <span style={{ position: "absolute", top: 0, width: 28, height: 2.5, background: T, borderRadius: "0 0 3px 3px" }} />}
               <Icon name={item.icon} size={21} color={col} />

@@ -280,13 +280,13 @@ export default function HomePage() {
             </div>
 
             <h1 className="anim-fade-up delay-1 display" style={{ fontSize: "clamp(40px, 5.4vw, 72px)", marginBottom: 26, letterSpacing: -1.8 }}>
-              Votre maison<br />
-              entre de bonnes{" "}
-              <span style={{ background: `linear-gradient(120deg, ${T}, ${OCEAN} 45%, ${P})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>mains.</span>
+              Confiez votre quotidien,<br />
+              profitez de{" "}
+              <span style={{ background: `linear-gradient(120deg, ${T}, ${OCEAN} 45%, ${P})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>votre vie.</span>
             </h1>
 
             <p className="anim-fade-up delay-2" style={{ fontSize: 18, color: TEXT2, lineHeight: 1.75, marginBottom: 14, maxWidth: 480 }}>
-              Ménage, repas, courses, coach rangement — des intervenantes <strong style={{ color: TEXT }}>sélectionnées, formées et discrètes</strong> pour prendre soin de votre quotidien en Martinique.
+              Ménage, repas, courses, coach rangement. Nos intervenantes <strong style={{ color: TEXT }}>sélectionnées, formées et discrètes</strong> s&apos;occupent de votre maison — vous récupérez du temps pour votre famille et vos loisirs, partout en Martinique.
             </p>
             <p className="anim-fade-up delay-2" style={{ marginBottom: 38 }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 15, color: T, fontWeight: 600, background: `${T}12`, borderRadius: 20, padding: "5px 14px" }}><Icon name="credit" size={16} color={T} /> 50% remboursé par crédit d&apos;impôt SAP</span>
@@ -625,7 +625,7 @@ export default function HomePage() {
             </h2>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginTop: 16 }}>
               {"★★★★★".split("").map((s, i) => <span key={i} style={{ color: "#F59E0B", fontSize: 22 }}>{s}</span>)}
-              <span style={{ fontSize: 14, color: TEXT2, marginLeft: 10, fontWeight: 500 }}>5/5 · +200 familles satisfaites en Martinique</span>
+              <span style={{ fontSize: 14, color: TEXT2, marginLeft: 10, fontWeight: 500 }}>+200 foyers &amp; entreprises accompagnés en Martinique</span>
             </div>
           </Reveal>
 
@@ -641,12 +641,13 @@ export default function HomePage() {
                   &ldquo;{t.text}&rdquo;
                 </p>
                 <div style={{ display: "flex", alignItems: "center", gap: 14, paddingTop: 20, borderTop: "1px solid #F1F5F9" }}>
-                  <div style={{ width: 46, height: 46, borderRadius: "50%", background: `linear-gradient(135deg, ${T}30, ${P}20)`, border: `2px solid ${T}25`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Icon name="users" size={22} color={T} /></div>
+                  <div style={{ width: 46, height: 46, borderRadius: "50%", background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 800, fontSize: 15, letterSpacing: 0.5, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    {t.name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase()}
+                  </div>
                   <div>
                     <div style={{ fontSize: 15, fontWeight: 700, color: TEXT }}>{t.name}</div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: TEXT2, marginTop: 2 }}><Icon name="pin" size={12} color={TEXT2} /> {t.city} · Cliente J&apos;MTD</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: TEXT2, marginTop: 2 }}><Icon name="pin" size={12} color={TEXT2} /> {t.city} · {t.role}</div>
                   </div>
-                  <div style={{ marginLeft: "auto", background: `${T}10`, borderRadius: "50%", width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Icon name="check" size={15} color={T} strokeWidth={2.5} /></div>
                 </div>
               </Reveal>
             ))}

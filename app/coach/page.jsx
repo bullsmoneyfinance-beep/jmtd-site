@@ -69,8 +69,8 @@ const FORMULES = [
   {
     id: "accompagnement",
     name: "Accompagnement",
-    price: "Sur devis",
-    priceNote: "Séances individuelles",
+    price: "dès 165€",
+    priceNote: "Séance guidée de 3h",
     color: P,
     badge: "Le plus choisi",
     features: [

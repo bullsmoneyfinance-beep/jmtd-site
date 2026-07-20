@@ -6,40 +6,6 @@
   - Local:        http://localhost:3001
 
  ✓ Starting...
- ✓ Ready in 1591ms
- ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
-  ▲ Next.js 14.2.5
-  - Local:        http://localhost:3001
-
- ✓ Starting...
- ✓ Ready in 10s
+ ✓ Ready in 1628ms
  ○ Compiling / ...
- ✓ Compiled / in 7s (667 modules)
- GET / 200 in 7442ms
- ✓ Compiled in 546ms (323 modules)
- ○ Compiling /services ...
- ✓ Compiled /services in 7.5s (661 modules)
- GET /services 200 in 7695ms
- ✓ Compiled /coach in 234ms (668 modules)
- GET /coach 200 in 345ms
- ✓ Compiled /coaching in 344ms (675 modules)
- GET /coaching 200 in 454ms
- ✓ Compiled /conciergerie in 320ms (682 modules)
- GET /conciergerie 200 in 447ms
- ✓ Compiled /tarifs in 308ms (689 modules)
- GET /tarifs 200 in 419ms
- ✓ Compiled /contact in 356ms (698 modules)
- GET /contact 200 in 492ms
- ○ Compiling /faq ...
- ✓ Compiled /faq in 1126ms (706 modules)
- GET /faq 200 in 1267ms
- ○ Compiling /conseils ...
- ✓ Compiled /conseils in 588ms (713 modules)
- GET /conseils 200 in 816ms
- ✓ Compiled in 723ms (341 modules)
- ✓ Compiled in 260ms (341 modules)
- ✓ Compiled in 264ms (341 modules)
- ✓ Compiled / in 332ms (344 modules)
- GET / 200 in 501ms
- ✓ Compiled in 462ms (341 modules)
-[?25h
+ ✓ Compiled / in 2.4s (669 modules)

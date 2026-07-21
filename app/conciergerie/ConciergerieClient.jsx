@@ -254,14 +254,14 @@ export default function ConciergeriePage() {
           .cg-section { padding: 48px 16px !important; }
         }
 
-        /* ── Halos ambiants or/navy (adaptés du motif .zones-orb de l'accueil) ── */
+        /* Halos ambiants or/navy, motif zones-orb repris de la page d accueil */
         @keyframes cgDrift { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-16px,20px)} }
         .cg-orb { position:absolute; border-radius:50%; filter:blur(58px); pointer-events:none; z-index:0; animation:cgDrift 18s ease-in-out infinite; }
         .cg-orb-a { width:340px; height:340px; top:-90px; left:-70px; background:radial-gradient(circle, ${GOLD}26, transparent 70%); }
         .cg-orb-b { width:280px; height:280px; bottom:-80px; right:5%; background:radial-gradient(circle, ${NAVY2}1a, transparent 70%); animation-duration:14s; animation-delay:-5s; }
 
-        /* Focus rack : --proximity est mis à jour à chaque frame de scroll (JS).
-           AUCUNE transition ici — sinon la valeur "poursuit" une cible mouvante. */
+        /* Focus rack: --proximity est mis a jour a chaque frame de scroll (JS).
+           AUCUNE transition ici, sinon la valeur poursuit une cible mouvante. */
         .cg-focus { will-change: transform, opacity, filter; }
 
         @media (prefers-reduced-motion: reduce) {

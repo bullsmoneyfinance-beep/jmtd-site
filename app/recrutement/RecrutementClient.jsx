@@ -87,7 +87,7 @@ function StepBar({ step }) {
       {STEPS.map((s, i) => (
         <div key={s.n} style={{ display: "flex", alignItems: "center" }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
-            <div style={{
+            <div className="step-bar-circle" style={{
               width: 42, height: 42, borderRadius: "50%",
               background: step > s.n ? T : step === s.n ? `linear-gradient(135deg, ${T}, ${P})` : "#F1F5F9",
               border: step >= s.n ? "none" : "1.5px solid #E2E8F0",
@@ -98,12 +98,12 @@ function StepBar({ step }) {
             }}>
               {step > s.n ? "✓" : s.n}
             </div>
-            <span style={{ fontSize: 11, fontWeight: step === s.n ? 700 : 400, color: step === s.n ? T : "#94A3B8", whiteSpace: "nowrap", transition: "color 0.3s" }}>
+            <span className="step-bar-label" style={{ fontSize: 11, fontWeight: step === s.n ? 700 : 400, color: step === s.n ? T : "#94A3B8", whiteSpace: "nowrap", transition: "color 0.3s" }}>
               {s.label}
             </span>
           </div>
           {i < STEPS.length - 1 && (
-            <div style={{ width: 56, height: 2, margin: "0 6px", marginBottom: 20, background: step > i + 1 ? T : "#E2E8F0", transition: "background 0.4s ease", flexShrink: 0 }} />
+            <div className="step-bar-connector" style={{ width: 56, height: 2, margin: "0 6px", marginBottom: 20, background: step > i + 1 ? T : "#E2E8F0", transition: "background 0.4s ease", flexShrink: 0 }} />
           )}
         </div>
       ))}
@@ -220,6 +220,10 @@ export default function RecrutementPage() {
           .recru-avantages { grid-template-columns: 1fr !important; }
           .recru-section { padding: 32px 16px 80px !important; }
           .step-bar-label { display: none !important; }
+        }
+        @media (max-width: 420px) {
+          .step-bar-circle { width: 30px !important; height: 30px !important; font-size: 12px !important; }
+          .step-bar-connector { width: 22px !important; margin: 0 3px !important; margin-bottom: 0 !important; }
         }
       `}</style>
 

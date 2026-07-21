@@ -1,5 +1,16 @@
 import "./globals.css";
+import { Cormorant_Garamond, DM_Sans, Dancing_Script } from "next/font/google";
 import ConditionalLayout from "../components/ConditionalLayout";
+
+// Polices auto-hébergées (next/font) — supprime la requête bloquante vers
+// Google Fonts et applique automatiquement font-display: swap. Les noms de
+// famille générés correspondent exactement aux fontFamily inline existants
+// (ex: "'Cormorant Garamond', Georgia, serif") : aucune autre modification
+// de code n'est nécessaire pour que le site utilise les polices auto-hébergées.
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["600", "700"], display: "swap" });
+const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], display: "swap" });
+const dancingScript = Dancing_Script({ subsets: ["latin"], weight: ["700"], display: "swap" });
+const fontClasses = `${cormorant.className} ${dmSans.className} ${dancingScript.className}`;
 
 // URL de base : variable d'env en priorité, sinon Vercel URL, sinon fallback production
 const SITE_URL =
@@ -103,15 +114,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(LOCAL_BUSINESS_SCHEMA) }}
         />
       </head>
-      <body>
+      <body className={fontClasses}>
         <ConditionalLayout>{children}</ConditionalLayout>
       </body>
     </html>

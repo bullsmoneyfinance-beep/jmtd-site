@@ -129,7 +129,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(LOCAL_BUSINESS_SCHEMA) }}
         />
       </head>
-      <body className={fontClasses}>
+      <body className={fontClasses} style={{ fontFamily: dmSans.style.fontFamily }}>
         <ConditionalLayout>{children}</ConditionalLayout>
       </body>
     </html>

@@ -6,6 +6,6 @@
   - Local:        http://localhost:3001
 
  ✓ Starting...
- ✓ Ready in 1487ms
- ○ Compiling /recrutement ...
- ✓ Compiled /recrutement in 3.1s (708 modules)
+ ✓ Ready in 1897ms
+ ○ Compiling /espace-client ...
+ ✓ Compiled /espace-client in 3.2s (705 modules)

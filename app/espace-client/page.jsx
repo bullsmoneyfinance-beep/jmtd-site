@@ -68,12 +68,12 @@ export default function EspaceClientPage() {
               <h2 style={{ fontSize: 19, fontWeight: 800, color: TEXT, marginBottom: 6 }}>Accéder à mon dossier</h2>
               <p style={{ fontSize: 13, color: MUTED, marginBottom: 22 }}>Identifiez-vous avec le nom et le téléphone communiqués à J'MTD.</p>
               <div style={{ marginBottom: 14 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, display: "block", marginBottom: 6 }}>Nom de famille</label>
-                <input style={inp} value={form.nom} onChange={e => setForm(f => ({ ...f, nom: e.target.value }))} placeholder="Dupont" required />
+                <label htmlFor="ec-nom" style={{ fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, display: "block", marginBottom: 6 }}>Nom de famille</label>
+                <input id="ec-nom" style={inp} value={form.nom} onChange={e => setForm(f => ({ ...f, nom: e.target.value }))} placeholder="Dupont" required />
               </div>
               <div style={{ marginBottom: 22 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, display: "block", marginBottom: 6 }}>Téléphone</label>
-                <input style={inp} value={form.tel} onChange={e => setForm(f => ({ ...f, tel: e.target.value }))} placeholder="0596 XX XX XX" type="tel" required />
+                <label htmlFor="ec-tel" style={{ fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, display: "block", marginBottom: 6 }}>Téléphone</label>
+                <input id="ec-tel" style={inp} value={form.tel} onChange={e => setForm(f => ({ ...f, tel: e.target.value }))} placeholder="0596 XX XX XX" type="tel" required />
               </div>
               {err && <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", color: "#DC2626", borderRadius: 10, padding: "10px 14px", fontSize: 13, marginBottom: 16 }}>{err}</div>}
               <button type="submit" disabled={loading}

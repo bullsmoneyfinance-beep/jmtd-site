@@ -250,6 +250,9 @@ function ConseilCard({ article, onClick }) {
   return (
     <div
       onClick={() => onClick(article)}
+      role="button" tabIndex={0}
+      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(article); } }}
+      aria-label={`Lire l'article : ${article.title}`}
       style={{
         background: "#fff", borderRadius: 20,
         border: "1px solid rgba(13,169,164,0.1)",

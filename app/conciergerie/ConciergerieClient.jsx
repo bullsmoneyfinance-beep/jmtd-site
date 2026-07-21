@@ -576,12 +576,14 @@ export default function ConciergeriePage() {
               { q: "Comment êtes-vous rémunérés sur les formules au pourcentage ?", a: "Le pourcentage s'applique au chiffre d'affaires locatif réellement encaissé. Pas de réservation, pas de commission : nos intérêts sont alignés avec les vôtres — plus votre bien performe, mieux nous travaillons ensemble." },
               { q: "Je vis en métropole, est-ce un problème ?", a: "Au contraire, c'est là que la conciergerie prend tout son sens. Nous sommes vos yeux et vos mains sur place : vous pilotez à distance, nous gérons le concret. Reporting régulier à l'appui." },
             ].map((item, i) => (
-              <div key={i} onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ borderBottom: "1px solid rgba(13,169,164,0.1)", cursor: "pointer" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16 }}>
+              <div key={i} style={{ borderBottom: "1px solid rgba(13,169,164,0.1)" }}>
+                <button type="button" onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  aria-expanded={openFaq === i} aria-controls={`cg-faq-${i}`}
+                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", padding: "18px 0", gap: 16, background: "none", border: "none", cursor: "pointer", textAlign: "left", font: "inherit" }}>
                   <span style={{ fontSize: 15, fontWeight: 600, color: TEXT }}>{item.q}</span>
-                  <span style={{ color: TEAL_TEXT, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: openFaq === i ? "rotate(45deg)" : "none" }}>+</span>
-                </div>
-                {openFaq === i && <div style={{ padding: "0 0 18px", fontSize: 14, color: MUTED, lineHeight: 1.8 }}>{item.a}</div>}
+                  <span aria-hidden style={{ color: TEAL_TEXT, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: openFaq === i ? "rotate(45deg)" : "none" }}>+</span>
+                </button>
+                {openFaq === i && <div id={`cg-faq-${i}`} style={{ padding: "0 0 18px", fontSize: 14, color: MUTED, lineHeight: 1.8 }}>{item.a}</div>}
               </div>
             ))}
           </div>

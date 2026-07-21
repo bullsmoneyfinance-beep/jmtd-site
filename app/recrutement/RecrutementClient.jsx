@@ -73,9 +73,9 @@ const STEPS = [
   { n: 4, label: "Finalisation" },
 ];
 
-function Label({ children }) {
+function Label({ children, htmlFor }) {
   return (
-    <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 7 }}>
+    <label htmlFor={htmlFor} style={{ display: "block", fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 7 }}>
       {children}
     </label>
   );
@@ -396,27 +396,27 @@ export default function RecrutementPage() {
                     />
                     <div className="recru-form-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 14 }}>
                       <div>
-                        <Label>Prénom *</Label>
-                        <input className="inp-focus" style={{ ...inp, ...errStyle("prenom") }} placeholder="Marie" value={form.prenom} onChange={set("prenom")} />
+                        <Label htmlFor="recru-prenom">Prénom *</Label>
+                        <input id="recru-prenom" className="inp-focus" style={{ ...inp, ...errStyle("prenom") }} placeholder="Marie" value={form.prenom} onChange={set("prenom")} />
                       </div>
                       <div>
-                        <Label>Nom *</Label>
-                        <input className="inp-focus" style={{ ...inp, ...errStyle("nom") }} placeholder="Dupont" value={form.nom} onChange={set("nom")} />
+                        <Label htmlFor="recru-nom">Nom *</Label>
+                        <input id="recru-nom" className="inp-focus" style={{ ...inp, ...errStyle("nom") }} placeholder="Dupont" value={form.nom} onChange={set("nom")} />
                       </div>
                     </div>
                     <div className="recru-form-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 14 }}>
                       <div>
-                        <Label>Téléphone *</Label>
-                        <input className="inp-focus" style={{ ...inp, ...errStyle("tel") }} placeholder="05 96 XX XX XX" type="tel" value={form.tel} onChange={set("tel")} />
+                        <Label htmlFor="recru-tel">Téléphone *</Label>
+                        <input id="recru-tel" className="inp-focus" style={{ ...inp, ...errStyle("tel") }} placeholder="05 96 XX XX XX" type="tel" value={form.tel} onChange={set("tel")} />
                       </div>
                       <div>
-                        <Label>Email</Label>
-                        <input className="inp-focus" style={inp} placeholder="votre@email.fr" type="email" value={form.email} onChange={set("email")} />
+                        <Label htmlFor="recru-email">Email</Label>
+                        <input id="recru-email" className="inp-focus" style={inp} placeholder="votre@email.fr" type="email" value={form.email} onChange={set("email")} />
                       </div>
                     </div>
                     <div>
-                      <Label>Commune de résidence *</Label>
-                      <input className="inp-focus" style={{ ...inp, ...errStyle("commune") }} placeholder="Rivière-Salée, Fort-de-France, Le Diamant…" value={form.commune} onChange={set("commune")} />
+                      <Label htmlFor="recru-commune">Commune de résidence *</Label>
+                      <input id="recru-commune" className="inp-focus" style={{ ...inp, ...errStyle("commune") }} placeholder="Rivière-Salée, Fort-de-France, Le Diamant…" value={form.commune} onChange={set("commune")} />
                     </div>
                   </div>
                 )}
@@ -457,16 +457,16 @@ export default function RecrutementPage() {
 
                     {form.experience && form.experience !== "aucune" && (
                       <div style={{ marginBottom: 14 }}>
-                        <Label>Décrivez brièvement votre expérience</Label>
-                        <textarea className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 80 }}
+                        <Label htmlFor="recru-experience-detail">Décrivez brièvement votre expérience</Label>
+                        <textarea id="recru-experience-detail" className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 80 }}
                           placeholder="Type d'employeur, missions principales, ce que vous en avez appris…"
                           value={form.experience_detail} onChange={set("experience_detail")} rows={3} />
                       </div>
                     )}
 
                     <div style={{ marginBottom: 14 }}>
-                      <Label>Avez-vous un moyen de transport personnel ? *</Label>
-                      <select className="inp-focus" style={{ ...inp, ...errStyle("transport") }} value={form.transport} onChange={set("transport")}>
+                      <Label htmlFor="recru-transport">Avez-vous un moyen de transport personnel ? *</Label>
+                      <select id="recru-transport" className="inp-focus" style={{ ...inp, ...errStyle("transport") }} value={form.transport} onChange={set("transport")}>
                         <option value="">Sélectionner…</option>
                         <option value="voiture">Oui, voiture</option>
                         <option value="scooter">Oui, scooter / moto</option>
@@ -484,8 +484,8 @@ export default function RecrutementPage() {
                     )}
 
                     <div style={{ marginBottom: 14 }}>
-                      <Label>Nombre d&apos;heures disponibles par semaine *</Label>
-                      <select className="inp-focus" style={{ ...inp, ...errStyle("dispo_heures") }} value={form.dispo_heures} onChange={set("dispo_heures")}>
+                      <Label htmlFor="recru-dispo-heures">Nombre d&apos;heures disponibles par semaine *</Label>
+                      <select id="recru-dispo-heures" className="inp-focus" style={{ ...inp, ...errStyle("dispo_heures") }} value={form.dispo_heures} onChange={set("dispo_heures")}>
                         <option value="">Sélectionner…</option>
                         <option value="moins10">Moins de 10h/semaine</option>
                         <option value="10-20">10 à 20h/semaine</option>
@@ -523,8 +523,8 @@ export default function RecrutementPage() {
                     </div>
 
                     <div style={{ marginBottom: 20 }}>
-                      <Label>Votre situation actuelle *</Label>
-                      <select className="inp-focus" style={{ ...inp, ...errStyle("situation") }} value={form.situation} onChange={set("situation")}>
+                      <Label htmlFor="recru-situation">Votre situation actuelle *</Label>
+                      <select id="recru-situation" className="inp-focus" style={{ ...inp, ...errStyle("situation") }} value={form.situation} onChange={set("situation")}>
                         <option value="">Sélectionner…</option>
                         <option value="chomage">En recherche d&apos;emploi (chômage)</option>
                         <option value="partiel">En poste à temps partiel, je cherche un complément</option>
@@ -535,8 +535,8 @@ export default function RecrutementPage() {
                     </div>
 
                     <div style={{ marginBottom: 20 }}>
-                      <Label>Pourquoi souhaitez-vous rejoindre J&apos;MTD ? * (minimum 50 caractères)</Label>
-                      <textarea className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 120, ...errStyle("motivation") }}
+                      <Label htmlFor="recru-motivation">Pourquoi souhaitez-vous rejoindre J&apos;MTD ? * (minimum 50 caractères)</Label>
+                      <textarea id="recru-motivation" className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 120, ...errStyle("motivation") }}
                         placeholder="Expliquez ce qui vous attire dans ce métier, pourquoi J'MTD spécifiquement, vos objectifs professionnels…"
                         value={form.motivation} onChange={set("motivation")} rows={4} />
                       <div style={{ fontSize: 11, color: form.motivation.length >= 50 ? T : "#94A3B8", marginTop: 6, textAlign: "right", fontWeight: 600, transition: "color 0.2s" }}>
@@ -545,11 +545,11 @@ export default function RecrutementPage() {
                     </div>
 
                     <div>
-                      <Label>Qu&apos;est-ce que la discrétion représente pour vous dans ce métier ? * (minimum 30 caractères)</Label>
+                      <Label htmlFor="recru-discretion">Qu&apos;est-ce que la discrétion représente pour vous dans ce métier ? * (minimum 30 caractères)</Label>
                       <div style={{ fontSize: 12, color: MUTED, marginBottom: 8, lineHeight: 1.6 }}>
                         Nos intervenantes entrent dans la vie privée de nos clients. Nous avons besoin de savoir comment vous concevez la confidentialité au quotidien.
                       </div>
-                      <textarea className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 100, ...errStyle("discretion") }}
+                      <textarea id="recru-discretion" className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 100, ...errStyle("discretion") }}
                         placeholder="Expliquez concrètement comment vous gérez la discrétion dans un contexte professionnel à domicile…"
                         value={form.discretion} onChange={set("discretion")} rows={3} />
                       <div style={{ fontSize: 11, color: form.discretion.length >= 30 ? T : "#94A3B8", marginTop: 6, textAlign: "right", fontWeight: 600, transition: "color 0.2s" }}>
@@ -606,8 +606,8 @@ export default function RecrutementPage() {
                     </div>
 
                     <div style={{ marginBottom: 24 }}>
-                      <Label>Informations supplémentaires (optionnel)</Label>
-                      <textarea className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 80 }}
+                      <Label htmlFor="recru-infos-plus">Informations supplémentaires (optionnel)</Label>
+                      <textarea id="recru-infos-plus" className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 80 }}
                         placeholder="Toute information que vous jugez utile à partager : contraintes spécifiques, compétences particulières, questions…"
                         value={form.infos_plus} onChange={set("infos_plus")} rows={3} />
                     </div>

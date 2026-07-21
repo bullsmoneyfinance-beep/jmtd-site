@@ -486,15 +486,15 @@ export default function TarifsPage() {
             { q: "Y a-t-il un minimum d'heures à commander ?", a: "Oui, nous intervenons à partir de 2h minimum par passage pour garantir un travail de qualité. Pour les abonnements hebdomadaires ou mensuels, des forfaits avantageux sont disponibles." },
             { q: "Les tarifs changent-ils selon la distance ?", a: "Nos tarifs de base sont les mêmes partout en Martinique. Des frais de déplacement peuvent s'appliquer pour les zones éloignées — précisez votre commune dans le devis." },
           ].map((item, i) => (
-            <div key={i}
-              onClick={() => setOpen(open === i ? null : i)}
-              style={{ borderBottom: "1px solid rgba(13,169,164,0.1)", cursor: "pointer" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16 }}>
+            <div key={i} style={{ borderBottom: "1px solid rgba(13,169,164,0.1)" }}>
+              <button type="button" onClick={() => setOpen(open === i ? null : i)}
+                aria-expanded={open === i} aria-controls={`tarifs-faq-${i}`}
+                style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", padding: "18px 0", gap: 16, background: "none", border: "none", cursor: "pointer", textAlign: "left", font: "inherit" }}>
                 <span style={{ fontSize: 15, fontWeight: 600, color: TEXT }}>{item.q}</span>
-                <span style={{ color: TEAL_TEXT, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: open === i ? "rotate(45deg)" : "none" }}>+</span>
-              </div>
+                <span aria-hidden style={{ color: TEAL_TEXT, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: open === i ? "rotate(45deg)" : "none" }}>+</span>
+              </button>
               {open === i && (
-                <div style={{ padding: "0 0 18px", fontSize: 14, color: MUTED, lineHeight: 1.8 }}>{item.a}</div>
+                <div id={`tarifs-faq-${i}`} style={{ padding: "0 0 18px", fontSize: 14, color: MUTED, lineHeight: 1.8 }}>{item.a}</div>
               )}
             </div>
           ))}

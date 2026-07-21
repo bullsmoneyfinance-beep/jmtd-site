@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Reveal from "../components/Reveal";
 import Icon, { IconTile } from "../components/Icon";
 import SapOfficiel from "../components/SapOfficiel";
@@ -318,7 +319,7 @@ export default function HomePage() {
           {/* ── Droite — photographie + preuves flottantes (profondeur) ── */}
           <div className="hero-visual anim-scale-in delay-2" style={{ position: "relative" }}>
             <div className="img-zoom-wrap" style={{ borderRadius: 30, position: "relative", boxShadow: "0 40px 90px rgba(13,27,42,0.22), 0 8px 24px rgba(13,27,42,0.10)", border: "1px solid rgba(255,255,255,0.6)" }}>
-              <img src={IMG.heroCard} alt="Un intérieur lumineux et impeccable en Martinique" width={560} height={640} loading="eager" className="img-zoom hero-photo"
+              <Image src={IMG.heroCard} alt="Un intérieur lumineux et impeccable en Martinique" width={560} height={640} priority sizes="(max-width: 900px) 100vw, 560px" className="img-zoom hero-photo"
                 style={{ width: "100%", height: 520, objectFit: "cover", display: "block", borderRadius: 30 }} />
               {/* dégradé bas pour ancrer la puce */}
               <div aria-hidden style={{ position: "absolute", inset: 0, borderRadius: 30, background: "linear-gradient(to top, rgba(13,27,42,0.28), transparent 42%)", pointerEvents: "none" }} />

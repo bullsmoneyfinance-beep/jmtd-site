@@ -29,6 +29,8 @@ export async function POST(request) {
           courses:   "🛒 Livraison de courses",
           assistance:"📋 Assistance administrative",
           rangement: "🗂️ Coach en rangement",
+          jardinage: "🌿 Entretien extérieur & jardinage",
+          conciergerie: "🔑 Conciergerie locative (B2B)",
         };
         const serviceLabel = serviceLabels[service] || service || "Non précisé";
 

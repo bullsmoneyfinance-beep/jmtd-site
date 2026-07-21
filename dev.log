@@ -9,3 +9,20 @@
  ✓ Ready in 1404ms
  ○ Compiling / ...
  ✓ Compiled / in 2.7s (669 modules)
+ GET / 200 in 2913ms
+ ✓ Compiled in 271ms (324 modules)
+ ○ Compiling /coaching ...
+ ✓ Compiled /coaching in 865ms (663 modules)
+ GET /coaching 200 in 981ms
+ ✓ Compiled in 306ms (343 modules)
+ ✓ Compiled in 139ms (343 modules)
+ ✓ Compiled / in 189ms (359 modules)
+ GET / 200 in 315ms
+ ✓ Compiled /contact in 298ms (690 modules)
+ GET /contact 200 in 493ms
+ ✓ Compiled in 185ms (345 modules)
+ ✓ Compiled /manifest.webmanifest in 195ms (378 modules)
+ GET /manifest.webmanifest 200 in 242ms
+ ✓ Compiled /icon.svg in 54ms (380 modules)
+ GET /icon.svg?0a4bb7f4abccad1e 200 in 82ms
+[?25h

@@ -459,7 +459,8 @@ export default function HomePage() {
                 style={{ textDecoration: "none", display: "block", borderRadius: 24, background: "#fff", boxShadow: WARM_SHADOW, border: "1px solid rgba(0,0,0,0.05)", borderTop: `3px solid ${s.special ? P : T}` }}>
                 {/* Photo */}
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={s.img} alt={s.title} width={500} height={210} loading="lazy" className="img-zoom"
+                  <Image src={s.img} alt={s.title} width={500} height={210} loading="lazy" className="img-zoom"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
                     style={{ width: "100%", height: 214, objectFit: "cover", display: "block" }} />
                   <div style={{ position: "absolute", bottom: 12, right: 12, background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)", borderRadius: 20, padding: "5px 14px", fontSize: 12, fontWeight: 700, color: s.special ? P : T, boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
                     {s.id === "rangement" ? "Sur devis" : `À partir de ${PRIX[s.id] || 32}€/h`}

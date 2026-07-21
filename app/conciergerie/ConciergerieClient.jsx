@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Reveal from "../../components/Reveal";
 import Icon, { IconTile } from "../../components/Icon";
 import { PHONE, PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
@@ -447,7 +448,9 @@ export default function ConciergeriePage() {
             <Reveal className="cg-biens">
               {BIENS.map((b, i) => (
                 <div key={b.label} className="img-zoom-wrap lift" style={{ position: "relative", borderRadius: 18, boxShadow: "0 8px 28px rgba(13,27,42,0.12)", cursor: "default" }}>
-                  <img src={IMG(b.img, 500, 420)} alt={b.label} width={500} height={420} loading="lazy" className="img-zoom" style={{ width: "100%", height: 240, objectFit: "cover", display: "block", borderRadius: 18 }} />
+                  <Image src={IMG(b.img, 500, 420)} alt={b.label} width={500} height={420} loading="lazy" className="img-zoom"
+                    sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 260px"
+                    style={{ width: "100%", height: 240, objectFit: "cover", display: "block", borderRadius: 18 }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,27,42,0.85) 0%, transparent 55%)", pointerEvents: "none" }} />
                   <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, pointerEvents: "none" }}>
                     <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>{b.label}</div>

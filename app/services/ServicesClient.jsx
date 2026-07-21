@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Reveal from "../../components/Reveal";
 import Icon, { IconTile } from "../../components/Icon";
 import { SERVICES, PHONE, PHONE_HREF, TEAL_TEXT } from "../../lib/data";
@@ -101,7 +102,8 @@ export default function ServicesPage() {
               <div style={{ direction: "ltr", position: "relative" }}>
                 {s.img ? (
                   <div className="img-zoom-wrap lift" style={{ borderRadius: 24, boxShadow: `0 20px 64px ${T}1e`, border: "1px solid rgba(255,255,255,0.6)" }}>
-                    <img src={s.img} alt={s.title} width={560} height={320} loading="lazy" className="img-zoom"
+                    <Image src={s.img} alt={s.title} width={560} height={320} loading="lazy" className="img-zoom"
+                      sizes="(max-width: 900px) 100vw, 480px"
                       style={{ width: "100%", height: 320, objectFit: "cover", display: "block", borderRadius: 24 }} />
                     <div aria-hidden style={{ position: "absolute", inset: 0, borderRadius: 24, background: "linear-gradient(to top, rgba(13,27,42,0.18), transparent 45%)", pointerEvents: "none" }} />
                   </div>

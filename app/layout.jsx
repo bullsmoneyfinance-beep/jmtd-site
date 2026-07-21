@@ -91,10 +91,20 @@ const LOCAL_BUSINESS_SCHEMA = {
       "closes": "18:00"
     }
   ],
-  "areaServed": {
-    "@type": "AdministrativeArea",
-    "name": "Martinique"
-  },
+  "areaServed": [
+    { "@type": "AdministrativeArea", "name": "Martinique" },
+    { "@type": "City", "name": "Rivière-Salée" },
+    { "@type": "City", "name": "Le Lamentin" },
+    { "@type": "City", "name": "Le Diamant" },
+    { "@type": "City", "name": "Saint-Esprit" },
+    { "@type": "City", "name": "Fort-de-France" },
+    { "@type": "City", "name": "Le Vauclin" },
+    { "@type": "City", "name": "Sainte-Anne" },
+    { "@type": "City", "name": "Le François" },
+    { "@type": "City", "name": "Sainte-Luce" },
+    { "@type": "City", "name": "Le Marin" },
+    { "@type": "City", "name": "Trois-Îlets" }
+  ],
   "priceRange": "€€",
   "sameAs": ["https://www.youtube.com/@JMTD-Martinique"],
   "hasOfferCatalog": {

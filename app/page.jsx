@@ -669,27 +669,43 @@ export default function HomePage() {
       {/* ════════════════════════════════
           ZONES D'INTERVENTION
           ════════════════════════════════ */}
-      <section style={{ background: "#fff", padding: "80px 24px" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 44 }}>
+      <section style={{ background: "#fff", padding: "92px 24px", position: "relative", overflow: "hidden" }}>
+        <div aria-hidden className="zones-orb zones-orb-a" />
+        <div aria-hidden className="zones-orb zones-orb-b" />
+
+        <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
             <div className="eyebrow" style={{ justifyContent: "center" }}>Centre & Sud de la Martinique</div>
             <h2 className="display" style={{ fontSize: "clamp(26px, 3.2vw, 40px)", marginBottom: 10 }}>
               Zones d&apos;intervention
             </h2>
-            <p style={{ fontSize: 15, color: TEXT2 }}>Basée à Rivière-Salée · Nous intervenons en priorité dans ces communes</p>
+            <p style={{ fontSize: 15, color: TEXT2 }}>Nous intervenons en priorité autour de notre siège</p>
           </Reveal>
-          <Reveal delay={90} style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", marginBottom: 20 }}>
+
+          {/* Badge QG — ondes radar */}
+          <Reveal scaleIn style={{ display: "flex", justifyContent: "center", marginBottom: 40 }}>
+            <div style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 28px", borderRadius: 40, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 800, fontSize: 15, boxShadow: `0 16px 38px ${T}40` }}>
+              <span aria-hidden className="zones-ping-ring" />
+              <span aria-hidden className="zones-ping-ring" style={{ animationDelay: "1.1s" }} />
+              <Icon name="home" size={18} color="#fff" style={{ position: "relative", zIndex: 1 }} />
+              <span style={{ position: "relative", zIndex: 1 }}>Rivière-Salée · Siège</span>
+            </div>
+          </Reveal>
+
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginBottom: 28 }}>
             {[
-              "Rivière-Salée","Le Lamentin","Fort-de-France","Le Diamant",
-              "Sainte-Luce","Trois-Îlets","Le Marin","Saint-Esprit",
-            ].map(z => (
-              <span key={z} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 20px", background: WARM, border: `1.5px solid ${T}20`, borderRadius: 30, fontSize: 13, color: TEXT2, fontWeight: 500, transition: "all 0.2s" }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = T; e.currentTarget.style.color = T; e.currentTarget.style.background = "#fff"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = `${T}20`; e.currentTarget.style.color = TEXT2; e.currentTarget.style.background = WARM; }}>
+              "Le Lamentin","Fort-de-France","Le Diamant","Saint-Esprit",
+              "Sainte-Luce","Trois-Îlets","Le Marin",
+            ].map((z, i) => (
+              <Reveal key={z} delay={i * 70} scaleIn y={20}
+                style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "11px 22px", background: WARM, border: `1.5px solid ${T}20`, borderRadius: 30, fontSize: 13.5, color: TEXT2, fontWeight: 600, transition: "border-color 0.25s ease, color 0.25s ease, background 0.25s ease, transform 0.25s ease" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = T; e.currentTarget.style.color = T; e.currentTarget.style.background = "#fff"; e.currentTarget.style.transform = "translateY(-3px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = `${T}20`; e.currentTarget.style.color = TEXT2; e.currentTarget.style.background = WARM; e.currentTarget.style.transform = "none"; }}>
                 <Icon name="pin" size={13} color="currentColor" /> {z}
-              </span>
+              </Reveal>
             ))}
-          </Reveal>
+          </div>
+
           <p style={{ textAlign: "center", fontSize: 13.5, color: "#94A3B8" }}>
             Hors de ces communes ? <Link href="/contact" style={{ color: TEAL_TEXT, fontWeight: 600 }}>Contactez-nous</Link> — nous étudions chaque demande selon la distance.
           </p>
@@ -774,6 +790,19 @@ export default function HomePage() {
         @media (max-width: 420px) {
           .hero-photo { height: 300px !important; }
           .hero-palm { display: none !important; }
+        }
+
+        /* ── Zones d'intervention : ondes radar QG + halos ambiants ── */
+        @keyframes zonesPing { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(2.5); opacity: 0; } }
+        .zones-ping-ring { position: absolute; inset: -4px; border-radius: 40px; border: 2px solid rgba(255,255,255,0.75); animation: zonesPing 2.4s cubic-bezier(0.16,1,0.3,1) infinite; pointer-events: none; }
+
+        @keyframes zonesDrift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-16px, 18px); } }
+        .zones-orb { position: absolute; border-radius: 50%; filter: blur(55px); pointer-events: none; z-index: 0; animation: zonesDrift 17s ease-in-out infinite; }
+        .zones-orb-a { width: 320px; height: 320px; top: -100px; left: -70px; background: radial-gradient(circle, ${T}20, transparent 70%); }
+        .zones-orb-b { width: 260px; height: 260px; bottom: -90px; right: 4%; background: radial-gradient(circle, ${P}18, transparent 70%); animation-duration: 14s; animation-delay: -5s; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .zones-ping-ring, .zones-orb { animation: none !important; }
         }
       `}</style>
 

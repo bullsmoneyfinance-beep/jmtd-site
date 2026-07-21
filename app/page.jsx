@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Reveal from "../components/Reveal";
+import CountUp from "../components/CountUp";
 import Icon, { IconTile } from "../components/Icon";
 import SapOfficiel from "../components/SapOfficiel";
 import { PHONE, PHONE_HREF, WHATSAPP, SERVICES, TESTIMONIALS, DECLARATION_SAP, TEAL_TEXT } from "../lib/data";
@@ -318,10 +319,16 @@ export default function HomePage() {
             </div>
 
             <div className="anim-fade-up delay-4" style={{ display: "flex", gap: 34, paddingTop: 30, borderTop: "1px solid rgba(13,169,164,0.14)" }}>
-              {[["200+", "Foyers accompagnés", T], ["5★", "Note Google", "#F59E0B"], ["50%", "Crédit d'impôt", P]].map(([n, l, c]) => (
-                <div key={l}>
-                  <div className="display" style={{ fontSize: 32, fontWeight: 800, color: c, lineHeight: 1 }}>{n}</div>
-                  <div style={{ fontSize: 12.5, color: TEXT2, marginTop: 5, lineHeight: 1.4 }}>{l}</div>
+              {[
+                { value: 200, suffix: "+", label: "Foyers accompagnés", color: T },
+                { value: 5, suffix: "★", label: "Note Google", color: "#F59E0B" },
+                { value: 50, suffix: "%", label: "Crédit d'impôt", color: P },
+              ].map((s) => (
+                <div key={s.label}>
+                  <div className="display" style={{ fontSize: 32, fontWeight: 800, color: s.color, lineHeight: 1 }}>
+                    <CountUp value={s.value} suffix={s.suffix} duration={1300} />
+                  </div>
+                  <div style={{ fontSize: 12.5, color: TEXT2, marginTop: 5, lineHeight: 1.4 }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -406,27 +413,27 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════
-          POURQUOI J'MTD — valeurs chaleureuses
+          POURQUOI J'MTD — moment signature : texte épinglé, cartes qui défilent
           ════════════════════════════════ */}
       <section style={{ background: WARM, padding: "96px 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 64 }}>
-            <div className="eyebrow" style={{ justifyContent: "center" }}>Pourquoi nous choisir</div>
-            <h2 className="display" style={{ fontSize: "clamp(30px, 3.8vw, 48px)", marginBottom: 16 }}>
-              Votre confiance, notre priorité
+        <div className="why-pin-grid" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "0.85fr 1.15fr", gap: 56, alignItems: "start" }}>
+          <Reveal className="why-pin-intro" style={{ position: "sticky", top: 110 }}>
+            <div className="eyebrow">Pourquoi nous choisir</div>
+            <h2 className="display" style={{ fontSize: "clamp(28px, 3.6vw, 44px)", marginBottom: 16 }}>
+              Votre confiance,<br />notre priorité
             </h2>
-            <p style={{ fontSize: 16.5, color: TEXT2, maxWidth: 540, margin: "0 auto", lineHeight: 1.8 }}>
+            <p style={{ fontSize: 16.5, color: TEXT2, maxWidth: 400, lineHeight: 1.8 }}>
               Vous nous invitez chez vous. C&apos;est une responsabilité que nous prenons très au sérieux.
             </p>
           </Reveal>
 
-          <div className="why-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 22 }}>
+          <div className="why-pin-cards" style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {[
               { icon: "lock",   title: "Personnel rigoureusement sélectionné", text: "Chaque intervenante passe par un entretien approfondi, une vérification des références et une formation aux standards J'MTD avant sa première intervention.", color: T, to: OCEAN },
               { icon: "clock",  title: "Vous récupérez votre temps", text: "Ménage, repas, courses… Confiez-nous les tâches qui vous pèsent et retrouvez du temps pour ce qui compte vraiment : votre famille, vos loisirs, vous-même.", color: P, to: "#E0559E" },
               { icon: "credit", title: "50% remboursé par l'État", text: "Notre déclaration SAP vous permet de récupérer la moitié de vos dépenses via le crédit d'impôt. Nous vous remettons une attestation fiscale chaque année.", color: T, to: OCEAN },
             ].map((c, i) => (
-              <Reveal key={c.title} delay={i * 110} className="lift"
+              <Reveal key={c.title} delay={i * 90} scaleIn y={44} className="lift"
                 style={{ padding: "38px 32px", background: "#fff", borderRadius: 24, boxShadow: WARM_SHADOW, borderTop: `4px solid ${c.color}` }}>
                 <IconTile name={c.icon} size={60} icon={28} from={c.color} to={c.to} radius={18} style={{ marginBottom: 20 }} />
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: TEXT, marginBottom: 12, lineHeight: 1.4 }}>{c.title}</h3>
@@ -560,7 +567,7 @@ export default function HomePage() {
           ════════════════════════════════ */}
       <section style={{ position: "relative", overflow: "hidden", minHeight: "clamp(420px, 56vw, 620px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {/* Calque mer (parallax profond) — surdimensionné pour ne jamais laisser de vide */}
-        <div aria-hidden data-parallax="0.16" className="parallax" style={{ position: "absolute", top: "-20%", left: 0, right: 0, height: "140%", zIndex: 0 }}>
+        <div aria-hidden data-parallax="0.22" className="parallax" style={{ position: "absolute", top: "-24%", left: 0, right: 0, height: "148%", zIndex: 0 }}>
           <img src={IMG.seaLight} alt="" width={1600} height={1000} loading="lazy"
             style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
@@ -573,7 +580,7 @@ export default function HomePage() {
           <Reveal>
             <div className="eyebrow" style={{ justifyContent: "center", color: "rgba(255,255,255,0.85)" }}>Enracinés en Martinique</div>
           </Reveal>
-          <Reveal delay={110} y={38}>
+          <Reveal scrub y={46}>
             <p className="display" style={{ fontSize: "clamp(28px, 4vw, 52px)", color: "#fff", lineHeight: 1.22, fontWeight: 600, marginBottom: 14, textShadow: "0 2px 24px rgba(0,0,0,0.25)" }}>
               Une île, une exigence :<br />prendre soin des foyers d&apos;ici.
             </p>
@@ -586,16 +593,18 @@ export default function HomePage() {
 
           <div className="sea-stats" style={{ display: "flex", alignItems: "stretch", justifyContent: "center", gap: 0, flexWrap: "wrap" }}>
             {[
-              ["200+", "Foyers accompagnés"],
-              ["11", "Communes desservies"],
-              ["24h", "Délai de réponse"],
-              ["50%", "Crédit d'impôt"],
-            ].map(([n, l], i) => (
-              <Reveal key={l} delay={300 + i * 90} y={24}
+              { value: 200, suffix: "+", label: "Foyers accompagnés" },
+              { value: 11, suffix: "", label: "Communes desservies" },
+              { value: 24, suffix: "h", label: "Délai de réponse" },
+              { value: 50, suffix: "%", label: "Crédit d'impôt" },
+            ].map((s, i) => (
+              <Reveal key={s.label} delay={300 + i * 90} y={24}
                 style={{ padding: "0 clamp(18px, 3vw, 40px)", position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: 130 }}>
                 {i > 0 && <span aria-hidden className="sea-stat-div" style={{ position: "absolute", left: 0, top: "18%", bottom: "18%", width: 1, background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.35), transparent)" }} />}
-                <div className="display" style={{ fontSize: "clamp(34px, 4.6vw, 56px)", fontWeight: 700, color: "#fff", lineHeight: 1 }}>{n}</div>
-                <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.72)", marginTop: 8, letterSpacing: 0.4 }}>{l}</div>
+                <div className="display" style={{ fontSize: "clamp(34px, 4.6vw, 56px)", fontWeight: 700, color: "#fff", lineHeight: 1 }}>
+                  <CountUp value={s.value} suffix={s.suffix} duration={1400} />
+                </div>
+                <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.72)", marginTop: 8, letterSpacing: 0.4 }}>{s.label}</div>
               </Reveal>
             ))}
           </div>
@@ -762,6 +771,11 @@ export default function HomePage() {
           .hero-visual { max-width: 480px; margin: 0 auto; width: 100%; }
           /* Frondes : réduites & discrètes derrière le contenu empilé */
           .hero-palm { width: 62vw !important; opacity: 0.85; }
+        }
+        @media (max-width: 900px) {
+          .why-pin-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+          .why-pin-intro { position: static !important; top: auto !important; text-align: center; }
+          .why-pin-intro p { margin-left: auto; margin-right: auto; }
         }
         @media (max-width: 768px) {
           .why-grid { grid-template-columns: 1fr !important; }

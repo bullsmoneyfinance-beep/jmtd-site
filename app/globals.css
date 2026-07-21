@@ -511,6 +511,20 @@ a { color: inherit; text-decoration: none; }
   transform: translate3d(0, 0, 0);
 }
 
+/* ── Variante zoom doux (moment signature, plus cinématique) ── */
+.reveal-el.reveal-scale { transform: translate3d(0, var(--reveal-y, 28px), 0) scale(0.94); }
+.reveal-el.reveal-scale.is-in { transform: translate3d(0, 0, 0) scale(1); }
+
+/* ── Mode "scrub" : progression CONTINUE liée au scroll ──
+   <Reveal scrub> pilote --progress (0→1) image par image (JS, rAF).
+   Pas de transition CSS ici : on veut suivre le doigt/la molette
+   instantanément, pas un fondu qui traîne derrière le scroll. */
+.reveal-scrub {
+  opacity: calc(0.15 + var(--progress, 0) * 0.85);
+  transform: translate3d(0, calc((1 - var(--progress, 0)) * var(--reveal-y, 40px)), 0) scale(calc(0.94 + var(--progress, 0) * 0.06));
+  will-change: opacity, transform;
+}
+
 /* ── Parallax (piloté en JS via [data-parallax]) ──
    L'élément est translaté en Y selon le scroll. Garder le calque
    surdimensionné + un conteneur overflow:hidden pour éviter tout vide. */
@@ -567,7 +581,7 @@ a:hover .img-zoom { transform: scale(1.06); }
 
 /* ── Respect des préférences d'animation ── */
 @media (prefers-reduced-motion: reduce) {
-  .reveal-el {
+  .reveal-el, .reveal-scrub {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;

@@ -4,6 +4,7 @@ import Nav from "./Nav";
 import Footer from "./Footer";
 import FloatingCTA from "./FloatingCTA";
 import CookieBanner from "./CookieBanner";
+import ScrollProgressBar from "./ScrollProgressBar";
 
 const PRIVATE = ["/portail", "/pointage", "/admin"];
 
@@ -13,6 +14,7 @@ export default function ConditionalLayout({ children }) {
   return (
     <>
       {!isPrivate && <a href="#main" className="skip-link">Aller au contenu</a>}
+      {!isPrivate && <ScrollProgressBar />}
       {!isPrivate && <Nav />}
       <main id="main">{children}</main>
       {!isPrivate && <FloatingCTA />}

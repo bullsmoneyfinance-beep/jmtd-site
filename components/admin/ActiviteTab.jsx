@@ -48,7 +48,11 @@ export default function ActiviteTab() {
   const parClient = {};
   yInters.filter(i => i.regle).forEach(i => { parClient[i.clientId] = (parClient[i.clientId] || 0) + (i.montant || 0); });
   const topClients = Object.entries(parClient).sort((a, b) => b[1] - a[1]).slice(0, 5)
-    .map(([id, ca]) => ({ nom: clients.find(c => c.id === id)?.prenom + " " + (clients.find(c => c.id === id)?.nom || "") || "Client", ca }));
+    .map(([id, ca]) => {
+      const c = clients.find(x => x.id === id);
+      const nom = c ? `${c.prenom || ""} ${c.nom || ""}`.trim() : "";
+      return { nom: nom || "Client", ca };
+    });
 
   return (
     <div style={{ animation: "slideIn 0.25s ease" }}>

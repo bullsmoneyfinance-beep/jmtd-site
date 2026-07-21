@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
+import { PHONE, PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -126,6 +126,7 @@ export default function RecrutementPage() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState("");
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
 
@@ -665,6 +666,12 @@ export default function RecrutementPage() {
                     </button>
                   )}
                 </div>
+
+                {submitError && (
+                  <p role="alert" style={{ fontSize: 13.5, color: "#B91C1C", background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 12, padding: "12px 16px", textAlign: "center", marginTop: 16, lineHeight: 1.6 }}>
+                    {submitError}
+                  </p>
+                )}
 
                 <p style={{ fontSize: 12, color: "#94A3B8", textAlign: "center", marginTop: 16, lineHeight: 1.7 }}>
                   Étape {step}/4 · * Champs obligatoires · Réponse sous 48 à 72h ouvrées · Candidature traitée confidentiellement

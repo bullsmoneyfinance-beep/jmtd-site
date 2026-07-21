@@ -5,6 +5,20 @@ export async function POST(request) {
     const body = await request.json();
     const { prenom, nom, tel, email, service, zone, message } = body;
 
+    // ── 0. Validation serveur (ne jamais faire confiance au client) ──
+    const cleanNom = `${prenom || ""} ${nom || ""}`.trim();
+    const cleanTel = String(tel || "").trim();
+    if (cleanNom.length < 2) {
+      return Response.json({ ok: false, error: "Nom requis." }, { status: 400 });
+    }
+    const digits = cleanTel.replace(/[^0-9+]/g, "");
+    if (digits.length < 8 || digits.length > 20) {
+      return Response.json({ ok: false, error: "Téléphone invalide." }, { status: 400 });
+    }
+    if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(email).trim())) {
+      return Response.json({ ok: false, error: "Email invalide." }, { status: 400 });
+    }
+
     // ── 1. Sauvegarde du devis côté serveur ──
     const existing = serverGet("jmtd_quotes", []);
     const newQuote = {

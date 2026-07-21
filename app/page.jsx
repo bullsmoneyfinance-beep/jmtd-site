@@ -322,7 +322,7 @@ export default function HomePage() {
             <div className="anim-fade-up delay-4" style={{ display: "flex", gap: 34, paddingTop: 30, borderTop: "1px solid rgba(13,169,164,0.14)" }}>
               {[
                 { value: 200, suffix: "+", label: "Foyers accompagnés", color: T },
-                { value: 5, suffix: "★", label: "Note Google", color: "#F59E0B" },
+                { value: 24, suffix: "h", label: "Réponse garantie", color: "#F59E0B" },
                 { value: 50, suffix: "%", label: "Crédit d'impôt", color: P },
               ].map((s) => (
                 <div key={s.label}>
@@ -343,13 +343,14 @@ export default function HomePage() {
               {/* dégradé bas pour ancrer la puce */}
               <div aria-hidden style={{ position: "absolute", inset: 0, borderRadius: 30, background: "linear-gradient(to top, rgba(13,27,42,0.28), transparent 42%)", pointerEvents: "none" }} />
 
-              {/* Puce note (bas-gauche, chevauchante) */}
-              <div style={{ position: "absolute", left: 18, bottom: 18, background: "rgba(255,255,255,0.96)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderRadius: 18, padding: "13px 16px", boxShadow: "0 10px 30px rgba(13,27,42,0.18)", display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex", gap: 1 }}>
-                    {"★★★★★".split("").map((s, j) => <span key={j} style={{ color: "#F59E0B", fontSize: 14 }}>{s}</span>)}
-                  </div>
-                  <div style={{ fontSize: 12, color: TEXT2, marginTop: 2, fontWeight: 600 }}>5/5 · +200 familles</div>
+              {/* Puce confiance (bas-gauche, chevauchante) */}
+              <div style={{ position: "absolute", left: 18, bottom: 18, background: "rgba(255,255,255,0.96)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderRadius: 18, padding: "13px 16px", boxShadow: "0 10px 30px rgba(13,27,42,0.18)", display: "flex", alignItems: "center", gap: 11 }}>
+                <span style={{ width: 34, height: 34, borderRadius: "50%", background: `${T}14`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Icon name="heart" size={17} color={TEAL_TEXT} />
+                </span>
+                <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.3 }}>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: TEXT }}>+200 familles</span>
+                  <span style={{ fontSize: 11.5, color: TEXT2, fontWeight: 600 }}>accompagnées en Martinique</span>
                 </div>
               </div>
 

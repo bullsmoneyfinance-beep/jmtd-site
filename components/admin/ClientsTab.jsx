@@ -349,13 +349,16 @@ function Overlay({ children, onClose }) {
 }
 
 // Génère l'attestation fiscale annuelle dans une fenêtre imprimable
+// Échappe les données saisies (nom/adresse client) avant injection dans le HTML imprimable
+const escHtml = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
 function printAttestation(client, inters, year, totals) {
   const parPresta = {};
   inters.forEach(i => { parPresta[i.service] = (parPresta[i.service] || 0) + (i.montant || 0); });
   const lignes = Object.entries(parPresta).map(([s, m]) =>
-    `<tr><td>${SERVICE_LABELS[s] || s}</td><td style="text-align:right">${eur(m)}</td></tr>`).join("");
+    `<tr><td>${escHtml(SERVICE_LABELS[s] || s)}</td><td style="text-align:right">${eur(m)}</td></tr>`).join("");
 
-  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Attestation fiscale ${year} — ${client.prenom} ${client.nom}</title>
+  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Attestation fiscale ${year} — ${escHtml(client.prenom)} ${escHtml(client.nom)}</title>
 <style>
   @page { margin: 22mm; }
   body { font-family: Georgia, 'Times New Roman', serif; color: #1a2d3d; line-height: 1.6; font-size: 14px; max-width: 720px; margin: 0 auto; padding: 20px; }
@@ -387,8 +390,8 @@ function printAttestation(client, inters, year, totals) {
   <div class="sub">Services à la Personne — Année ${year}<br>Article 199 sexdecies du Code général des impôts</div>
 
   <div class="box">
-    <div><b>Délivrée à :</b> ${client.prenom} ${client.nom}</div>
-    ${client.adresse ? `<div><b>Adresse :</b> ${client.adresse}${client.commune ? ", " + client.commune : ""}</div>` : (client.commune ? `<div><b>Commune :</b> ${client.commune}</div>` : "")}
+    <div><b>Délivrée à :</b> ${escHtml(client.prenom)} ${escHtml(client.nom)}</div>
+    ${client.adresse ? `<div><b>Adresse :</b> ${escHtml(client.adresse)}${client.commune ? ", " + escHtml(client.commune) : ""}</div>` : (client.commune ? `<div><b>Commune :</b> ${escHtml(client.commune)}</div>` : "")}
   </div>
 
   <p>Je soussignée <b>${FONDATRICE}</b>, représentant l'organisme <b>J'MTD</b>, déclaré au titre des Services à la Personne sous le numéro <b>${DECLARATION_SAP}</b>, atteste que la personne désignée ci-dessus a versé au cours de l'année <b>${year}</b> la somme indiquée ci-dessous, en règlement de prestations de services à la personne réalisées à son domicile.</p>
@@ -423,7 +426,7 @@ function printFacture(client, inters, numero) {
   const lignes = sorted.map(i =>
     `<tr>
       <td>${fmtD(i.date)}</td>
-      <td>${SERVICE_LABELS[i.service] || i.service}</td>
+      <td>${escHtml(SERVICE_LABELS[i.service] || i.service)}</td>
       <td style="text-align:center">${i.heures}</td>
       <td style="text-align:right">${eur(i.taux)}</td>
       <td style="text-align:right">${eur(i.montant)}</td>
@@ -431,7 +434,7 @@ function printFacture(client, inters, numero) {
   const total = Math.round(sorted.reduce((a, i) => a + (i.montant || 0), 0) * 100) / 100;
   const credit = Math.round(total * 0.5 * 100) / 100;
 
-  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Facture ${numero} — ${client.prenom} ${client.nom}</title>
+  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Facture ${numero} — ${escHtml(client.prenom)} ${escHtml(client.nom)}</title>
 <style>
   @page { margin: 20mm; }
   body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a2d3d; line-height: 1.55; font-size: 13px; max-width: 720px; margin: 0 auto; padding: 20px; }
@@ -467,7 +470,7 @@ function printFacture(client, inters, numero) {
 
   <div class="parties">
     <div class="party"><h3>Prestataire</h3><p><b>J'MTD</b><br>${FONDATRICE}<br>${ADDRESS}</p></div>
-    <div class="party" style="text-align:right"><h3>Facturé à</h3><p><b>${client.prenom} ${client.nom}</b>${client.adresse ? "<br>" + client.adresse : ""}${client.commune ? "<br>" + client.commune : ""}</p></div>
+    <div class="party" style="text-align:right"><h3>Facturé à</h3><p><b>${escHtml(client.prenom)} ${escHtml(client.nom)}</b>${client.adresse ? "<br>" + escHtml(client.adresse) : ""}${client.commune ? "<br>" + escHtml(client.commune) : ""}</p></div>
   </div>
 
   <table>

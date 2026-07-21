@@ -6,6 +6,7 @@
   - Local:        http://localhost:3001
 
  ✓ Starting...
- ✓ Ready in 1897ms
- ○ Compiling /espace-client ...
- ✓ Compiled /espace-client in 3.2s (705 modules)
+ ✓ Ready in 1529ms
+ ✓ Compiled /api/data/[key] in 183ms (30 modules)
+ POST /api/data/jmtd_employees 200 in 484ms
+ GET /api/data/jmtd_employees 200 in 15ms

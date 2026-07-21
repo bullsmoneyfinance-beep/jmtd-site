@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Reveal from "../components/Reveal";
 import CountUp from "../components/CountUp";
+import PinnedFeatureList from "../components/PinnedFeatureList";
 import Icon, { IconTile } from "../components/Icon";
 import SapOfficiel from "../components/SapOfficiel";
 import { PHONE, PHONE_HREF, WHATSAPP, SERVICES, TESTIMONIALS, DECLARATION_SAP, TEAL_TEXT } from "../lib/data";
@@ -413,34 +414,22 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════
-          POURQUOI J'MTD — moment signature : texte épinglé, cartes qui défilent
+          POURQUOI J'MTD — moment signature : texte épinglé + cartes vivantes
+          (chaque carte s'illumine/s'agrandit en continu selon sa proximité
+          au centre de l'écran ; rail connecteur + compteur 0X/0Y)
           ════════════════════════════════ */}
       <section style={{ background: WARM, padding: "96px 24px" }}>
-        <div className="why-pin-grid" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "0.85fr 1.15fr", gap: 56, alignItems: "start" }}>
-          <Reveal className="why-pin-intro" style={{ position: "sticky", top: 110 }}>
-            <div className="eyebrow">Pourquoi nous choisir</div>
-            <h2 className="display" style={{ fontSize: "clamp(28px, 3.6vw, 44px)", marginBottom: 16 }}>
-              Votre confiance,<br />notre priorité
-            </h2>
-            <p style={{ fontSize: 16.5, color: TEXT2, maxWidth: 400, lineHeight: 1.8 }}>
-              Vous nous invitez chez vous. C&apos;est une responsabilité que nous prenons très au sérieux.
-            </p>
-          </Reveal>
-
-          <div className="why-pin-cards" style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            {[
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <PinnedFeatureList
+            eyebrow="Pourquoi nous choisir"
+            title={<>Votre confiance,<br />notre priorité</>}
+            intro="Vous nous invitez chez vous. C'est une responsabilité que nous prenons très au sérieux."
+            items={[
               { icon: "lock",   title: "Personnel rigoureusement sélectionné", text: "Chaque intervenante passe par un entretien approfondi, une vérification des références et une formation aux standards J'MTD avant sa première intervention.", color: T, to: OCEAN },
               { icon: "clock",  title: "Vous récupérez votre temps", text: "Ménage, repas, courses… Confiez-nous les tâches qui vous pèsent et retrouvez du temps pour ce qui compte vraiment : votre famille, vos loisirs, vous-même.", color: P, to: "#E0559E" },
               { icon: "credit", title: "50% remboursé par l'État", text: "Notre déclaration SAP vous permet de récupérer la moitié de vos dépenses via le crédit d'impôt. Nous vous remettons une attestation fiscale chaque année.", color: T, to: OCEAN },
-            ].map((c, i) => (
-              <Reveal key={c.title} delay={i * 90} scaleIn y={44} className="lift"
-                style={{ padding: "38px 32px", background: "#fff", borderRadius: 24, boxShadow: WARM_SHADOW, borderTop: `4px solid ${c.color}` }}>
-                <IconTile name={c.icon} size={60} icon={28} from={c.color} to={c.to} radius={18} style={{ marginBottom: 20 }} />
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: TEXT, marginBottom: 12, lineHeight: 1.4 }}>{c.title}</h3>
-                <p style={{ fontSize: 14.5, color: TEXT2, lineHeight: 1.85 }}>{c.text}</p>
-              </Reveal>
-            ))}
-          </div>
+            ]}
+          />
         </div>
       </section>
 
@@ -771,11 +760,6 @@ export default function HomePage() {
           .hero-visual { max-width: 480px; margin: 0 auto; width: 100%; }
           /* Frondes : réduites & discrètes derrière le contenu empilé */
           .hero-palm { width: 62vw !important; opacity: 0.85; }
-        }
-        @media (max-width: 900px) {
-          .why-pin-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
-          .why-pin-intro { position: static !important; top: auto !important; text-align: center; }
-          .why-pin-intro p { margin-left: auto; margin-right: auto; }
         }
         @media (max-width: 768px) {
           .why-grid { grid-template-columns: 1fr !important; }

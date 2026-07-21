@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Reveal from "../../components/Reveal";
+import PinnedFeatureList from "../../components/PinnedFeatureList";
 import Icon, { IconTile } from "../../components/Icon";
 import { PHONE, PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
 
@@ -181,7 +182,44 @@ function ResCard({ label, value, color, big }) {
 
 export default function ConciergeriePage() {
   const [openFaq, setOpenFaq] = useState(null);
+  const [reduced, setReduced] = useState(false);
   useParallax();
+
+  // ── Focus rack : la carte la plus proche du centre du viewport devient nette,
+  //    les autres se floutent/se désaturent/se réduisent en continu (piloté par --proximity).
+  //    Un seul écouteur rAF. Aucune transition CSS sur ces propriétés (voir style bloc). ──
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    if (mq.matches) return;
+    const cards = Array.from(document.querySelectorAll(".cg-focus"));
+    if (!cards.length) return;
+    let raf = null;
+    const update = () => {
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+      const center = vh * 0.5;
+      cards.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const elCenter = r.top + r.height / 2;
+        const vert = Math.max(0, 1 - Math.abs(elCenter - center) / (vh * 0.6));
+        const dxNorm = Math.min(1, Math.abs((r.left + r.width / 2) - vw / 2) / (vw / 2));
+        const horiz = 1 - dxNorm * 0.35;
+        el.style.setProperty("--proximity", (vert * horiz).toFixed(3));
+      });
+      raf = null;
+    };
+    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   return (
     <>
@@ -214,6 +252,20 @@ export default function ConciergeriePage() {
           .cg-simu-grid, .cg-simu-res { grid-template-columns: 1fr !important; }
           .cg-hero { padding: 44px 16px 40px !important; }
           .cg-section { padding: 48px 16px !important; }
+        }
+
+        /* ── Halos ambiants or/navy (adaptés du motif .zones-orb de l'accueil) ── */
+        @keyframes cgDrift { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-16px,20px)} }
+        .cg-orb { position:absolute; border-radius:50%; filter:blur(58px); pointer-events:none; z-index:0; animation:cgDrift 18s ease-in-out infinite; }
+        .cg-orb-a { width:340px; height:340px; top:-90px; left:-70px; background:radial-gradient(circle, ${GOLD}26, transparent 70%); }
+        .cg-orb-b { width:280px; height:280px; bottom:-80px; right:5%; background:radial-gradient(circle, ${NAVY2}1a, transparent 70%); animation-duration:14s; animation-delay:-5s; }
+
+        /* Focus rack : --proximity est mis à jour à chaque frame de scroll (JS).
+           AUCUNE transition ici — sinon la valeur "poursuit" une cible mouvante. */
+        .cg-focus { will-change: transform, opacity, filter; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .cg-orb { animation: none !important; }
         }
       `}</style>
 
@@ -279,7 +331,7 @@ export default function ConciergeriePage() {
 
         {/* ── Opportunité marché Martinique ── */}
         <section className="cg-section" style={{ background: "#fff", padding: "76px 24px" }}>
-          <Reveal className="cg-marche-grid" style={{ maxWidth: 1140, margin: "0 auto" }}>
+          <Reveal scaleIn className="cg-marche-grid" style={{ maxWidth: 1140, margin: "0 auto" }}>
             <div className="img-zoom-wrap lift" style={{ borderRadius: 24, boxShadow: "0 20px 60px rgba(13,169,164,0.14)" }}>
               <img src={IMG("photo-1507525428034-b723cf961d3e", 700, 620)} alt="Plage de Martinique, destination touristique" width={700} height={620} loading="lazy" className="img-zoom"
                 style={{ width: "100%", height: 440, objectFit: "cover", display: "block", borderRadius: 24 }} />
@@ -308,8 +360,10 @@ export default function ConciergeriePage() {
         </section>
 
         {/* ── Services à la carte ── */}
-        <section className="cg-section" style={{ background: `linear-gradient(180deg, #F8FAFB, #fff)`, padding: "76px 24px" }}>
-          <div style={{ maxWidth: 1160, margin: "0 auto" }}>
+        <section className="cg-section" style={{ background: `linear-gradient(180deg, #F8FAFB, #fff)`, padding: "76px 24px", position: "relative", overflow: "hidden" }}>
+          <div aria-hidden className="cg-orb cg-orb-a" />
+          <div aria-hidden className="cg-orb cg-orb-b" />
+          <div style={{ maxWidth: 1160, margin: "0 auto", position: "relative", zIndex: 1 }}>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
                 Une conciergerie complète
@@ -318,40 +372,34 @@ export default function ConciergeriePage() {
                 Le même soin et le même professionnalisme que nos prestations à domicile — au service de votre rentabilité.
               </p>
             </div>
-            <Reveal className="cg-services-grid">
-              {SERVICES_CONCIERGE.map(s => (
-                <div key={s.title} style={{ background: "#fff", borderRadius: 18, border: "1px solid rgba(13,169,164,0.12)", borderTop: `3px solid ${s.color}`, padding: "24px 20px", boxShadow: "0 4px 20px rgba(13,169,164,0.06)", transition: "transform 0.2s, box-shadow 0.2s" }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-5px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(13,169,164,0.14)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(13,169,164,0.06)"; }}>
+            <div className="cg-services-grid">
+              {SERVICES_CONCIERGE.map((s, i) => (
+                <Reveal key={s.title} scaleIn delay={(i % 4) * 70} className="lift"
+                  style={{ background: "#fff", borderRadius: 18, border: "1px solid rgba(13,169,164,0.12)", borderTop: `3px solid ${s.color}`, padding: "24px 20px", boxShadow: "0 4px 20px rgba(13,169,164,0.06)" }}>
                   <IconTile name={s.icon} size={52} icon={25} from={s.color} to={s.color} radius={14} style={{ marginBottom: 14 }} />
                   <h3 style={{ fontSize: 15.5, fontWeight: 800, color: TEXT, margin: "0 0 8px" }}>{s.title}</h3>
                   <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, margin: 0 }}>{s.desc}</p>
-                </div>
+                </Reveal>
               ))}
-            </Reveal>
+            </div>
           </div>
         </section>
 
-        {/* ── Rotation opérationnelle ── */}
-        <section className="cg-section" style={{ background: "#fff", padding: "72px 24px" }}>
+        {/* ── Rotation opérationnelle — moment signature épinglé (identité navy/or) ── */}
+        <section className="cg-section" style={{ background: "#fff", padding: "88px 24px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: 46 }}>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.2vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
-                Entre chaque voyageur, une rotation millimétrée
-              </h2>
-              <p style={{ fontSize: 15, color: MUTED, maxWidth: 540, margin: "0 auto" }}>Un logement toujours prêt, propre et accueillant — sans que vous ayez à y penser.</p>
-            </div>
-            <Reveal className="cg-rotation">
-              {ROTATION.map((r, i) => (
-                <div key={r.n} className="lift" style={{ position: "relative", background: "#F8FAFB", border: "1px solid rgba(13,169,164,0.1)", borderRadius: 18, padding: "26px 20px", textAlign: "center" }}>
-                  <div style={{ width: 52, height: 52, borderRadius: "50%", background: `linear-gradient(135deg, ${T}, ${P})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", boxShadow: `0 8px 22px ${T}33` }}><Icon name={r.ic} size={24} color="#fff" strokeWidth={2} /></div>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>Étape {r.n}</div>
-                  <h3 style={{ fontSize: 16, fontWeight: 800, color: TEXT, margin: "0 0 8px" }}>{r.t}</h3>
-                  <p style={{ fontSize: 12.5, color: MUTED, lineHeight: 1.6, margin: 0 }}>{r.d}</p>
-                  {i < ROTATION.length - 1 && <div className="hide-mobile" style={{ position: "absolute", top: 46, right: -12, fontSize: 20, color: `${T}66`, zIndex: 2 }}>→</div>}
-                </div>
-              ))}
-            </Reveal>
+            <PinnedFeatureList
+              eyebrow="Rotation opérationnelle"
+              title={<>Entre chaque voyageur,<br />une rotation millimétrée</>}
+              intro="Un logement toujours prêt, propre et accueillant — sans que vous ayez à y penser. Chaque étape est net et sous contrôle."
+              items={ROTATION.map((r, i) => ({
+                icon: r.ic,
+                title: r.t,
+                text: r.d,
+                color: i % 2 === 0 ? GOLD : NAVY2,
+                to: i % 2 === 0 ? GOLD2 : "#1C4468",
+              }))}
+            />
           </div>
         </section>
 
@@ -359,7 +407,7 @@ export default function ConciergeriePage() {
         <section id="simulateur" className="cg-section" style={{ background: `linear-gradient(160deg, ${NAVY}, ${NAVY2})`, padding: "78px 24px", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: "20%", right: "-4%", width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${GOLD}1c, transparent 70%)`, filter: "blur(55px)", pointerEvents: "none" }} />
           <div className="cg-simu-wrap" style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
-            <div>
+            <Reveal>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: `1px solid ${GOLD}55`, borderRadius: 30, padding: "6px 16px", marginBottom: 18 }}>
                 <span style={{ fontSize: 12, fontWeight: 800, color: GOLD, textTransform: "uppercase", letterSpacing: 1.2 }}>Combien pouvez-vous gagner ?</span>
               </div>
@@ -369,8 +417,8 @@ export default function ConciergeriePage() {
               <p style={{ fontSize: 15.5, color: "rgba(255,255,255,0.75)", lineHeight: 1.8 }}>
                 Ajustez le curseur selon votre bien et découvrez vos revenus nets estimés. Notre rémunération est indexée sur vos résultats : <strong style={{ color: GOLD }}>on ne gagne que si vous gagnez</strong>.
               </p>
-            </div>
-            <SimulateurRevenus />
+            </Reveal>
+            <Reveal scaleIn delay={140}><SimulateurRevenus /></Reveal>
           </div>
         </section>
 
@@ -389,7 +437,7 @@ export default function ConciergeriePage() {
               </p>
             </div>
 
-            <Reveal className="cg-formules-grid">
+            <Reveal scaleIn className="cg-formules-grid">
               {FORMULES.map(f => (
                 <div key={f.key} className={f.highlight ? undefined : "lift"} style={{
                   background: f.highlight ? NAVY : "#fff", borderRadius: 22, padding: "30px 26px", position: "relative",
@@ -437,28 +485,37 @@ export default function ConciergeriePage() {
         </section>
 
         {/* ── Types de biens (galerie) ── */}
-        <section className="cg-section" style={{ background: "#F8FAFB", padding: "72px 24px" }}>
-          <div style={{ maxWidth: 1160, margin: "0 auto" }}>
+        <section className="cg-section" style={{ background: "#F8FAFB", padding: "72px 24px", position: "relative", overflow: "hidden" }}>
+          <div aria-hidden className="cg-orb cg-orb-a" />
+          <div aria-hidden className="cg-orb cg-orb-b" />
+          <div style={{ maxWidth: 1160, margin: "0 auto", position: "relative", zIndex: 1 }}>
             <div style={{ textAlign: "center", marginBottom: 44 }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.2vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
                 Vos biens, dans le Centre et le Sud de la Martinique
               </h2>
               <p style={{ fontSize: 15, color: MUTED }}>Villa, appartement, studio ou bungalow — on s'adapte à votre patrimoine.</p>
             </div>
-            <Reveal className="cg-biens">
+            <div className="cg-biens">
               {BIENS.map((b, i) => (
-                <div key={b.label} className="img-zoom-wrap lift" style={{ position: "relative", borderRadius: 18, boxShadow: "0 8px 28px rgba(13,27,42,0.12)", cursor: "default" }}>
-                  <Image src={IMG(b.img, 500, 420)} alt={b.label} width={500} height={420} loading="lazy" className="img-zoom"
-                    sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 260px"
-                    style={{ width: "100%", height: 240, objectFit: "cover", display: "block", borderRadius: 18 }} />
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,27,42,0.85) 0%, transparent 55%)", pointerEvents: "none" }} />
-                  <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, pointerEvents: "none" }}>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>{b.label}</div>
-                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>{b.sub}</div>
+                <Reveal key={b.label} scaleIn delay={(i % 4) * 80}>
+                  <div className="img-zoom-wrap cg-focus" style={{
+                    position: "relative", borderRadius: 18, boxShadow: "0 8px 28px rgba(13,27,42,0.12)", cursor: "default",
+                    transform: reduced ? undefined : "scale(calc(0.94 + var(--proximity, 1) * 0.06))",
+                    filter: reduced ? undefined : "blur(calc((1 - var(--proximity, 1)) * 2.4px)) saturate(calc(0.72 + var(--proximity, 1) * 0.28))",
+                    opacity: reduced ? undefined : "calc(0.62 + var(--proximity, 1) * 0.38)",
+                  }}>
+                    <Image src={IMG(b.img, 500, 420)} alt={b.label} width={500} height={420} loading="lazy" className="img-zoom"
+                      sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 260px"
+                      style={{ width: "100%", height: 240, objectFit: "cover", display: "block", borderRadius: 18 }} />
+                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,27,42,0.85) 0%, transparent 55%)", pointerEvents: "none" }} />
+                    <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, pointerEvents: "none" }}>
+                      <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>{b.label}</div>
+                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>{b.sub}</div>
+                    </div>
                   </div>
-                </div>
+                </Reveal>
               ))}
-            </Reveal>
+            </div>
           </div>
         </section>
 
@@ -512,17 +569,17 @@ export default function ConciergeriePage() {
               </h2>
               <p style={{ fontSize: 15, color: MUTED }}>Des propriétaires sereins, des voyageurs conquis.</p>
             </div>
-            <Reveal className="cg-temoins">
-              {TEMOIGNAGES.map(t => (
-                <div key={t.nom} className="lift" style={{ background: "#fff", borderRadius: 20, padding: "28px 26px", border: "1px solid rgba(13,169,164,0.1)", boxShadow: "0 6px 26px rgba(13,169,164,0.07)", position: "relative" }}>
+            <div className="cg-temoins">
+              {TEMOIGNAGES.map((t, i) => (
+                <Reveal key={t.nom} scaleIn delay={i * 90} className="lift" style={{ background: "#fff", borderRadius: 20, padding: "28px 26px", border: "1px solid rgba(13,169,164,0.1)", boxShadow: "0 6px 26px rgba(13,169,164,0.07)", position: "relative" }}>
                   <div style={{ fontFamily: "Georgia, serif", fontSize: 60, color: `${GOLD}44`, lineHeight: 0.6, height: 26 }}>“</div>
-                  <div style={{ display: "flex", gap: 2, marginBottom: 12 }}>{"★★★★★".split("").map((s, i) => <span key={i} style={{ color: GOLD, fontSize: 15 }}>{s}</span>)}</div>
+                  <div style={{ display: "flex", gap: 2, marginBottom: 12 }}>{"★★★★★".split("").map((s, j) => <span key={j} style={{ color: GOLD, fontSize: 15 }}>{s}</span>)}</div>
                   <p style={{ fontSize: 14.5, color: "#374151", lineHeight: 1.8, marginBottom: 18 }}>{t.txt}</p>
                   <div style={{ fontSize: 14, fontWeight: 800, color: TEXT }}>{t.nom}</div>
                   <div style={{ fontSize: 12.5, color: MUTED }}>{t.loc}</div>
-                </div>
+                </Reveal>
               ))}
-            </Reveal>
+            </div>
           </div>
         </section>
 
@@ -541,21 +598,21 @@ export default function ConciergeriePage() {
                 Un bien mais aucune idée de par où commencer ? On vous accompagne du diagnostic à la première réservation.
               </p>
             </div>
-            <Reveal className="cg-lancement-grid">
+            <div className="cg-lancement-grid">
               {[
                 { n: "1", icon: "search", title: "Audit du bien", desc: "Visite, estimation du potentiel locatif et des travaux éventuels." },
                 { n: "2", icon: "camera", title: "Mise en valeur", desc: "Home-staging léger, photos professionnelles, rédaction des annonces." },
                 { n: "3", icon: "rocket", title: "Mise en ligne", desc: "Création et paramétrage des annonces, tarification optimisée." },
                 { n: "4", icon: "trending", title: "Pilotage", desc: "Suivi des performances, ajustement des prix, optimisation continue." },
-              ].map(s => (
-                <div key={s.n} className="lift" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 18, padding: "24px 20px", textAlign: "center" }}>
+              ].map((s, i) => (
+                <Reveal key={s.n} scaleIn delay={i * 80} className="lift" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 18, padding: "24px 20px", textAlign: "center" }}>
                   <div style={{ width: 46, height: 46, borderRadius: "50%", background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", color: NAVY, fontWeight: 900, fontSize: 18 }}>{s.n}</div>
                   <Icon name={s.icon} size={26} color={GOLD} style={{ margin: "0 auto 8px" }} />
                   <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 6 }}>{s.title}</div>
                   <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>{s.desc}</div>
-                </div>
+                </Reveal>
               ))}
-            </Reveal>
+            </div>
             <div style={{ textAlign: "center", marginTop: 36 }}>
               <div style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: `1px solid ${GOLD}40`, borderRadius: 16, padding: "16px 26px" }}>
                 <span style={{ fontSize: 14, color: "rgba(255,255,255,0.85)" }}>Audit + plan de mise en location : </span>

@@ -1,8 +1,9 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Reveal from "../../components/Reveal";
+import PinnedFeatureList from "../../components/PinnedFeatureList";
 import Icon, { IconTile } from "../../components/Icon";
 import { SERVICES, PHONE, PHONE_HREF, TEAL_TEXT } from "../../lib/data";
 
@@ -49,8 +50,58 @@ function useParallax() {
   }, []);
 }
 
+/* ────────────────────────────────────────
+   Focus-rack — effet de MISE AU POINT continue.
+   La prestation la plus proche du centre du viewport est nette & pleine échelle ;
+   les autres sont floues, atténuées, désaturées. Un seul écouteur scroll (rAF)
+   recalcule --proximity par item via getBoundingClientRect.
+   No-op complet sous prefers-reduced-motion.
+   (Motif adapté de components/PinnedFeatureList.jsx.)
+   IMPORTANT : aucune transition CSS sur filter/transform/opacity — ces propriétés
+   sont pilotées image par image via --proximity (voir style inline plus bas).
+──────────────────────────────────────── */
+function useFocusRack() {
+  const itemRefs = useRef([]);
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    if (mq.matches) return;
+
+    let raf = null;
+    const update = () => {
+      const vh = window.innerHeight;
+      const center = vh * 0.5;
+      const reach = vh * 0.62; // distance à laquelle la proximité retombe à 0
+      itemRefs.current.forEach((el) => {
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        const elCenter = r.top + r.height / 2;
+        const dist = Math.abs(elCenter - center);
+        const proximity = Math.max(0, 1 - dist / reach);
+        el.style.setProperty("--proximity", proximity.toFixed(3));
+      });
+      raf = null;
+    };
+    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return { itemRefs, reduced };
+}
+
 export default function ServicesPage() {
   useParallax();
+  const { itemRefs, reduced } = useFocusRack();
 
   return (
     <div style={{ background: "#fff", overflowX: "hidden" }}>
@@ -74,7 +125,7 @@ export default function ServicesPage() {
         <div aria-hidden style={{ position: "absolute", top: -80, right: "8%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${T}14, transparent 70%)`, animation: "floatOrb 14s ease-in-out infinite", pointerEvents: "none", zIndex: 1 }} />
         <div aria-hidden style={{ position: "absolute", bottom: -60, left: "5%", width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${P}0c, transparent 70%)`, animation: "floatOrb 18s ease-in-out infinite reverse", pointerEvents: "none", zIndex: 1 }} />
 
-        <Reveal style={{ maxWidth: 760, margin: "0 auto", position: "relative", zIndex: 2 }}>
+        <Reveal scaleIn style={{ maxWidth: 760, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <div className="eyebrow" style={{ justifyContent: "center" }}>Nos prestations</div>
           <h1 className="display" style={{ fontSize: "clamp(34px, 5vw, 60px)", marginBottom: 22, letterSpacing: -1.2, lineHeight: 1.1 }}>
             Des services à la personne{" "}
@@ -91,13 +142,50 @@ export default function ServicesPage() {
       </section>
 
       {/* ════════════════════════════════
-          SERVICES — présentation éditoriale alternée
+          POURQUOI J'MTD — moment signature cinématique (texte épinglé + scène vivante)
+          Réutilise PinnedFeatureList (identique au niveau de la page d'accueil).
           ════════════════════════════════ */}
-      <section className="main-section" style={{ background: "#F8FAFB", padding: "88px 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", flexDirection: "column", gap: 80 }}>
+      <section style={{ background: WARM, padding: "clamp(72px, 9vw, 96px) 24px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <PinnedFeatureList
+            eyebrow="Pourquoi J'MTD"
+            title={<>Des prestations,<br />une vraie tranquillité</>}
+            intro="Chaque service est pensé pour vous simplifier la vie — avec des intervenantes de confiance et 50% remboursés par l'État."
+            items={[
+              { icon: "lock",     title: "Des intervenantes de confiance", text: "Sélectionnées, formées et discrètes, nos intervenantes prennent soin de votre intérieur comme du leur — sérieux, ponctualité et sourire à chaque passage.", color: T, to: OCEAN },
+              { icon: "credit",   title: "50% remboursé par crédit d'impôt", text: "Toutes nos prestations à domicile ouvrent droit au crédit d'impôt services à la personne. Nous vous remettons une attestation fiscale chaque année.", color: P, to: "#E0559E" },
+              { icon: "calendar", title: "Un accompagnement sur-mesure", text: "Ménage, repas, courses, administratif ou coach rangement : nous adaptons chaque prestation à votre rythme, dans le Centre et le Sud de la Martinique.", color: T, to: OCEAN },
+            ]}
+          />
+        </div>
+      </section>
+
+      {/* ════════════════════════════════
+          SERVICES — présentation éditoriale alternée + effet de mise au point
+          ════════════════════════════════ */}
+      <section className="main-section" style={{ background: "#F8FAFB", padding: "88px 24px", position: "relative", overflow: "hidden" }}>
+        {/* Halos de couleur flottants — ambiance de section */}
+        <div aria-hidden className="svc-orb svc-orb-a" />
+        <div aria-hidden className="svc-orb svc-orb-b" />
+
+        <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: 80 }}>
+          <Reveal scaleIn style={{ textAlign: "center" }}>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>En détail</div>
+            <h2 className="display" style={{ fontSize: "clamp(28px, 3.6vw, 44px)" }}>Chaque prestation, en détail</h2>
+          </Reveal>
+
           {SERVICES.map((s, i) => (
-            <Reveal key={s.id} id={s.id} delay={(i % 2) * 80}
-              style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 56, alignItems: "center", direction: i % 2 === 0 ? "ltr" : "rtl" }}>
+            <div key={s.id} id={s.id} ref={(el) => (itemRefs.current[i] = el)} className="svc-item"
+              style={{
+                display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 56, alignItems: "center",
+                direction: i % 2 === 0 ? "ltr" : "rtl",
+                scrollMarginTop: 100,
+                filter: reduced ? "none" : "blur(calc((1 - var(--proximity, 0)) * 3px)) saturate(calc(0.55 + var(--proximity, 0) * 0.45))",
+                transform: reduced ? "none" : "scale(calc(0.955 + var(--proximity, 0) * 0.045))",
+                opacity: reduced ? 1 : "calc(0.5 + var(--proximity, 0) * 0.5)",
+                transformOrigin: "center",
+                willChange: reduced ? "auto" : "transform, opacity, filter",
+              }}>
               {/* Image */}
               <div style={{ direction: "ltr", position: "relative" }}>
                 {s.img ? (
@@ -136,7 +224,7 @@ export default function ServicesPage() {
                   {s.id === "rangement" ? "Voir les formules →" : "Demander un devis →"}
                 </Link>
               </div>
-            </Reveal>
+            </div>
           ))}
         </div>
       </section>
@@ -144,9 +232,13 @@ export default function ServicesPage() {
       {/* ════════════════════════════════
           CRÉDIT IMPÔT — bannière
           ════════════════════════════════ */}
-      <section style={{ background: "#fff", padding: "80px 24px" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <Reveal className="lift" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "52px 40px", textAlign: "center", boxShadow: "0 20px 60px rgba(13,169,164,0.10)" }}>
+      <section style={{ background: "#fff", padding: "80px 24px", position: "relative", overflow: "hidden" }}>
+        {/* Halos de couleur flottants — ambiance de section */}
+        <div aria-hidden className="svc-orb svc-orb-a" />
+        <div aria-hidden className="svc-orb svc-orb-b" />
+
+        <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <Reveal scaleIn className="lift" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "52px 40px", textAlign: "center", boxShadow: "0 20px 60px rgba(13,169,164,0.10)" }}>
             <IconTile name="credit" size={66} icon={32} from={T} to={P} radius={20} style={{ margin: "0 auto 20px" }} />
             <h2 className="display" style={{ fontSize: "clamp(26px, 3.4vw, 40px)", marginBottom: 12 }}>
               50% de vos dépenses remboursées
@@ -165,6 +257,24 @@ export default function ServicesPage() {
           </Reveal>
         </div>
       </section>
+
+      {/* ── Ambiance & sécurité responsive (scopé .svc-*) ── */}
+      <style>{`
+        @keyframes svcDrift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-18px, 22px); } }
+        .svc-orb { position: absolute; border-radius: 50%; filter: blur(55px); pointer-events: none; z-index: 0; animation: svcDrift 17s ease-in-out infinite; }
+        .svc-orb-a { width: 340px; height: 340px; top: -90px; left: -70px; background: radial-gradient(circle, ${T}1f, transparent 70%); }
+        .svc-orb-b { width: 280px; height: 280px; bottom: -80px; right: 3%; background: radial-gradient(circle, ${P}18, transparent 70%); animation-duration: 14s; animation-delay: -5s; }
+
+        @media (max-width: 900px) {
+          .svc-item { gap: 32px !important; }
+        }
+        @media (max-width: 600px) {
+          .svc-orb { display: none !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .svc-orb { animation: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Reveal from "../../components/Reveal";
+import PinnedFeatureList from "../../components/PinnedFeatureList";
 import Icon, { IconTile } from "../../components/Icon";
 import { PHONE_HREF, PHONE, TEAL_TEXT } from "../../lib/data";
 
@@ -49,6 +50,53 @@ function useParallax() {
     };
   }, []);
 }
+
+/* Focus rack — la carte la plus proche du centre du viewport devient nette et
+   pleine échelle ; les autres sont floutées/atténuées. Proximité continue via
+   --proximity (un seul écouteur rAF). AUCUNE transition CSS sur ces propriétés
+   pilotées image par image. No-op sous prefers-reduced-motion. */
+function useFocusRack() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) { setReduced(true); return; }
+    const items = Array.from(document.querySelectorAll("[data-focus]"));
+    if (!items.length) return;
+    let raf = null;
+    const update = () => {
+      const vh = window.innerHeight;
+      const center = vh * 0.5;
+      items.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const elCenter = r.top + r.height / 2;
+        const dist = Math.abs(elCenter - center);
+        const proximity = Math.max(0, 1 - dist / (vh * 0.62));
+        el.style.setProperty("--proximity", proximity.toFixed(3));
+      });
+      raf = null;
+    };
+    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+  return reduced;
+}
+
+/* Style d'une carte "focus rack" — défaut --proximity=1 (nette) pour éviter tout
+   flash de flou avant le premier rAF. Retourne null quand reduced (statique). */
+const focusCard = (reduced) => reduced ? null : {
+  filter: "blur(calc((1 - var(--proximity, 1)) * 3px)) saturate(calc(0.65 + var(--proximity, 1) * 0.35))",
+  transform: "scale(calc(0.95 + var(--proximity, 1) * 0.05))",
+  opacity: "calc(0.62 + var(--proximity, 1) * 0.38)",
+  willChange: "transform, opacity, filter",
+};
 
 const FORMULES = [
   {
@@ -102,14 +150,15 @@ const FORMULES = [
 ];
 
 const ETAPES = [
-  { step: "01", icon: "search",    title: "Diagnostic", text: "Visite de votre domicile, analyse de vos habitudes et définition de vos objectifs." },
-  { step: "02", icon: "scissors",  title: "Désencombrement", text: "Tri de vos objets par catégorie : gardez ce qui vous apporte de la joie." },
-  { step: "03", icon: "rangement", title: "Organisation", text: "Chaque objet trouve sa place idéale, accessible et logique au quotidien." },
-  { step: "04", icon: "sparkles",  title: "Transformation", text: "Votre intérieur est ordonné, serein. Vous gagnez en bien-être et en efficacité." },
+  { step: "01", icon: "search",    title: "Diagnostic", text: "Visite de votre domicile, analyse de vos habitudes et définition de vos objectifs.", color: T, to: OCEAN },
+  { step: "02", icon: "scissors",  title: "Désencombrement", text: "Tri de vos objets par catégorie : gardez ce qui vous apporte de la joie.", color: P, to: "#E0559E" },
+  { step: "03", icon: "rangement", title: "Organisation", text: "Chaque objet trouve sa place idéale, accessible et logique au quotidien.", color: T, to: OCEAN },
+  { step: "04", icon: "sparkles",  title: "Transformation", text: "Votre intérieur est ordonné, serein. Vous gagnez en bien-être et en efficacité.", color: "#8B5CF6", to: "#A78BFA" },
 ];
 
 export default function CoachPage() {
   useParallax();
+  const reduced = useFocusRack();
 
   return (
     <div style={{ background: "#fff", overflowX: "hidden" }}>
@@ -175,44 +224,32 @@ export default function CoachPage() {
           ════════════════════════════════ */}
       <section className="main-section" style={{ background: "#F8FAFB", padding: "88px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 56 }}>
-            <div className="eyebrow" style={{ justifyContent: "center" }}>La méthode</div>
-            <h2 className="display" style={{ fontSize: "clamp(28px, 4vw, 44px)", marginBottom: 16 }}>
-              Un intérieur ordonné transforme votre vie
-            </h2>
-            <p style={{ fontSize: 16, color: MUTED, maxWidth: 580, margin: "0 auto", lineHeight: 1.8 }}>
-              La méthode KonMari ne se résume pas à ranger. C&apos;est une transformation profonde de votre rapport aux objets et à votre espace de vie.
-            </p>
-          </Reveal>
-          <div className="why-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))", gap: 20 }}>
-            {ETAPES.map((s, i) => (
-              <Reveal key={s.step} delay={i * 100} className="lift card-zen"
-                style={{ padding: "30px 26px", background: "#fff", borderRadius: 20, boxShadow: "0 4px 28px rgba(13,169,164,0.07)", borderTop: `4px solid ${T}` }}>
-                <div style={{ fontSize: 11, color: TEAL_TEXT, fontWeight: 700, letterSpacing: 2, marginBottom: 12 }}>ÉTAPE {s.step}</div>
-                <IconTile name={s.icon} size={54} icon={26} from={T} to={OCEAN} radius={16} style={{ marginBottom: 14 }} />
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: TEXT, marginBottom: 10 }}>{s.title}</h3>
-                <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.7 }}>{s.text}</p>
-              </Reveal>
-            ))}
-          </div>
+          <PinnedFeatureList
+            eyebrow="La méthode"
+            title="Un intérieur ordonné transforme votre vie"
+            intro="La méthode KonMari ne se résume pas à ranger : c'est une transformation profonde de votre rapport aux objets et à votre espace de vie."
+            items={ETAPES}
+          />
         </div>
       </section>
 
       {/* ════════════════════════════════
           FORMULES
           ════════════════════════════════ */}
-      <section className="main-section" style={{ background: "#fff", padding: "88px 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 56 }}>
+      <section className="main-section" style={{ background: "#fff", padding: "88px 24px", position: "relative", overflow: "hidden" }}>
+        <div aria-hidden className="co-orb co-orb-a" />
+        <div aria-hidden className="co-orb co-orb-b" />
+        <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <Reveal scaleIn style={{ textAlign: "center", marginBottom: 56 }}>
             <div className="eyebrow" style={{ justifyContent: "center" }}>Nos formules</div>
             <h2 className="display" style={{ fontSize: "clamp(28px, 4vw, 44px)" }}>
               Choisissez votre formule
             </h2>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 24 }}>
+          <Reveal scaleIn style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 24 }}>
             {FORMULES.map((f, i) => (
-              <Reveal key={f.id} delay={i * 110} className="lift"
-                style={{ position: "relative", background: "#fff", border: `1.5px solid ${f.badge ? `${f.color}35` : "rgba(13,169,164,0.1)"}`, borderRadius: 24, padding: "36px 28px", display: "flex", flexDirection: "column", boxShadow: f.badge ? `0 12px 46px ${f.color}18` : `0 4px 24px rgba(13,169,164,0.06)` }}>
+              <div key={f.id} data-focus
+                style={{ ...focusCard(reduced), position: "relative", background: "#fff", border: `1.5px solid ${f.badge ? `${f.color}35` : "rgba(13,169,164,0.1)"}`, borderRadius: 24, padding: "36px 28px", display: "flex", flexDirection: "column", boxShadow: f.badge ? `0 12px 46px ${f.color}18` : `0 4px 24px rgba(13,169,164,0.06)` }}>
                 {f.badge && (
                   <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${f.color}, ${f.color}cc)`, color: "#fff", fontSize: 11, fontWeight: 700, padding: "5px 18px", borderRadius: 30, whiteSpace: "nowrap" }}>
                     {f.badge}
@@ -235,10 +272,10 @@ export default function CoachPage() {
                   style={{ display: "block", textAlign: "center", padding: "14px", borderRadius: 30, background: f.badge ? `linear-gradient(135deg, ${f.color}, ${f.color}bb)` : "transparent", border: `2px solid ${f.color}50`, color: f.badge ? "#fff" : f.color, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
                   {f.cta} →
                 </Link>
-              </Reveal>
+              </div>
             ))}
-          </div>
-          <Reveal style={{ textAlign: "center", marginTop: 32 }}>
+          </Reveal>
+          <Reveal scaleIn style={{ textAlign: "center", marginTop: 32 }}>
             <p style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, color: MUTED }}>
               <Icon name="conseils" size={15} color={TEAL_TEXT} /> Toutes les formules ouvrent droit au crédit d&apos;impôt (50% remboursé). Attestation fiscale fournie.
             </p>
@@ -249,9 +286,11 @@ export default function CoachPage() {
       {/* ════════════════════════════════
           CTA FINAL
           ════════════════════════════════ */}
-      <section style={{ background: "#F8FAFB", padding: "80px 24px" }}>
-        <div style={{ maxWidth: 680, margin: "0 auto" }}>
-          <Reveal className="coach-cta-inner lift" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "56px 40px", textAlign: "center", boxShadow: "0 20px 60px rgba(13,169,164,0.10)" }}>
+      <section style={{ background: "#F8FAFB", padding: "80px 24px", position: "relative", overflow: "hidden" }}>
+        <div aria-hidden className="co-orb co-orb-a" style={{ top: -70, left: "-4%" }} />
+        <div aria-hidden className="co-orb co-orb-b" style={{ bottom: -80, right: "-2%" }} />
+        <div style={{ maxWidth: 680, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <Reveal scaleIn className="coach-cta-inner lift" style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}22`, borderRadius: 28, padding: "56px 40px", textAlign: "center", boxShadow: "0 20px 60px rgba(13,169,164,0.10)" }}>
             <IconTile name="rangement" size={64} icon={32} from={T} to={P} radius={20} style={{ margin: "0 auto 20px" }} />
             <h2 className="display" style={{ fontSize: "clamp(26px, 3.4vw, 38px)", marginBottom: 12 }}>
               Commencez par le diagnostic gratuit
@@ -265,6 +304,21 @@ export default function CoachPage() {
           </Reveal>
         </div>
       </section>
+
+      {/* ── Halos de couleur ambiants + sécurité mobile ── */}
+      <style>{`
+        @keyframes coDrift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-18px, 20px); } }
+        .co-orb { position: absolute; border-radius: 50%; filter: blur(55px); pointer-events: none; z-index: 0; animation: coDrift 17s ease-in-out infinite; }
+        .co-orb-a { width: 340px; height: 340px; top: -90px; left: -70px; background: radial-gradient(circle, ${T}18, transparent 70%); }
+        .co-orb-b { width: 280px; height: 280px; bottom: -80px; right: 2%; background: radial-gradient(circle, ${P}14, transparent 70%); animation-duration: 14s; animation-delay: -5s; }
+
+        @media (max-width: 768px) {
+          .co-orb { display: none !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .co-orb { animation: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

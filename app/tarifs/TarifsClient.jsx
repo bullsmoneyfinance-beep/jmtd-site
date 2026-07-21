@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PHONE_HREF, WHATSAPP, SERVICES, TEAL_TEXT } from "../../lib/data";
 import SapBadge from "../../components/SapBadge";
 import Reveal from "../../components/Reveal";
+import PinnedFeatureList from "../../components/PinnedFeatureList";
 import Icon, { IconTile } from "../../components/Icon";
 
 const T = "#0DA9A4";
@@ -49,6 +50,53 @@ function useParallax() {
     };
   }, []);
 }
+
+/* Focus rack — la carte la plus proche du centre du viewport devient nette et
+   pleine échelle ; les autres sont floutées/atténuées. Proximité continue via
+   --proximity (un seul écouteur rAF). AUCUNE transition CSS sur ces propriétés
+   pilotées image par image. No-op sous prefers-reduced-motion. */
+function useFocusRack() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) { setReduced(true); return; }
+    const items = Array.from(document.querySelectorAll("[data-focus]"));
+    if (!items.length) return;
+    let raf = null;
+    const update = () => {
+      const vh = window.innerHeight;
+      const center = vh * 0.5;
+      items.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const elCenter = r.top + r.height / 2;
+        const dist = Math.abs(elCenter - center);
+        const proximity = Math.max(0, 1 - dist / (vh * 0.62));
+        el.style.setProperty("--proximity", proximity.toFixed(3));
+      });
+      raf = null;
+    };
+    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+  return reduced;
+}
+
+/* Style d'une carte "focus rack" — défaut --proximity=1 (nette) pour éviter tout
+   flash de flou avant le premier rAF. Retourne null quand reduced (statique). */
+const focusCard = (reduced) => reduced ? null : {
+  filter: "blur(calc((1 - var(--proximity, 1)) * 3px)) saturate(calc(0.65 + var(--proximity, 1) * 0.35))",
+  transform: "scale(calc(0.95 + var(--proximity, 1) * 0.05))",
+  opacity: "calc(0.62 + var(--proximity, 1) * 0.38)",
+  willChange: "transform, opacity, filter",
+};
 
 // Prix net après crédit d'impôt 50 % — formatage FR (virgule décimale)
 const net = (v) => (v / 2).toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
@@ -198,11 +246,19 @@ function SimulateurCredit() {
 export default function TarifsPage() {
   const [open, setOpen] = useState(null);
   useParallax();
+  const reduced = useFocusRack();
 
   return (
     <>
       <style>{`
         @keyframes floatOrb { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+
+        /* ── Halos de couleur ambiants (mêmes codes que la home) ── */
+        @keyframes tfDrift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-18px, 20px); } }
+        .tf-orb { position: absolute; border-radius: 50%; filter: blur(55px); pointer-events: none; z-index: 0; animation: tfDrift 17s ease-in-out infinite; }
+        .tf-orb-a { width: 340px; height: 340px; top: -90px; left: -70px; background: radial-gradient(circle, ${T}18, transparent 70%); }
+        .tf-orb-b { width: 280px; height: 280px; bottom: -80px; right: 2%; background: radial-gradient(circle, ${P}14, transparent 70%); animation-duration: 14s; animation-delay: -5s; }
+
         @media (max-width: 768px) {
           .tarifs-hero { padding: 44px 16px 36px !important; }
           .hero-palm { opacity: 0.5 !important; }
@@ -215,6 +271,10 @@ export default function TarifsPage() {
           .simu-results { grid-template-columns: 1fr !important; }
           .credit-explainer { grid-template-columns: 1fr !important; gap: 16px !important; }
           .tarifs-card-pad { padding: 20px 18px !important; }
+          .tf-orb { display: none !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .tf-orb { animation: none !important; }
         }
       `}</style>
 
@@ -262,41 +322,31 @@ export default function TarifsPage() {
         </div>
       </section>
 
-      {/* ── Crédit d'impôt explication ── */}
-      <section style={{ background: "#F8FAFB", padding: "56px 24px" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-            <div className="eyebrow" style={{ justifyContent: "center" }}>Crédit d&apos;impôt SAP</div>
-            <h2 className="display" style={{ fontSize: "clamp(22px, 3vw, 34px)", color: TEXT, marginBottom: 10 }}>
-              Comment fonctionne le crédit d'impôt ?
-            </h2>
-            <p style={{ fontSize: 15, color: MUTED }}>L'État rembourse 50% de vos dépenses SAP — automatiquement sur votre déclaration d'impôts.</p>
-          </Reveal>
+      {/* ── Crédit d'impôt : moment signature épinglé (mise au point au scroll) ── */}
+      <section style={{ background: "#F8FAFB", padding: "88px 24px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <PinnedFeatureList
+            eyebrow="Crédit d'impôt SAP"
+            title="Comment fonctionne le crédit d'impôt ?"
+            intro="L'État rembourse 50% de vos dépenses en services à la personne — automatiquement, sur votre déclaration d'impôts."
+            items={[
+              { icon: "assistance", title: "Vous commandez votre prestation", text: "Choisissez la prestation et la fréquence qui vous conviennent. Un devis gratuit et sans engagement précède toujours la première intervention.", color: T, to: OCEAN },
+              { icon: "home", title: "Nous intervenons chez vous", text: "Votre intervenante attitrée se déplace aux créneaux convenus, avec ses produits professionnels fournis.", color: P, to: "#E0559E" },
+              { icon: "sap", title: "Vous recevez votre attestation fiscale", text: "Chaque année en janvier, nous vous remettons l'attestation qui récapitule vos dépenses en services à la personne.", color: T, to: OCEAN },
+              { icon: "credit", title: "50 % vous sont remboursés", text: "Le crédit d'impôt s'applique sur votre déclaration — et vous êtes remboursé même si vous n'êtes pas imposable.", color: P, to: "#E0559E" },
+            ]}
+          />
 
-          <div className="credit-explainer" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20, marginBottom: 40 }}>
-            {[
-              { step: "1", icon: "assistance", title: "Vous commandez", desc: "Choisissez votre prestation et fréquence" },
-              { step: "2", icon: "home", title: "On intervient", desc: "Nos professionnelles viennent chez vous" },
-              { step: "3", icon: "sap", title: "Attestation fiscale", desc: "Remise chaque année en janvier" },
-              { step: "4", icon: "credit", title: "50% remboursé", desc: "Crédit sur votre déclaration d'impôts" },
-            ].map((item, i) => (
-              <Reveal key={item.step} delay={i * 90} className="lift" style={{ textAlign: "center", padding: "24px 16px", background: "#fff", borderRadius: 20, border: `1px solid rgba(13,169,164,0.1)`, boxShadow: "0 4px 22px rgba(13,169,164,0.06)" }}>
-                <div style={{ width: 48, height: 48, borderRadius: "50%", background: `linear-gradient(135deg, ${T}, ${P})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", color: "#fff", fontWeight: 800, fontSize: 18 }}>{item.step}</div>
-                <Icon name={item.icon} size={24} color={TEAL_TEXT} style={{ margin: "0 auto 8px" }} />
-                <div style={{ fontSize: 14, fontWeight: 700, color: TEXT, marginBottom: 4 }}>{item.title}</div>
-                <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.6 }}>{item.desc}</div>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal delay={120}><SimulateurCredit /></Reveal>
+          <Reveal scaleIn delay={120} style={{ marginTop: 64 }}><SimulateurCredit /></Reveal>
         </div>
       </section>
 
-      {/* ── Grille tarifs ── */}
-      <section className="tarifs-section" style={{ background: "#fff", padding: "72px 24px 80px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
+      {/* ── Grille tarifs — effet "mise au point" au scroll ── */}
+      <section className="tarifs-section" style={{ background: "#fff", padding: "72px 24px 80px", position: "relative", overflow: "hidden" }}>
+        <div aria-hidden className="tf-orb tf-orb-a" />
+        <div aria-hidden className="tf-orb tf-orb-b" />
+        <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <Reveal scaleIn style={{ textAlign: "center", marginBottom: 48 }}>
             <div className="eyebrow" style={{ justifyContent: "center" }}>Nos prestations</div>
             <h2 className="display" style={{ fontSize: "clamp(24px, 3.5vw, 40px)", color: TEXT, marginBottom: 12 }}>
               Nos prestations & tarifs indicatifs
@@ -306,11 +356,11 @@ export default function TarifsPage() {
             </p>
           </Reveal>
 
-          <div className="tarifs-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24 }}>
+          <Reveal scaleIn className="tarifs-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24 }}>
             {TARIFS.map((t, i) => (
-              <Reveal key={t.id} delay={(i % 3) * 90}
-                style={{ background: "#fff", borderRadius: 22, border: t.popular ? `2px solid ${P}` : `1px solid rgba(13,169,164,0.12)`, boxShadow: t.popular ? `0 8px 40px ${P}18` : "0 4px 24px rgba(13,169,164,0.06)", padding: "28px 26px", position: "relative", display: "flex", flexDirection: "column", gap: 16 }}
-                className="tarifs-card-pad lift">
+              <div key={t.id} data-focus
+                style={{ ...focusCard(reduced), background: "#fff", borderRadius: 22, border: t.popular ? `2px solid ${P}` : `1px solid rgba(13,169,164,0.12)`, boxShadow: t.popular ? `0 8px 40px ${P}18` : "0 4px 24px rgba(13,169,164,0.06)", padding: "28px 26px", position: "relative", display: "flex", flexDirection: "column", gap: 16 }}
+                className="tarifs-card-pad">
                 {t.popular && (
                   <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${P}, ${T})`, color: "#fff", fontSize: 11, fontWeight: 800, padding: "4px 18px", borderRadius: 20, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: 0.8, display: "inline-flex", alignItems: "center", gap: 5 }}>
                     <Icon name="star" size={12} color="#fff" strokeWidth={2.5} /> Le plus demandé
@@ -371,9 +421,9 @@ export default function TarifsPage() {
                   style={{ display: "block", textAlign: "center", padding: "12px", borderRadius: 30, background: t.popular ? `linear-gradient(135deg, ${P}, ${T})` : `${t.color}12`, border: t.popular ? "none" : `1px solid ${t.color}30`, color: t.popular ? "#fff" : t.color, fontWeight: 700, fontSize: 14, textDecoration: "none", marginTop: "auto", transition: "all 0.2s" }}>
                   Demander un devis →
                 </Link>
-              </Reveal>
+              </div>
             ))}
-          </div>
+          </Reveal>
 
           <div style={{ textAlign: "center", marginTop: 36, padding: "20px 24px", background: `${T}08`, border: `1px solid ${T}20`, borderRadius: 18 }}>
             <p style={{ fontSize: 14, color: MUTED, margin: 0 }}>
@@ -385,9 +435,11 @@ export default function TarifsPage() {
       </section>
 
       {/* ── Formules d'abonnement ménage ── */}
-      <section className="abo-section" style={{ background: `linear-gradient(180deg, #F8FAFB, #fff)`, padding: "72px 24px 80px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center" }}>
+      <section className="abo-section" style={{ background: `linear-gradient(180deg, #F8FAFB, #fff)`, padding: "72px 24px 80px", position: "relative", overflow: "hidden" }}>
+        <div aria-hidden className="tf-orb tf-orb-b" style={{ top: -80, left: "-6%", right: "auto", bottom: "auto" }} />
+        <div aria-hidden className="tf-orb tf-orb-a" style={{ top: "auto", left: "auto", bottom: -90, right: "-4%", background: `radial-gradient(circle, ${P}12, transparent 70%)` }} />
+        <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <Reveal scaleIn style={{ textAlign: "center" }}>
             <div style={{ textAlign: "center", marginBottom: 12 }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${P}10`, border: `1px solid ${P}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
                 <span style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: 1.2 }}>Ménage régulier · plus vous confiez, moins c'est cher</span>
@@ -475,7 +527,7 @@ export default function TarifsPage() {
       {/* ── FAQ mini ── */}
       <section style={{ background: "#F8FAFB", padding: "56px 24px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
-          <Reveal>
+          <Reveal scaleIn>
             <h2 className="display" style={{ fontSize: "clamp(22px, 3vw, 32px)", color: TEXT, textAlign: "center", marginBottom: 32 }}>
               Questions fréquentes sur les tarifs
             </h2>
@@ -508,7 +560,7 @@ export default function TarifsPage() {
 
       {/* ── CTA final ── */}
       <section style={{ background: "#fff", padding: "64px 24px" }}>
-        <Reveal style={{ maxWidth: 680, margin: "0 auto", textAlign: "center" }}>
+        <Reveal scaleIn style={{ maxWidth: 680, margin: "0 auto", textAlign: "center" }}>
           <h2 className="display" style={{ fontSize: "clamp(22px, 3.5vw, 36px)", color: TEXT, marginBottom: 16 }}>
             Prêt à nous confier votre domicile ?
           </h2>

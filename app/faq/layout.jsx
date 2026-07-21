@@ -50,7 +50,7 @@ const FAQ_ENTRIES = [
   },
   {
     q: "Dans quelles zones intervenez-vous ?",
-    a: "Nous intervenons sur toute la Martinique : Centre (Lamentin, Rivière-Salée), Nord Atlantique, Nord Caraïbe, Sud (Diamant, Saint-Esprit). Notre siège est à Rivière-Salée mais nos intervenantes se déplacent partout sur l'île.",
+    a: "Nous intervenons en priorité dans le Centre et le Sud de la Martinique : Rivière-Salée (siège), Le Lamentin, Fort-de-France, Le Diamant, Sainte-Luce, Trois-Îlets, Le Marin, Saint-Esprit. Pour les autres zones, contactez-nous : nous étudions chaque demande selon la distance.",
   },
   {
     q: "Quels sont vos horaires d'intervention ?",

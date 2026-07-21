@@ -116,7 +116,7 @@ const BIENS = [
   { img: "photo-1512917774080-9991f1c4c750", label: "Villas avec piscine", sub: "Le Diamant · Trois-Îlets" },
   { img: "photo-1502672260266-1c1ef2d93688", label: "Appartements vue mer", sub: "Sainte-Luce · Le Marin" },
   { img: "photo-1560448204-e02f11c3d0e2", label: "Studios & T2 citadins", sub: "Fort-de-France · Lamentin" },
-  { img: "photo-1613490493576-7fde63acd811", label: "Bungalows & lodges", sub: "Sainte-Anne · Le Vauclin" },
+  { img: "photo-1613490493576-7fde63acd811", label: "Bungalows & lodges", sub: "Rivière-Salée · Saint-Esprit" },
 ];
 
 const TEMOIGNAGES = [
@@ -441,7 +441,7 @@ export default function ConciergeriePage() {
           <div style={{ maxWidth: 1160, margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: 44 }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.2vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
-                Tous les biens, partout en Martinique
+                Vos biens, dans le Centre et le Sud de la Martinique
               </h2>
               <p style={{ fontSize: 15, color: MUTED }}>Villa, appartement, studio ou bungalow — on s'adapte à votre patrimoine.</p>
             </div>

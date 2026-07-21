@@ -26,7 +26,7 @@ export const FAQ_DATA = [
   {
     cat: "Interventions & Logistique", icon: "annonces",
     items: [
-      { q: "Dans quelles zones intervenez-vous ?", a: "Nous intervenons sur toute la Martinique : Centre (Lamentin, Rivière-Salée), Nord Atlantique, Nord Caraïbe, Sud (Diamant, Saint-Esprit). Notre siège est à Rivière-Salée mais nos intervenantes se déplacent partout sur l'île." },
+      { q: "Dans quelles zones intervenez-vous ?", a: "Nous intervenons en priorité dans le Centre et le Sud de la Martinique : Rivière-Salée (siège), Le Lamentin, Fort-de-France, Le Diamant, Sainte-Luce, Trois-Îlets, Le Marin, Saint-Esprit. Pour les autres zones, contactez-nous : nous étudions chaque demande selon la distance (des frais de déplacement peuvent s'appliquer)." },
       { q: "Quels sont vos horaires d'intervention ?", a: `Nous intervenons du lundi au vendredi de 08h à 18h (${HORAIRES}). Des créneaux le samedi matin sont parfois disponibles selon les équipes — demandez lors de votre devis.` },
       { q: "Combien de temps à l'avance faut-il réserver ?", a: "Idéalement 48 à 72h à l'avance pour les interventions ponctuelles. Pour les abonnements réguliers, un créneau fixe vous est attribué. En cas d'urgence, contactez-nous directement par WhatsApp — nous ferons notre possible." },
       { q: "Que se passe-t-il si je dois annuler ?", a: "Nous demandons un préavis de 24h minimum pour annuler ou reporter une intervention. En deçà, une indemnité peut s'appliquer. En cas de force majeure (urgence médicale, etc.), nous faisons preuve de compréhension." },

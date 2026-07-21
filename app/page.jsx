@@ -66,7 +66,7 @@ function useParallax() {
 
 const TICKS = [
   "✦ Déclaré SAP officiel","✦ Recommandé par nos clients","✦ +200 foyers","✦ Méthode Marie Kondo",
-  "✦ 50% crédit d'impôt","✦ Toute la Martinique","✦ Réponse en 24h","✦ Devis gratuit",
+  "✦ 50% crédit d'impôt","✦ Centre & Sud Martinique","✦ Réponse en 24h","✦ Devis gratuit",
 ];
 
 // Tarifs réels par prestation (cohérents avec /tarifs) — pas de "18€" trompeur
@@ -218,7 +218,7 @@ function QuickForm() {
 const FAQ_ITEMS = [
   { q: "Êtes-vous déclarés Services à la Personne ?", a: "Oui, J'MTD est officiellement déclaré SAP (N° " + DECLARATION_SAP + "). Cette déclaration vous donne droit au crédit d'impôt de 50% sur toutes nos prestations à domicile." },
   { q: "Comment fonctionne le crédit d'impôt ?", a: "L'État rembourse 50% de vos dépenses SAP via votre déclaration d'impôts. Nous vous fournissons une attestation fiscale annuelle. Applicable même si vous n'êtes pas imposable." },
-  { q: "Dans quelles communes intervenez-vous ?", a: "J'MTD intervient partout en Martinique : Rivière-Salée (siège), Le Lamentin, Le Diamant, Saint-Esprit, Fort-de-France, Le Vauclin, Sainte-Anne, Le François et toutes les communes environnantes." },
+  { q: "Dans quelles communes intervenez-vous ?", a: "J'MTD intervient en priorité dans le Centre et le Sud de la Martinique : Rivière-Salée (siège), Le Lamentin, Fort-de-France, Le Diamant, Sainte-Luce, Trois-Îlets, Le Marin, Saint-Esprit. Pour les autres zones, contactez-nous : nous étudions chaque demande selon la distance." },
   { q: "Comment se passe le premier contact ?", a: "Remplissez le formulaire ou appelez-nous. Nous vous rappelons sous 24h pour comprendre vos besoins, puis établissons un devis gratuit et sans engagement." },
   { q: "Le coaching rangement, comment ça marche ?", a: "Inspirée de la méthode Marie Kondo, notre coach commence par un diagnostic gratuit. Ensemble, on définit un plan d'action selon vos envies." },
   { q: "Puis-je choisir mes jours et horaires ?", a: "Absolument. Nos interventions sont planifiées selon vos disponibilités, du lundi au vendredi de 8h à 18h." },
@@ -300,7 +300,7 @@ export default function HomePage() {
             </h1>
 
             <p className="anim-fade-up delay-2" style={{ fontSize: 18, color: TEXT2, lineHeight: 1.75, marginBottom: 14, maxWidth: 480 }}>
-              Ménage, repas, courses, coach rangement. Nos intervenantes <strong style={{ color: TEXT }}>sélectionnées, formées et discrètes</strong> s&apos;occupent de votre maison — vous récupérez du temps pour votre famille et vos loisirs, partout en Martinique.
+              Ménage, repas, courses, coach rangement. Nos intervenantes <strong style={{ color: TEXT }}>sélectionnées, formées et discrètes</strong> s&apos;occupent de votre maison — vous récupérez du temps pour votre famille et vos loisirs, dans le Centre et le Sud de la Martinique.
             </p>
             <p className="anim-fade-up delay-2" style={{ marginBottom: 38 }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 15, color: TEAL_TEXT, fontWeight: 700, background: `${T}14`, borderRadius: 20, padding: "5px 14px" }}><Icon name="credit" size={16} color={TEAL_TEXT} /> 50% remboursé par crédit d&apos;impôt SAP</span>
@@ -364,7 +364,7 @@ export default function HomePage() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }}>
               {[
                 { icon: "lock", iconColor: T, title: "Personnel vérifié", sub: "Sélection & formation", bg: `${T}0d`, border: `${T}22` },
-                { icon: "home", iconColor: P, title: "Toute la Martinique", sub: "Déplacement inclus", bg: `${P}08`, border: `${P}20` },
+                { icon: "home", iconColor: P, title: "Centre & Sud Martinique", sub: "Déplacement inclus", bg: `${P}08`, border: `${P}20` },
               ].map(item => (
                 <div key={item.title} style={{ background: item.bg, border: `1px solid ${item.border}`, borderRadius: 16, padding: "14px 16px" }}>
                   <div style={{ marginBottom: 8 }}><Icon name={item.icon} size={20} color={item.iconColor} /></div>
@@ -672,17 +672,16 @@ export default function HomePage() {
       <section style={{ background: "#fff", padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 44 }}>
-            <div className="eyebrow" style={{ justifyContent: "center" }}>Toute la Martinique</div>
+            <div className="eyebrow" style={{ justifyContent: "center" }}>Centre & Sud de la Martinique</div>
             <h2 className="display" style={{ fontSize: "clamp(26px, 3.2vw, 40px)", marginBottom: 10 }}>
               Zones d&apos;intervention
             </h2>
-            <p style={{ fontSize: 15, color: TEXT2 }}>Basée à Rivière-Salée · Nous nous déplaçons partout en Martinique</p>
+            <p style={{ fontSize: 15, color: TEXT2 }}>Basée à Rivière-Salée · Nous intervenons en priorité dans ces communes</p>
           </Reveal>
-          <Reveal delay={90} style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
+          <Reveal delay={90} style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", marginBottom: 20 }}>
             {[
-              "Rivière-Salée","Le Lamentin","Le Diamant","Saint-Esprit",
-              "Fort-de-France","Le Vauclin","Sainte-Anne","Le François",
-              "Sainte-Luce","Le Marin","Trois-Îlets","et toute la Martinique"
+              "Rivière-Salée","Le Lamentin","Fort-de-France","Le Diamant",
+              "Sainte-Luce","Trois-Îlets","Le Marin","Saint-Esprit",
             ].map(z => (
               <span key={z} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 20px", background: WARM, border: `1.5px solid ${T}20`, borderRadius: 30, fontSize: 13, color: TEXT2, fontWeight: 500, transition: "all 0.2s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = T; e.currentTarget.style.color = T; e.currentTarget.style.background = "#fff"; }}
@@ -691,6 +690,9 @@ export default function HomePage() {
               </span>
             ))}
           </Reveal>
+          <p style={{ textAlign: "center", fontSize: 13.5, color: "#94A3B8" }}>
+            Hors de ces communes ? <Link href="/contact" style={{ color: TEAL_TEXT, fontWeight: 600 }}>Contactez-nous</Link> — nous étudions chaque demande selon la distance.
+          </p>
         </div>
       </section>
 

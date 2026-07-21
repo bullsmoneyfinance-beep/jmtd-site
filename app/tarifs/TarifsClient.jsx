@@ -92,7 +92,7 @@ const TARIFS = [
     from: 28,
     unit: "prestation",
     popular: false,
-    desc: "Vos commissions faites selon votre liste et livrées chez vous, partout en Martinique.",
+    desc: "Vos commissions faites selon votre liste et livrées chez vous, dans le Centre et le Sud de la Martinique.",
     includes: ["Courses sur liste personnalisée", "Livraison à domicile", "Gestion produits frais & surgelés", "Rangement des courses à domicile"],
     color: "#10B981",
   },
@@ -484,7 +484,7 @@ export default function TarifsPage() {
             { q: "Le crédit d'impôt, c'est pour tout le monde ?", a: "Oui, pour tous les foyers fiscaux français (résidents en Martinique inclus), qu'ils soient imposables ou non. Si vous ne payez pas d'impôts, le crédit devient un remboursement direct." },
             { q: "Comment se passe le paiement ?", a: "Paiement par virement, chèque ou espèces après chaque intervention. Nous remettons une facture détaillée qui sert de justificatif pour votre déclaration d'impôts." },
             { q: "Y a-t-il un minimum d'heures à commander ?", a: "Oui, nous intervenons à partir de 2h minimum par passage pour garantir un travail de qualité. Pour les abonnements hebdomadaires ou mensuels, des forfaits avantageux sont disponibles." },
-            { q: "Les tarifs changent-ils selon la distance ?", a: "Nos tarifs de base sont les mêmes partout en Martinique. Des frais de déplacement peuvent s'appliquer pour les zones éloignées — précisez votre commune dans le devis." },
+            { q: "Les tarifs changent-ils selon la distance ?", a: "Nos tarifs de base sont les mêmes dans tout notre secteur d'intervention (Centre et Sud de la Martinique). Des frais de déplacement peuvent s'appliquer pour les communes plus éloignées — précisez votre commune dans le devis." },
           ].map((item, i) => (
             <div key={i} style={{ borderBottom: "1px solid rgba(13,169,164,0.1)" }}>
               <button type="button" onClick={() => setOpen(open === i ? null : i)}

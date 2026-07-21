@@ -92,7 +92,7 @@ export default async function Image() {
             fontSize: 24, color: MUTED, textAlign: "center",
             marginBottom: 44, display: "flex",
           }}>
-            Ménage · Repas · Courses · Coach rangement · Toute la Martinique
+            Ménage · Repas · Courses · Coach rangement · Centre & Sud Martinique
           </div>
 
           {/* Badges de confiance */}
@@ -100,7 +100,7 @@ export default async function Image() {
             {[
               { icon: "⭐", text: "5 / 5 Google" },
               { icon: "💳", text: "50% crédit d'impôt" },
-              { icon: "📍", text: "Toute la Martinique" },
+              { icon: "📍", text: "Centre & Sud Martinique" },
             ].map((b) => (
               <div
                 key={b.text}

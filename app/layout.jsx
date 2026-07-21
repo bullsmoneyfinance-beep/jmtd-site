@@ -23,13 +23,13 @@ const SITE_URL =
 
 export const metadata = {
   title: "J'MTD — Société de services sur mesure en Martinique",
-  description: "Entretien, préparation de repas, livraison de courses, assistance administrative, coach rangement à Rivière-Salée et toute la Martinique. Déclaré SAP — 50% crédit d'impôt. Devis gratuit.",
+  description: "Entretien, préparation de repas, livraison de courses, assistance administrative, coach rangement dans le Centre et le Sud de la Martinique (Rivière-Salée, Lamentin, Diamant…). Déclaré SAP — 50% crédit d'impôt. Devis gratuit.",
   keywords: "services à la personne, aide à domicile, ménage, coach rangement, Martinique, Rivière-Salée, services sur mesure",
   authors: [{ name: "J'MTD" }],
   metadataBase: new URL(SITE_URL),
   openGraph: {
     title: "J'MTD — Société de services sur mesure en Martinique",
-    description: "Entretien, préparation de repas, livraison de courses et coach rangement à Rivière-Salée et toute la Martinique.",
+    description: "Entretien, préparation de repas, livraison de courses et coach rangement dans le Centre et le Sud de la Martinique.",
     url: SITE_URL,
     siteName: "J'MTD",
     locale: "fr_FR",
@@ -46,7 +46,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "J'MTD — Société de services sur mesure en Martinique",
-    description: "Ménage, repas, courses, coach rangement en Martinique. Déclaré SAP — 50% crédit d'impôt.",
+    description: "Ménage, repas, courses, coach rangement dans le Centre et le Sud de la Martinique. Déclaré SAP — 50% crédit d'impôt.",
     images: [`${SITE_URL}/opengraph-image`],
   },
   robots: { index: true, follow: true },
@@ -64,7 +64,7 @@ const LOCAL_BUSINESS_SCHEMA = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   "name": "J'MTD",
-  "description": "Société de services à la personne déclarée SAP en Martinique. Entretien, préparation de repas, livraison de courses, assistance administrative, coach rangement.",
+  "description": "Société de services à la personne déclarée SAP, intervenant dans le Centre et le Sud de la Martinique. Entretien, préparation de repas, livraison de courses, assistance administrative, coach rangement.",
   "url": "https://jmtd.fr",
   "logo": "https://jmtd.fr/logo.png",
   "image": "https://jmtd.fr/logo.png",
@@ -92,15 +92,11 @@ const LOCAL_BUSINESS_SCHEMA = {
     }
   ],
   "areaServed": [
-    { "@type": "AdministrativeArea", "name": "Martinique" },
     { "@type": "City", "name": "Rivière-Salée" },
     { "@type": "City", "name": "Le Lamentin" },
+    { "@type": "City", "name": "Fort-de-France" },
     { "@type": "City", "name": "Le Diamant" },
     { "@type": "City", "name": "Saint-Esprit" },
-    { "@type": "City", "name": "Fort-de-France" },
-    { "@type": "City", "name": "Le Vauclin" },
-    { "@type": "City", "name": "Sainte-Anne" },
-    { "@type": "City", "name": "Le François" },
     { "@type": "City", "name": "Sainte-Luce" },
     { "@type": "City", "name": "Le Marin" },
     { "@type": "City", "name": "Trois-Îlets" }

@@ -10,7 +10,8 @@ const OFFER_SCHEMA = {
   "@type": "Service",
   serviceType: "Services à la personne",
   provider: { "@type": "LocalBusiness", name: "J'MTD" },
-  areaServed: { "@type": "AdministrativeArea", name: "Martinique" },
+  areaServed: ["Rivière-Salée", "Le Lamentin", "Fort-de-France", "Le Diamant", "Sainte-Luce", "Trois-Îlets", "Le Marin", "Saint-Esprit"]
+    .map((name) => ({ "@type": "City", name })),
   hasOfferCatalog: {
     "@type": "OfferCatalog",
     name: "Tarifs J'MTD",

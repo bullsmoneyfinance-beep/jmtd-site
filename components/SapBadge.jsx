@@ -1,4 +1,4 @@
-import { DECLARATION_SAP, TUTELLE_SAP } from "../lib/data";
+import { DECLARATION_SAP, TUTELLE_SAP, TEAL_TEXT } from "../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -47,7 +47,7 @@ export default function SapBadge({ variant = "inline" }) {
         </div>
         <div style={{ fontSize: 11, color: "#64748B", fontWeight: 600 }}>N° {DECLARATION_SAP}</div>
         <div style={{
-          fontSize: 10.5, fontWeight: 800, color: T, background: `${T}12`,
+          fontSize: 10.5, fontWeight: 800, color: TEAL_TEXT, background: `${T}12`,
           borderRadius: 20, padding: "3px 10px",
         }}>
           Crédit d'impôt 50 %

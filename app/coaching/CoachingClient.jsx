@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Reveal from "../../components/Reveal";
 import Icon, { IconTile } from "../../components/Icon";
+import { TEAL_TEXT } from "../../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -99,7 +100,7 @@ const QUESTIONS = [
 const PROFILES = {
   m: {
     key: "m", emoji: "🌿", name: "Le Minimaliste",
-    color: T,
+    color: TEAL_TEXT,
     desc: "Vous avez le sens de l'essentiel. Votre défi n'est pas de trier, mais d'optimiser : créer des systèmes durables et élégants qui tiennent dans le temps.",
     conseil: "Commencez par votre espace de travail et vos affaires du quotidien. Une organisation fine des zones d'usage transformera votre efficacité.",
     formule: "Accompagnement",
@@ -131,7 +132,7 @@ const PROFILES = {
 const KONMARI = [
   { num: "01", icon: "👗", label: "Vêtements",  color: P,      tips: ["Réunissez TOUS vos vêtements en un seul endroit", "Prenez chaque pièce en main : apporte-t-elle de la joie ?", "Pliez en rectangle et rangez à la verticale"] },
   { num: "02", icon: "📚", label: "Livres",     color: "#8B5CF6", tips: ["Posez chaque livre sur le sol, tenez-le entre vos mains", "Un livre lu et aimé mérite d'être gardé", "Offrez ceux qui peuvent enrichir d'autres vies"] },
-  { num: "03", icon: "📄", label: "Papiers",    color: T,      tips: ["La règle d'or : tout jeter sauf l'indispensable", "3 catégories : à traiter / à conserver / contrats en cours", "Numérisez ce qui peut l'être"] },
+  { num: "03", icon: "📄", label: "Papiers",    color: TEAL_TEXT,      tips: ["La règle d'or : tout jeter sauf l'indispensable", "3 catégories : à traiter / à conserver / contrats en cours", "Numérisez ce qui peut l'être"] },
   { num: "04", icon: "🔧", label: "Komono",     color: "#F59E0B", tips: ["CD, câbles, cuisine, déco… la plus grande catégorie", "Triez par sous-catégorie, jamais par pièce", "Gardez ce qui a un usage réel dans votre vie actuelle"] },
   { num: "05", icon: "💝", label: "Souvenirs",  color: "#EC4899", tips: ["La catégorie la plus émotionnelle, toujours en dernier", "Touchez chaque objet et ressentez la joie qu'il vous procure", "Photographiez ce que vous ne pouvez garder en volume"] },
 ];
@@ -198,7 +199,7 @@ function Quiz() {
         <div style={{ flex: 1, height: 4, background: "#E2E8F0", borderRadius: 2, margin: "0 16px", overflow: "hidden" }}>
           <div style={{ height: "100%", width: `${pct}%`, background: `linear-gradient(90deg, ${T}, ${P})`, borderRadius: 2, transition: "width 0.4s ease" }} />
         </div>
-        <span style={{ fontSize: 12, color: T, fontWeight: 700 }}>{pct}%</span>
+        <span style={{ fontSize: 12, color: TEAL_TEXT, fontWeight: 700 }}>{pct}%</span>
       </div>
       <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 20, fontWeight: 700, color: TEXT, marginBottom: 24, lineHeight: 1.4 }}>{q.q}</h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -207,7 +208,7 @@ function Quiz() {
             style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 14, border: `1.5px solid rgba(13,169,164,0.15)`, background: "#FAFBFC", cursor: "pointer", textAlign: "left", fontSize: 15, color: TEXT, fontWeight: 500, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = T; e.currentTarget.style.background = `${T}08`; e.currentTarget.style.color = TEXT; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(13,169,164,0.15)"; e.currentTarget.style.background = "#FAFBFC"; }}>
-            <span style={{ width: 28, height: 28, borderRadius: "50%", background: `${T}12`, border: `1px solid ${T}25`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: T, flexShrink: 0 }}>
+            <span style={{ width: 28, height: 28, borderRadius: "50%", background: `${T}12`, border: `1px solid ${T}25`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: TEAL_TEXT, flexShrink: 0 }}>
               {String.fromCharCode(65 + i)}
             </span>
             {opt.label}
@@ -279,7 +280,7 @@ function Checklist() {
                     <div style={{ height: "100%", width: `${pct}%`, background: pct === 100 ? T : `${T}88`, borderRadius: 2, transition: "width 0.3s" }} />
                   </div>
                 </div>
-                {pct === 100 && <Icon name="checkCircle" size={17} color={T} style={{ flexShrink: 0 }} />}
+                {pct === 100 && <Icon name="checkCircle" size={17} color={TEAL_TEXT} style={{ flexShrink: 0 }} />}
               </button>
             );
           })}
@@ -304,7 +305,7 @@ function Checklist() {
                   <span style={{ fontSize: 14, color: done ? MUTED : TEXT, textDecoration: done ? "line-through" : "none", fontWeight: done ? 400 : 500 }}>
                     {task}
                   </span>
-                  {done && <Icon name="check" size={16} color={T} strokeWidth={2.5} style={{ marginLeft: "auto" }} />}
+                  {done && <Icon name="check" size={16} color={TEAL_TEXT} strokeWidth={2.5} style={{ marginLeft: "auto" }} />}
                 </label>
               );
             })}
@@ -354,7 +355,7 @@ export default function CoachingPage() {
             <a href="#quiz" className="btn-gradient" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 30px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 10px 34px ${T}44`, border: "none" }}>
               Faire mon quiz →
             </a>
-            <a href="#checklist" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, border: `1.5px solid ${T}40`, color: T, textDecoration: "none", fontSize: 15, fontWeight: 600, background: "rgba(255,255,255,0.85)" }}>
+            <a href="#checklist" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, border: `1.5px solid ${T}40`, color: TEAL_TEXT, textDecoration: "none", fontSize: 15, fontWeight: 600, background: "rgba(255,255,255,0.85)" }}>
               Ma checklist
             </a>
           </div>
@@ -462,7 +463,7 @@ export default function CoachingPage() {
               <Link href="/contact" className="btn-gradient" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 30px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 10px 34px ${T}44`, border: "none" }}>
                 Réserver mon diagnostic gratuit →
               </Link>
-              <Link href="/coach" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 24px", borderRadius: 30, border: `1.5px solid ${T}40`, color: T, textDecoration: "none", fontSize: 15, fontWeight: 600 }}>
+              <Link href="/coach" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 24px", borderRadius: 30, border: `1.5px solid ${T}40`, color: TEAL_TEXT, textDecoration: "none", fontSize: 15, fontWeight: 600 }}>
                 Voir les formules
               </Link>
             </div>

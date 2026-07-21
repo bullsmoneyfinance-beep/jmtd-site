@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Reveal from "../../components/Reveal";
 import Icon, { IconTile } from "../../components/Icon";
-import { PHONE, PHONE_HREF, WHATSAPP } from "../../lib/data";
+import { PHONE, PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
 
 /* Parallax générique — piloté par [data-parallax] (voir globals.css .parallax) */
 function useParallax() {
@@ -285,7 +285,7 @@ export default function ConciergeriePage() {
             </div>
             <div>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 18 }}>
-                <span style={{ fontSize: 12, fontWeight: 800, color: T, textTransform: "uppercase", letterSpacing: 1.2 }}>Un marché en plein essor</span>
+                <span style={{ fontSize: 12, fontWeight: 800, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 1.2 }}>Un marché en plein essor</span>
               </div>
               <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 700, color: TEXT, marginBottom: 16, lineHeight: 1.15 }}>
                 La Martinique, terre de<br />location courte durée
@@ -296,7 +296,7 @@ export default function ConciergeriePage() {
               <div className="cg-stats">
                 {MARCHE.map(m => (
                   <div key={m.l} style={{ background: "#F8FAFB", border: "1px solid rgba(13,169,164,0.12)", borderRadius: 16, padding: "18px 16px", textAlign: "center" }}>
-                    <Icon name={m.ic} size={24} color={T} style={{ margin: "0 auto 8px" }} />
+                    <Icon name={m.ic} size={24} color={TEAL_TEXT} style={{ margin: "0 auto 8px" }} />
                     <div style={{ fontSize: 22, fontWeight: 900, color: T }}>{m.n}</div>
                     <div style={{ fontSize: 11.5, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>{m.l}</div>
                   </div>
@@ -344,7 +344,7 @@ export default function ConciergeriePage() {
               {ROTATION.map((r, i) => (
                 <div key={r.n} className="lift" style={{ position: "relative", background: "#F8FAFB", border: "1px solid rgba(13,169,164,0.1)", borderRadius: 18, padding: "26px 20px", textAlign: "center" }}>
                   <div style={{ width: 52, height: 52, borderRadius: "50%", background: `linear-gradient(135deg, ${T}, ${P})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", boxShadow: `0 8px 22px ${T}33` }}><Icon name={r.ic} size={24} color="#fff" strokeWidth={2} /></div>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: T, textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>Étape {r.n}</div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>Étape {r.n}</div>
                   <h3 style={{ fontSize: 16, fontWeight: 800, color: TEXT, margin: "0 0 8px" }}>{r.t}</h3>
                   <p style={{ fontSize: 12.5, color: MUTED, lineHeight: 1.6, margin: 0 }}>{r.d}</p>
                   {i < ROTATION.length - 1 && <div className="hide-mobile" style={{ position: "absolute", top: 46, right: -12, fontSize: 20, color: `${T}66`, zIndex: 2 }}>→</div>}
@@ -579,7 +579,7 @@ export default function ConciergeriePage() {
               <div key={i} onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ borderBottom: "1px solid rgba(13,169,164,0.1)", cursor: "pointer" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16 }}>
                   <span style={{ fontSize: 15, fontWeight: 600, color: TEXT }}>{item.q}</span>
-                  <span style={{ color: T, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: openFaq === i ? "rotate(45deg)" : "none" }}>+</span>
+                  <span style={{ color: TEAL_TEXT, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: openFaq === i ? "rotate(45deg)" : "none" }}>+</span>
                 </div>
                 {openFaq === i && <div style={{ padding: "0 0 18px", fontSize: 14, color: MUTED, lineHeight: 1.8 }}>{item.a}</div>}
               </div>

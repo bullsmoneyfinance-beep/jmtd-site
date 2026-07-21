@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import Reveal from "../../components/Reveal";
 import Icon, { IconTile } from "../../components/Icon";
-import { PHONE_HREF, PHONE } from "../../lib/data";
+import { PHONE_HREF, PHONE, TEAL_TEXT } from "../../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -55,7 +55,7 @@ const FORMULES = [
     name: "Diagnostic",
     price: "Offert",
     priceNote: "Premier rendez-vous gratuit",
-    color: T,
+    color: TEAL_TEXT,
     badge: null,
     features: [
       "Visite de votre domicile (1h–1h30)",
@@ -144,8 +144,8 @@ export default function CoachPage() {
               <Link href="/contact" className="btn-gradient" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 30px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 16, textDecoration: "none", boxShadow: `0 10px 34px ${T}44`, border: "none" }}>
                 Réserver mon diagnostic gratuit →
               </Link>
-              <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, border: `2px solid ${T}40`, color: T, textDecoration: "none", fontSize: 16, fontWeight: 600, background: "rgba(255,255,255,0.85)" }}>
-                <Icon name="phone" size={17} color={T} /> {PHONE}
+              <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, border: `2px solid ${T}40`, color: TEAL_TEXT, textDecoration: "none", fontSize: 16, fontWeight: 600, background: "rgba(255,255,255,0.85)" }}>
+                <Icon name="phone" size={17} color={TEAL_TEXT} /> {PHONE}
               </a>
             </div>
           </Reveal>
@@ -186,7 +186,7 @@ export default function CoachPage() {
             {ETAPES.map((s, i) => (
               <Reveal key={s.step} delay={i * 100} className="lift card-zen"
                 style={{ padding: "30px 26px", background: "#fff", borderRadius: 20, boxShadow: "0 4px 28px rgba(13,169,164,0.07)", borderTop: `4px solid ${T}` }}>
-                <div style={{ fontSize: 11, color: T, fontWeight: 700, letterSpacing: 2, marginBottom: 12 }}>ÉTAPE {s.step}</div>
+                <div style={{ fontSize: 11, color: TEAL_TEXT, fontWeight: 700, letterSpacing: 2, marginBottom: 12 }}>ÉTAPE {s.step}</div>
                 <IconTile name={s.icon} size={54} icon={26} from={T} to={OCEAN} radius={16} style={{ marginBottom: 14 }} />
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: TEXT, marginBottom: 10 }}>{s.title}</h3>
                 <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.7 }}>{s.text}</p>
@@ -238,7 +238,7 @@ export default function CoachPage() {
           </div>
           <Reveal style={{ textAlign: "center", marginTop: 32 }}>
             <p style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, color: MUTED }}>
-              <Icon name="conseils" size={15} color={T} /> Toutes les formules ouvrent droit au crédit d&apos;impôt (50% remboursé). Attestation fiscale fournie.
+              <Icon name="conseils" size={15} color={TEAL_TEXT} /> Toutes les formules ouvrent droit au crédit d&apos;impôt (50% remboursé). Attestation fiscale fournie.
             </p>
           </Reveal>
         </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EMAIL, PHONE, FONDATRICE } from "../../lib/data";
+import { EMAIL, PHONE, FONDATRICE, TEAL_TEXT } from "../../lib/data";
 
 const T = "#0DA9A4";
 const TEXT = "#1A2D3D";
@@ -16,7 +16,7 @@ export default function PolitiqueConfidentialitePage() {
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
         <div style={{ marginBottom: 48 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${T}10`, border: `1px solid ${T}28`, borderRadius: 30, padding: "5px 14px", marginBottom: 16 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>RGPD</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 1.5 }}>RGPD</span>
           </div>
           <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>Politique de confidentialité</h1>
           <p style={{ fontSize: 14, color: MUTED }}>Dernière mise à jour : avril 2025 · Conforme au RGPD (Règlement UE 2016/679)</p>
@@ -149,7 +149,7 @@ export default function PolitiqueConfidentialitePage() {
         </div>
 
         <div style={{ marginTop: 32, display: "flex", gap: 20, flexWrap: "wrap" }}>
-          <Link href="/" style={{ color: T, fontSize: 14 }}>← Retour à l&apos;accueil</Link>
+          <Link href="/" style={{ color: TEAL_TEXT, fontSize: 14 }}>← Retour à l&apos;accueil</Link>
           <Link href="/mentions-legales" style={{ color: MUTED, fontSize: 14 }}>Mentions légales</Link>
           <Link href="/contact" style={{ color: MUTED, fontSize: 14 }}>Exercer mes droits</Link>
         </div>

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { SERVICES, FONDATRICE, ADDRESS, SIRET, EMAIL, PHONE, DECLARATION_SAP, TUTELLE_SAP } from "../../lib/data";
+import { SERVICES, FONDATRICE, ADDRESS, SIRET, EMAIL, PHONE, DECLARATION_SAP, TUTELLE_SAP, TEAL_TEXT } from "../../lib/data";
 
 const T = "#0DA9A4", P = "#D4197A", TEXT = "#1A2D3D", MUTED = "#64748B", EMERALD = "#10B981";
 const eur = (n) => (Number(n) || 0).toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
@@ -49,7 +49,7 @@ export default function EspaceClientPage() {
         <div style={{ position: "absolute", top: -60, right: "10%", width: 260, height: 260, borderRadius: "50%", background: `radial-gradient(circle, ${T}18, transparent 70%)`, filter: "blur(46px)", animation: "floatOrb 13s ease-in-out infinite", pointerEvents: "none" }} />
         <div style={{ maxWidth: 620, margin: "0 auto", position: "relative" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", border: `1px solid ${T}30`, borderRadius: 30, padding: "6px 16px", marginBottom: 16 }}>
-            <span style={{ fontSize: 12, fontWeight: 800, color: T, textTransform: "uppercase", letterSpacing: 1.4 }}>Espace client</span>
+            <span style={{ fontSize: 12, fontWeight: 800, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 1.4 }}>Espace client</span>
           </div>
           <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(26px, 4.5vw, 44px)", fontWeight: 700, color: TEXT, marginBottom: 12 }}>
             Votre suivi J'MTD
@@ -81,12 +81,12 @@ export default function EspaceClientPage() {
                 {loading ? "Vérification…" : "Accéder à mon dossier →"}
               </button>
               <p style={{ fontSize: 11.5, color: "#94A3B8", textAlign: "center", marginTop: 16, lineHeight: 1.6 }}>
-                Un souci d'accès ? Appelez-nous au <a href={`tel:${PHONE.replace(/\s/g, "")}`} style={{ color: T, fontWeight: 700 }}>{PHONE}</a>
+                Un souci d'accès ? Appelez-nous au <a href={`tel:${PHONE.replace(/\s/g, "")}`} style={{ color: TEAL_TEXT, fontWeight: 700 }}>{PHONE}</a>
               </p>
             </form>
           ) : (
             <div>
-              <button onClick={() => { setData(null); setForm({ nom: "", tel: "" }); }} style={{ background: "none", border: "none", color: T, fontSize: 13, fontWeight: 600, cursor: "pointer", marginBottom: 16, padding: 0 }}>← Se déconnecter</button>
+              <button onClick={() => { setData(null); setForm({ nom: "", tel: "" }); }} style={{ background: "none", border: "none", color: TEAL_TEXT, fontSize: 13, fontWeight: 600, cursor: "pointer", marginBottom: 16, padding: 0 }}>← Se déconnecter</button>
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 22 }}>
                 <div>
@@ -102,7 +102,7 @@ export default function EspaceClientPage() {
 
               {/* Totaux */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14, marginBottom: 22 }}>
-                <StatCard label="Interventions" value={yInters.length} color={T} />
+                <StatCard label="Interventions" value={yInters.length} color={TEAL_TEXT} />
                 <StatCard label="Heures" value={`${totalHeures} h`} color="#8B5CF6" />
                 <StatCard label="Total réglé" value={eur(totalMontant)} color={TEXT} />
                 <StatCard label="Crédit d'impôt 50%" value={eur(credit)} color={EMERALD} />

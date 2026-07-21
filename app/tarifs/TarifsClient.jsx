@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PHONE_HREF, WHATSAPP, SERVICES } from "../../lib/data";
+import { PHONE_HREF, WHATSAPP, SERVICES, TEAL_TEXT } from "../../lib/data";
 import SapBadge from "../../components/SapBadge";
 import Reveal from "../../components/Reveal";
 import Icon, { IconTile } from "../../components/Icon";
@@ -71,7 +71,7 @@ const TARIFS = [
     popular: true,
     desc: "Ménage complet, repassage, vitres et surfaces, désinfection. Intervenante attitrée, produits professionnels fournis.",
     includes: ["Ménage complet du domicile", "Repassage & entretien du linge", "Nettoyage vitres & surfaces", "Sols : aspiration + lavage", "Désinfection pièces humides"],
-    color: T,
+    color: TEAL_TEXT,
     note: "Formules d'abonnement dégressives ci-dessous",
   },
   {
@@ -147,7 +147,7 @@ function SimulateurCredit() {
   return (
     <div style={{ background: `linear-gradient(135deg, ${T}10, ${P}08)`, border: `1px solid ${T}25`, borderRadius: 24, padding: "32px 28px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-        <Icon name="calc" size={26} color={T} strokeWidth={2} />
+        <Icon name="calc" size={26} color={TEAL_TEXT} strokeWidth={2} />
         <h3 style={{ fontSize: 20, fontWeight: 700, color: TEXT, margin: 0 }}>Simulateur crédit d'impôt</h3>
       </div>
 
@@ -158,7 +158,7 @@ function SimulateurCredit() {
           </label>
           <input type="range" min="20" max="40" value={tauxH} onChange={e => setTauxH(+e.target.value)}
             style={{ width: "100%", accentColor: T, cursor: "pointer" }} />
-          <div style={{ textAlign: "center", fontSize: 22, fontWeight: 800, color: T, marginTop: 6 }}>{tauxH}€/h</div>
+          <div style={{ textAlign: "center", fontSize: 22, fontWeight: 800, color: TEAL_TEXT, marginTop: 6 }}>{tauxH}€/h</div>
         </div>
         <div>
           <label style={{ fontSize: 12, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, display: "block", marginBottom: 8 }}>
@@ -166,7 +166,7 @@ function SimulateurCredit() {
           </label>
           <input type="range" min="1" max="20" value={heures} onChange={e => setHeures(+e.target.value)}
             style={{ width: "100%", accentColor: T, cursor: "pointer" }} />
-          <div style={{ textAlign: "center", fontSize: 22, fontWeight: 800, color: T, marginTop: 6 }}>{heures}h/mois</div>
+          <div style={{ textAlign: "center", fontSize: 22, fontWeight: 800, color: TEAL_TEXT, marginTop: 6 }}>{heures}h/mois</div>
         </div>
       </div>
 
@@ -182,7 +182,7 @@ function SimulateurCredit() {
           <div style={{ fontSize: 11, color: MUTED }}>remboursé</div>
         </div>
         <div style={{ textAlign: "center", padding: "16px 12px", background: `linear-gradient(135deg, ${T}15, ${T}08)`, borderRadius: 16, border: `1px solid ${T}30` }}>
-          <div style={{ fontSize: 11, color: T, fontWeight: 600, marginBottom: 6, textTransform: "uppercase" }}>Coût réel</div>
+          <div style={{ fontSize: 11, color: TEAL_TEXT, fontWeight: 600, marginBottom: 6, textTransform: "uppercase" }}>Coût réel</div>
           <div style={{ fontSize: 24, fontWeight: 800, color: T }}>{net}€</div>
           <div style={{ fontSize: 11, color: MUTED }}>par mois</div>
         </div>
@@ -237,7 +237,7 @@ export default function TarifsPage() {
         <div style={{ maxWidth: 680, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: `1.5px solid ${T}28`, borderRadius: 30, padding: "7px 18px", marginBottom: 20, boxShadow: "0 2px 14px rgba(13,169,164,0.12)" }}>
             <span style={{ width: 7, height: 7, borderRadius: "50%", background: T, display: "inline-block" }} />
-            <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Tarifs & Devis</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 1.5 }}>Tarifs & Devis</span>
           </div>
           <h1 className="display" style={{ fontSize: "clamp(30px, 5vw, 52px)", color: TEXT, lineHeight: 1.15, marginBottom: 18 }}>
             Des tarifs clairs,{" "}
@@ -282,7 +282,7 @@ export default function TarifsPage() {
             ].map((item, i) => (
               <Reveal key={item.step} delay={i * 90} className="lift" style={{ textAlign: "center", padding: "24px 16px", background: "#fff", borderRadius: 20, border: `1px solid rgba(13,169,164,0.1)`, boxShadow: "0 4px 22px rgba(13,169,164,0.06)" }}>
                 <div style={{ width: 48, height: 48, borderRadius: "50%", background: `linear-gradient(135deg, ${T}, ${P})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", color: "#fff", fontWeight: 800, fontSize: 18 }}>{item.step}</div>
-                <Icon name={item.icon} size={24} color={T} style={{ margin: "0 auto 8px" }} />
+                <Icon name={item.icon} size={24} color={TEAL_TEXT} style={{ margin: "0 auto 8px" }} />
                 <div style={{ fontSize: 14, fontWeight: 700, color: TEXT, marginBottom: 4 }}>{item.title}</div>
                 <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.6 }}>{item.desc}</div>
               </Reveal>
@@ -326,7 +326,7 @@ export default function TarifsPage() {
                       <div style={{ marginTop: 4 }}>
                         <span style={{ fontSize: 22, fontWeight: 800, color: t.color }}>À partir de {t.from}€</span>
                         <span style={{ fontSize: 13, color: MUTED }}>/{t.unit}</span>
-                        <div style={{ fontSize: 11, color: T, fontWeight: 600, marginTop: 1 }}>→ {Math.round(t.from / 2)}€/{t.unit} après crédit d'impôt</div>
+                        <div style={{ fontSize: 11, color: TEAL_TEXT, fontWeight: 600, marginTop: 1 }}>→ {Math.round(t.from / 2)}€/{t.unit} après crédit d'impôt</div>
                       </div>
                     ) : (
                       <div style={{ marginTop: 4, fontSize: 13, color: MUTED }}>3 formules disponibles</div>
@@ -342,7 +342,7 @@ export default function TarifsPage() {
                   </div>
                 )}
                 {t.note && (
-                  <div style={{ fontSize: 11.5, fontWeight: 700, color: T, marginTop: -4 }}>↓ {t.note}</div>
+                  <div style={{ fontSize: 11.5, fontWeight: 700, color: TEAL_TEXT, marginTop: -4 }}>↓ {t.note}</div>
                 )}
 
                 {t.formules ? (
@@ -377,8 +377,8 @@ export default function TarifsPage() {
 
           <div style={{ textAlign: "center", marginTop: 36, padding: "20px 24px", background: `${T}08`, border: `1px solid ${T}20`, borderRadius: 18 }}>
             <p style={{ fontSize: 14, color: MUTED, margin: 0 }}>
-              <Icon name="conseils" size={16} color={T} style={{ display: "inline-block", verticalAlign: "-3px", marginRight: 4 }} /> <strong style={{ color: TEXT }}>Devis gratuit et sans engagement</strong> — Nous nous déplaçons pour évaluer vos besoins avant tout engagement.{" "}
-              <Link href="/contact" style={{ color: T, fontWeight: 700 }}>Prendre rendez-vous →</Link>
+              <Icon name="conseils" size={16} color={TEAL_TEXT} style={{ display: "inline-block", verticalAlign: "-3px", marginRight: 4 }} /> <strong style={{ color: TEXT }}>Devis gratuit et sans engagement</strong> — Nous nous déplaçons pour évaluer vos besoins avant tout engagement.{" "}
+              <Link href="/contact" style={{ color: TEAL_TEXT, fontWeight: 700 }}>Prendre rendez-vous →</Link>
             </p>
           </div>
         </div>
@@ -424,7 +424,7 @@ export default function TarifsPage() {
                     <span style={{ fontSize: 34, fontWeight: 900, color: TEXT, lineHeight: 1 }}>{a.taux}€</span>
                     <span style={{ fontSize: 14, color: MUTED, fontWeight: 600 }}>/heure</span>
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: T, marginTop: 6, background: `${T}10`, borderRadius: 10, padding: "6px 10px", display: "inline-block" }}>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: TEAL_TEXT, marginTop: 6, background: `${T}10`, borderRadius: 10, padding: "6px 10px", display: "inline-block" }}>
                     soit {net(a.taux)}€/h après crédit d'impôt
                   </div>
                 </div>
@@ -491,7 +491,7 @@ export default function TarifsPage() {
               style={{ borderBottom: "1px solid rgba(13,169,164,0.1)", cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16 }}>
                 <span style={{ fontSize: 15, fontWeight: 600, color: TEXT }}>{item.q}</span>
-                <span style={{ color: T, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: open === i ? "rotate(45deg)" : "none" }}>+</span>
+                <span style={{ color: TEAL_TEXT, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: open === i ? "rotate(45deg)" : "none" }}>+</span>
               </div>
               {open === i && (
                 <div style={{ padding: "0 0 18px", fontSize: 14, color: MUTED, lineHeight: 1.8 }}>{item.a}</div>
@@ -499,7 +499,7 @@ export default function TarifsPage() {
             </div>
           ))}
           <div style={{ textAlign: "center", marginTop: 32 }}>
-            <Link href="/faq" style={{ fontSize: 14, color: T, fontWeight: 700, textDecoration: "none" }}>
+            <Link href="/faq" style={{ fontSize: 14, color: TEAL_TEXT, fontWeight: 700, textDecoration: "none" }}>
               Voir toutes les questions fréquentes →
             </Link>
           </div>
@@ -519,8 +519,8 @@ export default function TarifsPage() {
             <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 32px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 16, textDecoration: "none", boxShadow: `0 8px 32px ${T}40` }}>
               Devis gratuit →
             </Link>
-            <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 24px", borderRadius: 30, border: `1.5px solid ${T}40`, color: T, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
-              <Icon name="phone" size={17} color={T} /> Appeler directement
+            <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 24px", borderRadius: 30, border: `1.5px solid ${T}40`, color: TEAL_TEXT, fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
+              <Icon name="phone" size={17} color={TEAL_TEXT} /> Appeler directement
             </a>
           </div>
         </Reveal>

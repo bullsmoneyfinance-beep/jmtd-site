@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import Reveal from "../../components/Reveal";
 import Icon, { IconTile } from "../../components/Icon";
-import { SERVICES, PHONE, PHONE_HREF } from "../../lib/data";
+import { SERVICES, PHONE, PHONE_HREF, TEAL_TEXT } from "../../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -107,12 +107,12 @@ export default function ServicesPage() {
                   </div>
                 ) : (
                   <div style={{ width: "100%", height: 320, borderRadius: 24, background: `linear-gradient(135deg, ${T}15, ${P}10)`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 16px 64px ${T}14` }}>
-                    <Icon name={s.id} size={80} color={T} strokeWidth={1.5} />
+                    <Icon name={s.id} size={80} color={TEAL_TEXT} strokeWidth={1.5} />
                   </div>
                 )}
                 {s.special && (
-                  <div style={{ position: "absolute", top: 16, left: 16, display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.95)", border: `1px solid ${T}30`, borderRadius: 30, padding: "5px 14px", fontSize: 12, color: T, fontWeight: 700, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", zIndex: 2 }}>
-                    <Icon name="star" size={13} color={T} strokeWidth={2.2} /> Spécialité J&apos;MTD
+                  <div style={{ position: "absolute", top: 16, left: 16, display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.95)", border: `1px solid ${T}30`, borderRadius: 30, padding: "5px 14px", fontSize: 12, color: TEAL_TEXT, fontWeight: 700, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", zIndex: 2 }}>
+                    <Icon name="star" size={13} color={TEAL_TEXT} strokeWidth={2.2} /> Spécialité J&apos;MTD
                   </div>
                 )}
               </div>
@@ -120,12 +120,12 @@ export default function ServicesPage() {
               <div style={{ direction: "ltr" }}>
                 <IconTile name={s.id} size={56} icon={26} from={s.special ? P : T} to={s.special ? "#E0559E" : OCEAN} radius={16} style={{ marginBottom: 16 }} />
                 <h2 className="display" style={{ fontSize: 30, marginBottom: 8 }}>{s.title}</h2>
-                <p style={{ fontSize: 15, fontWeight: 600, color: T, marginBottom: 16 }}>{s.headline}</p>
+                <p style={{ fontSize: 15, fontWeight: 600, color: TEAL_TEXT, marginBottom: 16 }}>{s.headline}</p>
                 <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8, marginBottom: 24 }}>{s.desc}</p>
                 <ul style={{ listStyle: "none", marginBottom: 32 }}>
                   {s.details.map(d => (
                     <li key={d} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 14, color: MUTED, marginBottom: 10 }}>
-                      <span style={{ flexShrink: 0, marginTop: 2 }}><Icon name="check" size={15} color={T} strokeWidth={2.5} /></span> {d}
+                      <span style={{ flexShrink: 0, marginTop: 2 }}><Icon name="check" size={15} color={TEAL_TEXT} strokeWidth={2.5} /></span> {d}
                     </li>
                   ))}
                 </ul>
@@ -156,8 +156,8 @@ export default function ServicesPage() {
               <Link href="/contact" className="btn-gradient" style={{ padding: "14px 28px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, textDecoration: "none", fontSize: 15, boxShadow: `0 6px 24px ${T}35`, border: "none" }}>
                 Obtenir un devis gratuit
               </Link>
-              <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 30, border: `2px solid ${T}44`, color: T, fontWeight: 700, textDecoration: "none", fontSize: 15 }}>
-                <Icon name="phone" size={16} color={T} /> {PHONE}
+              <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 30, border: `2px solid ${T}44`, color: TEAL_TEXT, fontWeight: 700, textDecoration: "none", fontSize: 15 }}>
+                <Icon name="phone" size={16} color={TEAL_TEXT} /> {PHONE}
               </a>
             </div>
           </Reveal>

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { TEAL_TEXT } from "../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -77,7 +78,7 @@ export default function CookieBanner() {
           </div>
           <div style={{ fontSize: 12, color: "#64748B", lineHeight: 1.6 }}>
             Nous utilisons des cookies pour améliorer votre expérience.{" "}
-            <Link href="/politique-confidentialite" style={{ color: T, textDecoration: "underline" }}>
+            <Link href="/politique-confidentialite" style={{ color: TEAL_TEXT, textDecoration: "underline" }}>
               En savoir plus
             </Link>
           </div>

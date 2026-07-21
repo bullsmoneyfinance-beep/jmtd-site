@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { PHONE_HREF, WHATSAPP } from "../../lib/data";
+import { PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -230,7 +230,7 @@ export default function RecrutementPage() {
 
         <div style={{ maxWidth: 720, margin: "0 auto", position: "relative" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 30, padding: "6px 18px", marginBottom: 24 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Recrutement J&apos;MTD</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 1.5 }}>Recrutement J&apos;MTD</span>
           </div>
           <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(28px, 5vw, 52px)", fontWeight: 700, color: "#F8FAFC", lineHeight: 1.15, marginBottom: 20 }}>
             Rejoignez une équipe qui fait{" "}
@@ -317,7 +317,7 @@ export default function RecrutementPage() {
               <div className="recru-avantages" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 32 }}>
                 {AVANTAGES.map((a, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                    <span style={{ color: T, fontWeight: 800, fontSize: 16, flexShrink: 0, marginTop: 1 }}>✓</span>
+                    <span style={{ color: TEAL_TEXT, fontWeight: 800, fontSize: 16, flexShrink: 0, marginTop: 1 }}>✓</span>
                     <span style={{ fontSize: 13, color: TEXT, lineHeight: 1.5 }}>{a}</span>
                   </div>
                 ))}
@@ -569,7 +569,7 @@ export default function RecrutementPage() {
 
                     {/* Récapitulatif rapide */}
                     <div style={{ background: `${T}07`, border: `1px solid ${T}20`, borderRadius: 14, padding: "16px 20px", marginBottom: 28 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 12 }}>📋 Récapitulatif de votre candidature</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 12 }}>📋 Récapitulatif de votre candidature</div>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                         {[
                           ["Candidat·e", `${form.prenom} ${form.nom}`],
@@ -630,7 +630,7 @@ export default function RecrutementPage() {
                 <div style={{ display: "flex", gap: 12, marginTop: 32, justifyContent: "space-between", alignItems: "center" }}>
                   {step > 1 ? (
                     <button type="button" onClick={goPrev}
-                      style={{ padding: "13px 28px", borderRadius: 30, border: `1.5px solid rgba(13,169,164,0.3)`, background: "transparent", color: T, fontWeight: 700, fontSize: 14, cursor: "pointer", transition: "all 0.2s" }}
+                      style={{ padding: "13px 28px", borderRadius: 30, border: `1.5px solid rgba(13,169,164,0.3)`, background: "transparent", color: TEAL_TEXT, fontWeight: 700, fontSize: 14, cursor: "pointer", transition: "all 0.2s" }}
                       onMouseEnter={e => { e.currentTarget.style.background = `${T}08`; e.currentTarget.style.borderColor = T; }}
                       onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(13,169,164,0.3)"; }}>
                       ← Retour

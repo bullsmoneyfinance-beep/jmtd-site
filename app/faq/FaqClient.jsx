@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PHONE_HREF, WHATSAPP, HORAIRES } from "../../lib/data";
+import { PHONE_HREF, WHATSAPP, HORAIRES, TEAL_TEXT } from "../../lib/data";
 import Reveal from "../../components/Reveal";
 import Icon from "../../components/Icon";
 
@@ -133,7 +133,7 @@ export default function FAQPage() {
         <div style={{ maxWidth: 620, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: `1.5px solid ${T}28`, borderRadius: 30, padding: "7px 18px", marginBottom: 20, boxShadow: "0 2px 14px rgba(13,169,164,0.12)" }}>
             <span style={{ width: 7, height: 7, borderRadius: "50%", background: T, display: "inline-block" }} />
-            <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Questions fréquentes</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 1.5 }}>Questions fréquentes</span>
           </div>
           <h1 className="display" style={{ fontSize: "clamp(28px, 5vw, 48px)", color: TEXT, lineHeight: 1.15, marginBottom: 16 }}>
             Toutes vos questions{" "}
@@ -181,10 +181,10 @@ export default function FAQPage() {
                     onClick={() => setOpenItem(openItem === item.key ? null : item.key)}
                     style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16, background: "none", border: "none", cursor: "pointer", textAlign: "left", fontFamily: "inherit" }}>
                     <span>
-                      <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: T, fontWeight: 700, marginBottom: 3 }}><Icon name={item.catIcon} size={13} color={T} /> {item.cat}</span>
+                      <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: TEAL_TEXT, fontWeight: 700, marginBottom: 3 }}><Icon name={item.catIcon} size={13} color={TEAL_TEXT} /> {item.cat}</span>
                       <span style={{ display: "block", fontSize: 15, fontWeight: 600, color: TEXT }}>{item.q}</span>
                     </span>
-                    <span style={{ color: T, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: openItem === item.key ? "rotate(45deg)" : "none" }}>+</span>
+                    <span style={{ color: TEAL_TEXT, fontSize: 20, flexShrink: 0, transition: "transform 0.2s", transform: openItem === item.key ? "rotate(45deg)" : "none" }}>+</span>
                   </button>
                   {openItem === item.key && (
                     <div style={{ padding: "0 0 18px", fontSize: 14, color: MUTED, lineHeight: 1.8 }}>{item.a}</div>
@@ -205,7 +205,7 @@ export default function FAQPage() {
                   {FAQ_DATA.map((cat, i) => (
                     <a key={i} href={`#cat-${i}`}
                       style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderRadius: 10, fontSize: 13, color: MUTED, textDecoration: "none", marginBottom: 4, transition: "all 0.15s" }}
-                      onMouseEnter={e => { e.currentTarget.style.background = `${T}10`; e.currentTarget.style.color = T; }}
+                      onMouseEnter={e => { e.currentTarget.style.background = `${T}10`; e.currentTarget.style.color = TEAL_TEXT; }}
                       onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = MUTED; }}>
                       <Icon name={cat.icon} size={15} /> <span>{cat.cat}</span>
                     </a>
@@ -218,7 +218,7 @@ export default function FAQPage() {
                 {FAQ_DATA.map((cat, ci) => (
                   <Reveal key={ci} id={`cat-${ci}`} delay={ci * 70}>
                     <h2 style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 18, fontWeight: 700, color: TEXT, marginBottom: 16, paddingBottom: 12, borderBottom: `2px solid ${T}20` }}>
-                      <Icon name={cat.icon} size={19} color={T} /> {cat.cat}
+                      <Icon name={cat.icon} size={19} color={TEAL_TEXT} /> {cat.cat}
                     </h2>
                     <div style={{ background: "#fff", borderRadius: 20, border: `1px solid rgba(13,169,164,0.08)`, overflow: "hidden", boxShadow: "0 4px 24px rgba(13,169,164,0.05)" }}>
                       {cat.items.map((item, ii) => {
@@ -229,7 +229,7 @@ export default function FAQPage() {
                               onClick={() => setOpenItem(openItem === key ? null : key)}
                               style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", gap: 16, background: "none", border: "none", cursor: "pointer", textAlign: "left", fontFamily: "inherit" }}>
                               <span style={{ fontSize: 15, fontWeight: 600, color: TEXT, lineHeight: 1.4 }}>{item.q}</span>
-                              <span style={{ color: T, fontSize: 22, flexShrink: 0, fontWeight: 300, transition: "transform 0.25s", transform: openItem === key ? "rotate(45deg)" : "none" }}>+</span>
+                              <span style={{ color: TEAL_TEXT, fontSize: 22, flexShrink: 0, fontWeight: 300, transition: "transform 0.25s", transform: openItem === key ? "rotate(45deg)" : "none" }}>+</span>
                             </button>
                             {openItem === key && (
                               <div style={{ padding: "0 0 20px", fontSize: 14, color: MUTED, lineHeight: 1.85 }}>{item.a}</div>
@@ -246,7 +246,7 @@ export default function FAQPage() {
 
           {/* CTA aide */}
           <Reveal style={{ marginTop: 56, background: `linear-gradient(135deg, ${T}10, ${P}06)`, border: `1px solid ${T}20`, borderRadius: 24, padding: "36px 32px", textAlign: "center" }}>
-            <Icon name="chat" size={36} color={T} style={{ margin: "0 auto 12px" }} />
+            <Icon name="chat" size={36} color={TEAL_TEXT} style={{ margin: "0 auto 12px" }} />
             <h3 style={{ fontSize: 20, fontWeight: 700, color: TEXT, marginBottom: 10 }}>Vous ne trouvez pas votre réponse ?</h3>
             <p style={{ fontSize: 14, color: MUTED, marginBottom: 24, maxWidth: 440, margin: "0 auto 24px" }}>
               Notre équipe répond en moins de 24h. Par WhatsApp, par téléphone ou par email — choisissez ce qui vous convient.
@@ -258,8 +258,8 @@ export default function FAQPage() {
               <a href={PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 24px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>
                 <Icon name="phone" size={16} color="#fff" /> Appeler
               </a>
-              <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 24px", borderRadius: 30, border: `1.5px solid ${T}40`, color: T, fontWeight: 700, fontSize: 14, textDecoration: "none" }}>
-                <Icon name="mail" size={16} color={T} /> Formulaire
+              <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 24px", borderRadius: 30, border: `1.5px solid ${T}40`, color: TEAL_TEXT, fontWeight: 700, fontSize: 14, textDecoration: "none" }}>
+                <Icon name="mail" size={16} color={TEAL_TEXT} /> Formulaire
               </Link>
             </div>
           </Reveal>

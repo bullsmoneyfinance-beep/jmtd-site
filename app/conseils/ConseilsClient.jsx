@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Icon, { IconTile } from "../../components/Icon";
-import { YOUTUBE, PHONE_HREF, WHATSAPP } from "../../lib/data";
+import { YOUTUBE, PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -75,7 +75,7 @@ const CATS = [
 const ARTICLES = [
   {
     id: 1, cat: "menage", icon: "menage",
-    tag: "Ménage", color: T,
+    tag: "Ménage", color: TEAL_TEXT,
     title: "Les 5 erreurs que tout le monde fait en faisant le ménage",
     desc: "Commencer par les sols avant les surfaces, oublier les interrupteurs, utiliser trop de produit… On vous explique comment éviter ces pièges pour un résultat impeccable en moins de temps.",
     duration: "3 min",
@@ -174,7 +174,7 @@ const ARTICLES = [
   },
   {
     id: 8, cat: "menage", icon: "menage",
-    tag: "Ménage", color: T,
+    tag: "Ménage", color: TEAL_TEXT,
     title: "Vitres sans traces : la technique que les professionnels utilisent",
     desc: "Eau démagnétisée, microfibres, mouvement en Z, bon timing selon la chaleur… La méthode complète pour des vitres parfaitement transparentes, même sous le soleil antillais.",
     duration: "3 min",
@@ -471,8 +471,8 @@ export default function ConseilsPage() {
 
         <div style={{ maxWidth: 760, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: `1.5px solid ${T}28`, borderRadius: 30, padding: "7px 18px", marginBottom: 20, boxShadow: "0 2px 14px rgba(13,169,164,0.12)" }}>
-            <Icon name="sparkles" size={15} color={T} />
-            <span style={{ fontSize: 12, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 }}>Conseils & Astuces J&apos;MTD</span>
+            <Icon name="sparkles" size={15} color={TEAL_TEXT} />
+            <span style={{ fontSize: 12, fontWeight: 700, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 1.5 }}>Conseils & Astuces J&apos;MTD</span>
           </div>
           <h1 className="display" style={{ fontSize: "clamp(30px, 5vw, 54px)", color: TEXT, lineHeight: 1.15, marginBottom: 20 }}>
             Tout savoir sur{" "}
@@ -492,7 +492,7 @@ export default function ConseilsPage() {
               ▶ Notre chaîne YouTube
             </a>
             <a href="#conseils"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 30, background: `${T}10`, border: `1.5px solid ${T}30`, color: T, fontWeight: 700, fontSize: 15, textDecoration: "none", transition: "all 0.2s" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 30, background: `${T}10`, border: `1.5px solid ${T}30`, color: TEAL_TEXT, fontWeight: 700, fontSize: 15, textDecoration: "none", transition: "all 0.2s" }}
               onMouseEnter={e => { e.currentTarget.style.background = `${T}18`; }}
               onMouseLeave={e => { e.currentTarget.style.background = `${T}10`; }}>
               Lire les articles ↓

@@ -429,8 +429,8 @@ export default function RecrutementPage() {
                       subtitle="Dites-nous sur quels postes vous souhaitez intervenir et vos disponibilités."
                     />
 
-                    <div style={{ marginBottom: 20 }}>
-                      <Label>Poste(s) souhaité(s) * — plusieurs choix possibles</Label>
+                    <fieldset style={{ border: "none", padding: 0, margin: "0 0 20px" }}>
+                      <legend style={{ display: "block", fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 7, padding: 0 }}>Poste(s) souhaité(s) * — plusieurs choix possibles</legend>
                       <div style={{ display: "flex", flexDirection: "column", gap: 10, ...(errors.postes ? { outline: "2px solid #EF4444", borderRadius: 12, padding: 8 } : {}) }}>
                         {POSTES.map(p => (
                           <label key={p.id} className="poste-check"
@@ -441,7 +441,7 @@ export default function RecrutementPage() {
                           </label>
                         ))}
                       </div>
-                    </div>
+                    </fieldset>
 
                     <div style={{ marginBottom: 14 }}>
                       <Label>Avez-vous une expérience dans les services à la personne ? *</Label>
@@ -496,11 +496,11 @@ export default function RecrutementPage() {
                     </div>
 
                     <div>
-                      <Label>Jours disponibles * — plusieurs choix possibles</Label>
-                      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", ...(errors.dispo_jours ? { outline: "2px solid #EF4444", borderRadius: 8, padding: 4 } : {}) }}>
+                      <Label htmlFor="recru-jours-group">Jours disponibles * — plusieurs choix possibles</Label>
+                      <div id="recru-jours-group" role="group" aria-label="Jours disponibles" style={{ display: "flex", gap: 10, flexWrap: "wrap", ...(errors.dispo_jours ? { outline: "2px solid #EF4444", borderRadius: 8, padding: 4 } : {}) }}>
                         {JOURS.map(j => (
                           <button key={j} type="button" className="jour-btn"
-                            onClick={() => toggleJour(j)}
+                            onClick={() => toggleJour(j)} aria-pressed={form.dispo_jours.includes(j)}
                             style={{ padding: "9px 18px", borderRadius: 30, border: `1.5px solid ${form.dispo_jours.includes(j) ? T : "rgba(13,169,164,0.22)"}`, background: form.dispo_jours.includes(j) ? `${T}14` : "transparent", color: form.dispo_jours.includes(j) ? T : MUTED, fontWeight: form.dispo_jours.includes(j) ? 700 : 500, fontSize: 13, cursor: "pointer", transition: "all 0.15s" }}>
                             {j}
                           </button>

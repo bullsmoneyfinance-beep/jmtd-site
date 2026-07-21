@@ -222,10 +222,21 @@ const FAQ_ITEMS = [
   { q: "Puis-je choisir mes jours et horaires ?", a: "Absolument. Nos interventions sont planifiées selon vos disponibilités, du lundi au vendredi de 8h à 18h." },
 ];
 
+const FAQ_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ_ITEMS.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+
 function FAQ() {
   const [open, setOpen] = useState(null);
   return (
     <div style={{ maxWidth: 780, margin: "0 auto" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }} />
       {FAQ_ITEMS.map((item, i) => (
         <div key={i} className="faq-item">
           <button className="faq-question" onClick={() => setOpen(open === i ? null : i)}>

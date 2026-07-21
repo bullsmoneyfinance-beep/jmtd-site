@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Reveal from "../../components/Reveal";
 import Icon, { IconTile } from "../../components/Icon";
 import { PHONE_HREF, PHONE, TEAL_TEXT } from "../../lib/data";
@@ -152,7 +153,8 @@ export default function CoachPage() {
 
           <Reveal delay={140} style={{ position: "relative" }}>
             <div className="img-zoom-wrap lift" style={{ borderRadius: 24, boxShadow: `0 30px 80px ${T}22, 0 8px 24px rgba(13,27,42,0.10)`, border: "1px solid rgba(255,255,255,0.6)" }}>
-              <img src={IMG.coach} alt="Coach rangement méthode Marie Kondo Martinique" width={640} height={520} loading="eager" className="img-zoom"
+              <Image src={IMG.coach} alt="Coach rangement méthode Marie Kondo Martinique" width={640} height={520} priority className="img-zoom"
+                sizes="(max-width: 900px) 100vw, 520px"
                 style={{ width: "100%", height: 440, objectFit: "cover", display: "block", borderRadius: 24 }} />
               <div aria-hidden style={{ position: "absolute", inset: 0, borderRadius: 24, background: "linear-gradient(to top, rgba(13,27,42,0.24), transparent 46%)", pointerEvents: "none" }} />
             </div>

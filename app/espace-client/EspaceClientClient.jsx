@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { SERVICES, FONDATRICE, ADDRESS, SIRET, EMAIL, PHONE, DECLARATION_SAP, TUTELLE_SAP, TEAL_TEXT } from "../../lib/data";
+import { SERVICES, PHONE, TEAL_TEXT } from "../../lib/data";
+import { buildAttestationHtml, openPrintWindow } from "../../lib/documents";
 
 const T = "#0DA9A4", P = "#D4197A", TEXT = "#1A2D3D", MUTED = "#64748B", EMERALD = "#10B981";
 const eur = (n) => (Number(n) || 0).toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
@@ -110,7 +111,10 @@ export default function EspaceClientClient() {
 
               {regle.length > 0 && (
                 <div style={{ marginBottom: 24 }}>
-                  <button onClick={() => downloadAttestation(data.client, regle, year, { totalHeures, totalMontant, credit })}
+                  <button onClick={() => openPrintWindow(
+                    buildAttestationHtml({ client: data.client, inters: regle, year, totals: { totalHeures, totalMontant, credit }, serviceLabels: SERVICE_LABELS }),
+                    "Autorisez les fenêtres pop-up pour télécharger l'attestation."
+                  )}
                     style={{ padding: "13px 26px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, border: "none", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer", boxShadow: `0 6px 22px ${T}3a` }}>
                     🧾 Télécharger mon attestation fiscale {year}
                   </button>
@@ -145,29 +149,6 @@ export default function EspaceClientClient() {
       </section>
     </>
   );
-
-  function downloadAttestation(client, inters, yr, totals) {
-    const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-    const parPresta = {};
-    inters.forEach(i => { parPresta[i.service] = (parPresta[i.service] || 0) + (i.montant || 0); });
-    const lignes = Object.entries(parPresta).map(([s, m]) => `<tr><td>${esc(SERVICE_LABELS[s] || s)}</td><td style="text-align:right">${eur(m)}</td></tr>`).join("");
-    const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Attestation fiscale ${yr} — ${esc(client.prenom)} ${esc(client.nom)}</title>
-<style>@page{margin:22mm}body{font-family:Georgia,serif;color:#1a2d3d;line-height:1.6;font-size:14px;max-width:720px;margin:0 auto;padding:20px}.head{display:flex;justify-content:space-between;border-bottom:3px solid #0DA9A4;padding-bottom:16px;margin-bottom:26px}.brand{font-size:26px;font-weight:800;color:#0DA9A4}.brand span{color:#D4197A}.meta{font-size:11px;color:#555;text-align:right}h1{font-size:19px;text-align:center;margin:26px 0 8px}.sub{text-align:center;font-size:12px;color:#666;margin-bottom:28px}.box{border:1px solid #ddd;border-radius:8px;padding:14px 18px;margin-bottom:20px}.box b{display:inline-block;min-width:110px;color:#555;font-weight:normal;font-size:12px}table{width:100%;border-collapse:collapse;margin:14px 0}td,th{padding:8px 10px;border-bottom:1px solid #eee;font-size:13px}th{text-align:left;color:#555;font-size:11px;text-transform:uppercase}.total{font-size:16px;font-weight:800}.credit{background:#0DA9A410;border:1px solid #0DA9A430;border-radius:8px;padding:14px 18px;margin:18px 0;text-align:center;font-size:15px}.legal{font-size:11px;color:#666;line-height:1.7;margin-top:22px}.sign{margin-top:40px;display:flex;justify-content:space-between;align-items:flex-end}.print-btn{position:fixed;top:16px;right:16px;padding:12px 22px;background:#0DA9A4;color:#fff;border:none;border-radius:30px;font-size:14px;font-weight:700;cursor:pointer;font-family:sans-serif}@media print{.print-btn{display:none}body{padding:0}}</style></head><body>
-<button class="print-btn" onclick="window.print()">🖨️ Imprimer / PDF</button>
-<div class="head"><div><div class="brand">J'<span>m</span>TD</div><div style="font-size:11px;color:#666;margin-top:4px">Services à la Personne · Martinique</div></div><div class="meta">${ADDRESS}<br>SIREN ${SIRET}<br>Déclaration ${DECLARATION_SAP}<br>${TUTELLE_SAP}<br>${PHONE} · ${EMAIL}</div></div>
-<h1>Attestation fiscale annuelle</h1><div class="sub">Services à la Personne — Année ${yr}<br>Article 199 sexdecies du Code général des impôts</div>
-<div class="box"><div><b>Délivrée à :</b> ${esc(client.prenom)} ${esc(client.nom)}</div>${client.adresse ? `<div><b>Adresse :</b> ${esc(client.adresse)}${client.commune ? ", " + esc(client.commune) : ""}</div>` : (client.commune ? `<div><b>Commune :</b> ${esc(client.commune)}</div>` : "")}</div>
-<p>Je soussignée <b>${FONDATRICE}</b>, représentant l'organisme <b>J'MTD</b>, déclaré au titre des Services à la Personne sous le numéro <b>${DECLARATION_SAP}</b>, atteste que la personne désignée ci-dessus a versé au cours de l'année <b>${yr}</b> la somme indiquée ci-dessous, en règlement de prestations de services à la personne réalisées à son domicile.</p>
-<table><thead><tr><th>Prestation</th><th style="text-align:right">Montant réglé</th></tr></thead><tbody>${lignes}</tbody><tfoot><tr><td class="total">Total versé en ${yr}</td><td class="total" style="text-align:right">${eur(totals.totalMontant)}</td></tr></tfoot></table>
-<div style="font-size:12px;color:#666">Soit ${totals.totalHeures} heures d'intervention sur l'année.</div>
-<div class="credit">Montant ouvrant droit au <b>crédit d'impôt de 50 %</b> : <b>${eur(totals.credit)}</b></div>
-<div class="legal">Cette attestation est à conserver et à joindre à votre déclaration de revenus. Le crédit d'impôt est égal à 50 % des sommes versées, dans la limite des plafonds annuels fixés par l'article 199 sexdecies du CGI.</div>
-<div class="sign"><div style="font-size:12px;color:#666">Fait à Rivière-Salée,<br>le ${new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}</div><div style="text-align:center;font-size:12px"><div style="border-top:1px solid #999;padding-top:6px;width:180px">${FONDATRICE}<br><span style="color:#666">J'MTD</span></div></div></div>
-</body></html>`;
-    const w = window.open("", "_blank", "width=820,height=900");
-    if (!w) { alert("Autorisez les fenêtres pop-up pour télécharger l'attestation."); return; }
-    w.document.write(html); w.document.close();
-  }
 }
 
 function StatCard({ label, value, color }) {

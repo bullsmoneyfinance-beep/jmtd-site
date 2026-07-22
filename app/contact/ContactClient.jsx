@@ -74,6 +74,23 @@ export default function ContactPage() {
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
   useParallax();
 
+  // Pré-remplissage depuis l'URL : /contact?service=entretien&heures=8&zone=Diamant
+  // (lu côté client pour ne pas rendre la page dynamique)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const service = params.get("service");
+    const heures = params.get("heures");
+    const zone = params.get("zone");
+    setForm(f => ({
+      ...f,
+      service: SERVICES.some(s => s.id === service) ? service : f.service,
+      zone: zone ? zone.slice(0, 60) : f.zone,
+      message: /^\d{1,3}$/.test(heures || "")
+        ? `Je souhaite environ ${heures} h par mois.`
+        : f.message,
+    }));
+  }, []);
+
   const submit = async e => {
     e.preventDefault();
     if (!form.rgpd) { alert("Veuillez accepter la politique de confidentialité."); return; }

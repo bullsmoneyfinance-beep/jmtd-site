@@ -219,7 +219,7 @@ export default function ServicesPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href={s.id === "rangement" ? "/coach" : "/contact"} className="btn-gradient"
+                <Link href={s.id === "rangement" ? "/coach" : `/contact?service=${s.id}`} className="btn-gradient"
                   style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 6px 24px ${T}35`, border: "none" }}>
                   {s.id === "rangement" ? "Voir les formules →" : "Demander un devis →"}
                 </Link>

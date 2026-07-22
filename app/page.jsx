@@ -109,7 +109,7 @@ function Calculator() {
       <p style={{ fontSize: 12, color: "#64748B", textAlign: "center", marginBottom: 20, lineHeight: 1.6 }}>
         L&apos;État rembourse <strong style={{ color: TEXT2 }}>50% de vos dépenses</strong> via votre déclaration d&apos;impôt
       </p>
-      <Link href="/contact" className="btn-gradient" style={{ display: "block", textAlign: "center", background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", padding: 15, borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 6px 24px ${T}44`, border: "none" }}>
+      <Link href={`/contact?heures=${h}`} className="btn-gradient" style={{ display: "block", textAlign: "center", background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", padding: 15, borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 6px 24px ${T}44`, border: "none" }}>
         Obtenir mon devis gratuit →
       </Link>
     </div>
@@ -269,12 +269,12 @@ export default function HomePage() {
 
         {/* Calque photo tropical (parallax profond — lagon turquoise, atmosphère cinématique) */}
         <div aria-hidden data-parallax="0.18" className="parallax" style={{ position: "absolute", top: "-22%", left: 0, right: 0, height: "144%", zIndex: 0 }}>
-          <img src={IMG.heroBg} alt="" width={1600} height={1200} loading="eager"
+          <Image src={IMG.heroBg} alt="" width={1600} height={1200} priority sizes="100vw"
             style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.26 }} />
         </div>
         {/* Frondes de palmier — second calque de profondeur (parallax plus lent) */}
         <div aria-hidden data-parallax="0.06" className="parallax hero-palm" style={{ position: "absolute", top: "-10%", right: "-6%", width: "clamp(280px, 38vw, 640px)", height: "120%", zIndex: 0, pointerEvents: "none" }}>
-          <img src={IMG.palmLeaf} alt="" width={900} height={1100} loading="lazy"
+          <Image src={IMG.palmLeaf} alt="" width={900} height={1100} loading="lazy" sizes="(max-width: 900px) 60vw, 900px"
             style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.16, mixBlendMode: "multiply", maskImage: "linear-gradient(to left, #000 30%, transparent 92%)", WebkitMaskImage: "linear-gradient(to left, #000 30%, transparent 92%)" }} />
         </div>
         {/* Voile — dégradé travaillé : dense à gauche (lisibilité du texte), plus aéré à droite */}
@@ -496,7 +496,7 @@ export default function HomePage() {
           ════════════════════════════════ */}
       <section style={{ position: "relative", overflow: "hidden", minHeight: "clamp(340px, 46vw, 520px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div aria-hidden data-parallax="0.18" className="parallax" style={{ position: "absolute", top: "-22%", left: 0, right: 0, height: "144%", zIndex: 0 }}>
-          <img src={IMG.greenery} alt="" width={1600} height={900} loading="lazy"
+          <Image src={IMG.greenery} alt="" width={1600} height={900} loading="lazy" sizes="100vw"
             style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
         <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(120deg, rgba(10,40,40,0.80), rgba(13,27,42,0.64))" }} />
@@ -559,7 +559,7 @@ export default function HomePage() {
       <section style={{ position: "relative", overflow: "hidden", minHeight: "clamp(420px, 56vw, 620px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {/* Calque mer (parallax profond) — surdimensionné pour ne jamais laisser de vide */}
         <div aria-hidden data-parallax="0.22" className="parallax" style={{ position: "absolute", top: "-24%", left: 0, right: 0, height: "148%", zIndex: 0 }}>
-          <img src={IMG.seaLight} alt="" width={1600} height={1000} loading="lazy"
+          <Image src={IMG.seaLight} alt="" width={1600} height={1000} loading="lazy" sizes="100vw"
             style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
         {/* Scrim navy/teal — profondeur & lisibilité */}

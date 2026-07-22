@@ -1,4 +1,5 @@
 import { SITE_URL } from "../lib/data";
+import { ARTICLES } from "./conseils/articlesData";
 
 export default function sitemap() {
   const base = SITE_URL || "https://jmtd.fr";
@@ -17,5 +18,12 @@ export default function sitemap() {
     { url: `${base}/recrutement`,  lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${base}/mentions-legales`,            lastModified: now, changeFrequency: "yearly", priority: 0.2 },
     { url: `${base}/politique-confidentialite`,   lastModified: now, changeFrequency: "yearly", priority: 0.2 },
+
+    ...ARTICLES.map(a => ({
+      url: `${base}/conseils/${a.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    })),
   ];
 }

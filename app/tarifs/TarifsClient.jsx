@@ -6,6 +6,7 @@ import SapBadge from "../../components/SapBadge";
 import Reveal from "../../components/Reveal";
 import PinnedFeatureList from "../../components/PinnedFeatureList";
 import Icon, { IconTile } from "../../components/Icon";
+import useParallax from "../../lib/useParallax";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -21,35 +22,6 @@ const IMG = {
   greenery: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1600&h=900&fit=crop&auto=format&q=80", // feuillage vert rétroéclairé
 };
 
-/* Parallax générique — piloté par [data-parallax] (voir globals.css .parallax) */
-function useParallax() {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const layers = Array.from(document.querySelectorAll("[data-parallax]"));
-    if (!layers.length) return;
-    let raf = null;
-    const update = () => {
-      const vh = window.innerHeight;
-      layers.forEach(el => {
-        const speed = parseFloat(el.getAttribute("data-parallax")) || 0.12;
-        const r = el.getBoundingClientRect();
-        const offset = r.top + r.height / 2 - vh / 2;
-        el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(1)}px, 0)`;
-      });
-      raf = null;
-    };
-    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
-}
 
 /* Focus rack — la carte la plus proche du centre du viewport devient nette et
    pleine échelle ; les autres sont floutées/atténuées. Proximité continue via

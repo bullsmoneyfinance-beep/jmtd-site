@@ -5,6 +5,7 @@ import { PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
 import Reveal from "../../components/Reveal";
 import Icon from "../../components/Icon";
 import { FAQ_DATA } from "./faqData";
+import useParallax from "../../lib/useParallax";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -19,35 +20,6 @@ const IMG = {
   palm:     "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=900&h=1100&fit=crop&auto=format&q=80",  // frondes de palmier
 };
 
-/* Parallax générique — piloté par [data-parallax] (voir globals.css .parallax) */
-function useParallax() {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const layers = Array.from(document.querySelectorAll("[data-parallax]"));
-    if (!layers.length) return;
-    let raf = null;
-    const update = () => {
-      const vh = window.innerHeight;
-      layers.forEach(el => {
-        const speed = parseFloat(el.getAttribute("data-parallax")) || 0.12;
-        const r = el.getBoundingClientRect();
-        const offset = r.top + r.height / 2 - vh / 2;
-        el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(1)}px, 0)`;
-      });
-      raf = null;
-    };
-    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
-}
 
 export default function FAQPage() {
   const [openItem, setOpenItem] = useState(null);

@@ -8,6 +8,7 @@ import PinnedFeatureList from "../components/PinnedFeatureList";
 import Icon, { IconTile } from "../components/Icon";
 import SapOfficiel from "../components/SapOfficiel";
 import { PHONE, PHONE_HREF, WHATSAPP, SERVICES, TESTIMONIALS, DECLARATION_SAP, TEAL_TEXT } from "../lib/data";
+import useParallax from "../lib/useParallax";
 
 const WA_SVG = (<svg width="18" height="18" viewBox="0 0 32 32" fill="none" style={{display:"block",flexShrink:0}}><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.5 8.5A10.4 10.4 0 0 0 16 5.5C10.2 5.5 5.5 10.2 5.5 16c0 1.85.48 3.65 1.4 5.25L5.5 26.5l5.4-1.4A10.4 10.4 0 0 0 16 26.5c5.8 0 10.5-4.7 10.5-10.5 0-2.8-1.1-5.43-3-7.5zm-7.5 16.1a8.6 8.6 0 0 1-4.4-1.2l-.3-.2-3.2.84.86-3.1-.2-.33A8.6 8.6 0 1 1 16 24.6zm4.7-6.4c-.26-.13-1.53-.75-1.77-.84-.23-.08-.4-.13-.56.13-.17.26-.64.84-.79 1.01-.14.17-.29.19-.54.06-.26-.13-1.08-.4-2.06-1.27-.76-.68-1.28-1.52-1.43-1.77-.15-.26-.01-.4.11-.52.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.08-.17.04-.32-.02-.45-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.26-.87.85-.87 2.07s.89 2.4 1.01 2.57c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.47-.07 1.53-.63 1.74-1.23.22-.6.22-1.12.15-1.23-.06-.12-.23-.19-.49-.31z" fill="#fff"/></svg>);
 
@@ -34,35 +35,6 @@ const IMG = {
   seaLight: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1600&h=1000&fit=crop&auto=format&q=80", // mer turquoise vue du ciel (plein cadre)
 };
 
-/* Parallax générique — piloté par [data-parallax] (voir globals.css .parallax) */
-function useParallax() {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const layers = Array.from(document.querySelectorAll("[data-parallax]"));
-    if (!layers.length) return;
-    let raf = null;
-    const update = () => {
-      const vh = window.innerHeight;
-      layers.forEach(el => {
-        const speed = parseFloat(el.getAttribute("data-parallax")) || 0.12;
-        const r = el.getBoundingClientRect();
-        const offset = r.top + r.height / 2 - vh / 2;
-        el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(1)}px, 0)`;
-      });
-      raf = null;
-    };
-    const onScroll = () => { if (raf == null) raf = requestAnimationFrame(update); };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
-}
 
 const TICKS = [
   "✦ Déclaré SAP officiel","✦ Recommandé par nos clients","✦ +200 foyers","✦ Méthode Marie Kondo",

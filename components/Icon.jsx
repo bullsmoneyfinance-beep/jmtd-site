@@ -33,7 +33,9 @@ const MAP = {
 
 export default function Icon({ name, size = 22, color = "currentColor", strokeWidth = 1.8, style, ...rest }) {
   const C = MAP[name] || Sparkles;
-  return <C size={size} color={color} strokeWidth={strokeWidth} style={{ display: "block", flexShrink: 0, ...style }} {...rest} />;
+  // Décoratif par défaut (masqué aux lecteurs d'écran) sauf si l'appelant fournit un label ou override explicite
+  const a11y = ("aria-label" in rest || "aria-hidden" in rest) ? {} : { "aria-hidden": true };
+  return <C size={size} color={color} strokeWidth={strokeWidth} style={{ display: "block", flexShrink: 0, ...style }} {...a11y} {...rest} />;
 }
 
 /**

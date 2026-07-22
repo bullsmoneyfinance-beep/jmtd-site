@@ -168,6 +168,7 @@ export default function Nav() {
             {/* Espace Équipe */}
             <div ref={teamRef} style={{ position: "relative", marginLeft: 6 }}>
               <button onClick={() => setTeamOpen(o => !o)}
+                aria-haspopup="true" aria-expanded={teamOpen}
                 style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 22, background: isTeamActive || teamOpen ? `${T}12` : "rgba(13,169,164,0.05)", border: `1.5px solid ${isTeamActive || teamOpen ? T : "rgba(13,169,164,0.18)"}`, cursor: "pointer", fontSize: 13, fontWeight: 600, color: isTeamActive || teamOpen ? T : "#475569", transition: "all 0.2s", whiteSpace: "nowrap" }}>
                 <Icon name="lock" size={15} color="currentColor" /> <span>Espace équipe</span>
                 <span style={{ fontSize: 9, color: "#94A3B8", transform: teamOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>▾</span>
@@ -212,7 +213,7 @@ export default function Nav() {
 
             {/* Burger mobile */}
             <button onClick={() => setMobileOpen(o => !o)} className="show-mobile"
-              aria-label="Menu" style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", gap: 5, padding: 6 }}>
+              aria-label="Menu" aria-expanded={mobileOpen} aria-controls="nav-mobile-panel" style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", gap: 5, padding: 6 }}>
               {[0,1,2].map(i => (
                 <span key={i} style={{ width: 22, height: 2, borderRadius: 1, display: "block", transition: "all 0.25s", background: "#1A2D3D", transform: mobileOpen && i===0 ? "rotate(45deg) translate(5px,5px)" : mobileOpen && i===2 ? "rotate(-45deg) translate(5px,-5px)" : "none", opacity: mobileOpen && i===1 ? 0 : 1 }} />
               ))}
@@ -222,7 +223,7 @@ export default function Nav() {
 
         {/* ── Menu mobile déroulant ── */}
         {mobileOpen && (
-          <div style={{ background: "#fff", borderTop: `1px solid rgba(13,169,164,0.1)`, padding: "16px 24px 24px", animation: "slideDown 0.22s ease" }}>
+          <div id="nav-mobile-panel" style={{ background: "#fff", borderTop: `1px solid rgba(13,169,164,0.1)`, padding: "16px 24px 24px", animation: "slideDown 0.22s ease" }}>
             {[["/","home","Accueil"],["/services","maintenance","Nos prestations"],["/conciergerie","cle","Conciergerie locative"],["/coach","rangement","Coach rangement"],["/coaching","sparkles","Mon coaching"],["/tarifs","wallet","Tarifs"],["/conseils","conseils","Conseils & astuces"],["/faq","faq","FAQ"],["/contact","mail","Contact & Devis"],["/recrutement","users","Rejoindre l'équipe"]].map(([href, ic, label]) => (
               <Link key={href} href={href} style={{ display: "flex", alignItems: "center", gap: 11, padding: "13px 0", borderBottom: "1px solid rgba(13,169,164,0.07)", fontSize: 15, color: pathname === href ? T : "#475569", fontWeight: pathname === href ? 600 : 400, textDecoration: "none" }}>
                 <Icon name={ic} size={18} color={pathname === href ? T : "#94A3B8"} /> {label}

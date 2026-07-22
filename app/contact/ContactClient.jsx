@@ -196,8 +196,8 @@ export default function ContactPage() {
 
                 <div style={{ marginBottom: 14 }}>
                   <Field label="Prestation souhaitée *" htmlFor="service">
-                    <select id="service" className="inp-focus" style={{ ...inp, color: form.service ? TEXT : "#94A3B8" }} value={form.service} onChange={set("service")} required>
-                      <option value="" style={{ color: "#94A3B8" }}>Choisir une prestation…</option>
+                    <select id="service" className="inp-focus" style={{ ...inp, color: form.service ? TEXT : "#64748B" }} value={form.service} onChange={set("service")} required>
+                      <option value="" style={{ color: "#64748B" }}>Choisir une prestation…</option>
                       {SERVICES.map(s => <option key={s.id} value={s.id} style={{ color: TEXT }}>{s.icon} {s.title}</option>)}
                       <option value="conciergerie" style={{ color: TEXT }}>🔑 Conciergerie locative (B2B)</option>
                     </select>
@@ -241,7 +241,7 @@ export default function ContactPage() {
                   ) : "Envoyer ma demande →"}
                 </button>
 
-                <p style={{ fontSize: 11, color: "#94A3B8", textAlign: "center", marginTop: 14 }}>
+                <p style={{ fontSize: 11, color: "#64748B", textAlign: "center", marginTop: 14 }}>
                   * Obligatoire · Données traitées conformément au RGPD
                 </p>
               </form>

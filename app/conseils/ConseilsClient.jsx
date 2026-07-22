@@ -285,7 +285,7 @@ function ConseilCard({ article, onClick }) {
         {article.desc}
       </p>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 12, borderTop: "1px solid rgba(13,169,164,0.08)" }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, color: "#94A3B8" }}><Icon name="clock" size={13} color="#94A3B8" /> {article.duration} de lecture</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, color: "#64748B" }}><Icon name="clock" size={13} color="#64748B" /> {article.duration} de lecture</span>
         <span style={{ fontSize: 13, fontWeight: 700, color: article.color }}>Lire →</span>
       </div>
     </div>
@@ -368,7 +368,7 @@ function ArticleModal({ article, onClose }) {
                 <span style={{ display: "inline-block", fontSize: 11, fontWeight: 700, color: article.color, background: article.color + "18", border: `1px solid ${article.color}30`, borderRadius: 20, padding: "3px 12px", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>
                   {article.tag}
                 </span>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: "#94A3B8" }}><Icon name="clock" size={13} color="#94A3B8" /> {article.duration} de lecture</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: "#64748B" }}><Icon name="clock" size={13} color="#64748B" /> {article.duration} de lecture</div>
               </div>
             </div>
             <button
@@ -517,7 +517,7 @@ export default function ConseilsPage() {
                 Des vidéos conseils{" "}
                 <span style={{ color: "#FF6B6B" }}>chaque semaine</span>
               </h2>
-              <p style={{ fontSize: 14, color: "#94A3B8", lineHeight: 1.8, margin: 0 }}>
+              <p style={{ fontSize: 14, color: "#64748B", lineHeight: 1.8, margin: 0 }}>
                 Tutoriels ménage, astuces rangement, comparatifs produits… On partage tout ce que nos professionnelles ont appris en des années d&apos;expérience.
               </p>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -533,7 +533,7 @@ export default function ConseilsPage() {
                 <div style={{ width: 96, height: 96, borderRadius: "50%", background: "rgba(255,0,0,0.9)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", boxShadow: "0 0 60px rgba(255,0,0,0.4)", animation: "glowRed 3s ease-in-out infinite" }}>
                   <span style={{ fontSize: 36, marginLeft: 6 }}>▶</span>
                 </div>
-                <div style={{ fontSize: 13, color: "#94A3B8" }}>Cliquez pour voir nos vidéos</div>
+                <div style={{ fontSize: 13, color: "#64748B" }}>Cliquez pour voir nos vidéos</div>
               </div>
             </div>
           </div>

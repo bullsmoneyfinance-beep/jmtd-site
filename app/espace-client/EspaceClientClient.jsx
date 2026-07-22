@@ -80,7 +80,7 @@ export default function EspaceClientClient() {
                 style={{ width: "100%", padding: "14px", borderRadius: 30, fontSize: 15, fontWeight: 700, color: "#fff", border: "none", cursor: loading ? "wait" : "pointer", background: `linear-gradient(135deg, ${T}, ${P})`, boxShadow: `0 6px 22px ${T}3a` }}>
                 {loading ? "Vérification…" : "Accéder à mon dossier →"}
               </button>
-              <p style={{ fontSize: 11.5, color: "#94A3B8", textAlign: "center", marginTop: 16, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 11.5, color: "#64748B", textAlign: "center", marginTop: 16, lineHeight: 1.6 }}>
                 Un souci d'accès ? Appelez-nous au <a href={`tel:${PHONE.replace(/\s/g, "")}`} style={{ color: TEAL_TEXT, fontWeight: 700 }}>{PHONE}</a>
               </p>
             </form>
@@ -134,7 +134,7 @@ export default function EspaceClientClient() {
                   ))}
                 </div>
               )}
-              <p style={{ fontSize: 12, color: "#94A3B8", marginTop: 14 }}>L'attestation reprend uniquement les sommes effectivement réglées sur l'année.</p>
+              <p style={{ fontSize: 12, color: "#64748B", marginTop: 14 }}>L'attestation reprend uniquement les sommes effectivement réglées sur l'année.</p>
             </div>
           )}
 

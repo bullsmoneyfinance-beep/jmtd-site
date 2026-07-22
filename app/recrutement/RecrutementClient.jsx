@@ -449,8 +449,8 @@ export default function RecrutementPage() {
                     </fieldset>
 
                     <div style={{ marginBottom: 14 }}>
-                      <Label>Avez-vous une expérience dans les services à la personne ? *</Label>
-                      <select className="inp-focus" style={{ ...inp, ...errStyle("experience") }} value={form.experience} onChange={set("experience")}>
+                      <Label htmlFor="recru-experience">Avez-vous une expérience dans les services à la personne ? *</Label>
+                      <select id="recru-experience" className="inp-focus" style={{ ...inp, ...errStyle("experience") }} value={form.experience} onChange={set("experience")}>
                         <option value="">Sélectionner…</option>
                         <option value="aucune">Non, c&apos;est ma première expérience</option>
                         <option value="moins1">Oui, moins d&apos;1 an</option>
@@ -591,8 +591,8 @@ export default function RecrutementPage() {
                     </div>
 
                     <div style={{ marginBottom: 14 }}>
-                      <Label>Avez-vous des références professionnelles ?</Label>
-                      <select className="inp-focus" style={inp} value={form.references} onChange={set("references")}>
+                      <Label htmlFor="recru-references">Avez-vous des références professionnelles ?</Label>
+                      <select id="recru-references" className="inp-focus" style={inp} value={form.references} onChange={set("references")}>
                         <option value="">Sélectionner…</option>
                         <option value="oui">Oui, je peux fournir des références</option>
                         <option value="non">Non, pas pour le moment</option>
@@ -601,8 +601,8 @@ export default function RecrutementPage() {
                     </div>
 
                     <div style={{ marginBottom: 14 }}>
-                      <Label>Êtes-vous prêt(e) à suivre notre formation interne (1 à 2 jours) ?</Label>
-                      <select className="inp-focus" style={inp} value={form.formation} onChange={set("formation")}>
+                      <Label htmlFor="recru-formation">Êtes-vous prêt(e) à suivre notre formation interne (1 à 2 jours) ?</Label>
+                      <select id="recru-formation" className="inp-focus" style={inp} value={form.formation} onChange={set("formation")}>
                         <option value="">Sélectionner…</option>
                         <option value="oui">Oui, tout à fait</option>
                         <option value="avec_contrainte">Oui, avec certaines contraintes horaires</option>

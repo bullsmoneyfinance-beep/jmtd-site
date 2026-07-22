@@ -98,7 +98,7 @@ function Calculator() {
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
         <div style={{ background: WARM, borderRadius: 14, padding: "18px 14px", textAlign: "center" }}>
-          <div style={{ fontSize: 11, color: "#94A3B8", marginBottom: 6 }}>Coût brut</div>
+          <div style={{ fontSize: 11, color: "#64748B", marginBottom: 6 }}>Coût brut</div>
           <div style={{ fontSize: 28, fontWeight: 800, color: TEXT }}>{gross}€</div>
         </div>
         <div style={{ background: `${T}0d`, border: `1.5px solid ${T}33`, borderRadius: 14, padding: "18px 14px", textAlign: "center" }}>
@@ -106,7 +106,7 @@ function Calculator() {
           <div style={{ fontSize: 28, fontWeight: 800, color: T }}>{net}€</div>
         </div>
       </div>
-      <p style={{ fontSize: 12, color: "#94A3B8", textAlign: "center", marginBottom: 20, lineHeight: 1.6 }}>
+      <p style={{ fontSize: 12, color: "#64748B", textAlign: "center", marginBottom: 20, lineHeight: 1.6 }}>
         L&apos;État rembourse <strong style={{ color: TEXT2 }}>50% de vos dépenses</strong> via votre déclaration d&apos;impôt
       </p>
       <Link href="/contact" className="btn-gradient" style={{ display: "block", textAlign: "center", background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", padding: 15, borderRadius: 30, fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 6px 24px ${T}44`, border: "none" }}>
@@ -167,19 +167,19 @@ function QuickForm() {
       </div>
       <div className="quick-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
         <div>
-          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: TEXT2, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Nom *</label>
-          <input className="form-input" placeholder="Marie Dupont" value={form.nom} onChange={e => setForm(f => ({ ...f, nom: e.target.value }))} required />
+          <label htmlFor="qf-nom" style={{ display: "block", fontSize: 12, fontWeight: 600, color: TEXT2, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Nom *</label>
+          <input id="qf-nom" className="form-input" placeholder="Marie Dupont" value={form.nom} onChange={e => setForm(f => ({ ...f, nom: e.target.value }))} required />
         </div>
         <div>
-          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: TEXT2, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Téléphone *</label>
-          <input className="form-input" placeholder="05 96 XX XX XX" type="tel" value={form.tel} onChange={e => setForm(f => ({ ...f, tel: e.target.value }))} required />
+          <label htmlFor="qf-tel" style={{ display: "block", fontSize: 12, fontWeight: 600, color: TEXT2, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Téléphone *</label>
+          <input id="qf-tel" className="form-input" placeholder="05 96 XX XX XX" type="tel" value={form.tel} onChange={e => setForm(f => ({ ...f, tel: e.target.value }))} required />
         </div>
       </div>
       <div style={{ marginBottom: 20 }}>
-        <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: TEXT2, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Prestation souhaitée *</label>
-        <select className="form-input" value={form.service} onChange={e => setForm(f => ({ ...f, service: e.target.value }))} required
-          style={{ color: form.service ? TEXT : "#94A3B8", background: "#FAFBFC" }}>
-          <option value="" style={{ color: "#94A3B8" }}>Choisir une prestation…</option>
+        <label htmlFor="qf-service" style={{ display: "block", fontSize: 12, fontWeight: 600, color: TEXT2, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Prestation souhaitée *</label>
+        <select id="qf-service" className="form-input" value={form.service} onChange={e => setForm(f => ({ ...f, service: e.target.value }))} required
+          style={{ color: form.service ? TEXT : "#64748B", background: "#FAFBFC" }}>
+          <option value="" style={{ color: "#64748B" }}>Choisir une prestation…</option>
           {SERVICES.map(s => <option key={s.id} value={s.id} style={{ color: TEXT }}>{s.title}</option>)}
         </select>
       </div>
@@ -241,11 +241,12 @@ function FAQ() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }} />
       {FAQ_ITEMS.map((item, i) => (
         <div key={i} className="faq-item">
-          <button className="faq-question" onClick={() => setOpen(open === i ? null : i)}>
+          <button className="faq-question" onClick={() => setOpen(open === i ? null : i)}
+            aria-expanded={open === i} aria-controls={`faq-answer-${i}`}>
             <span>{item.q}</span>
-            <span style={{ fontSize: 20, color: T, flexShrink: 0, transform: open === i ? "rotate(45deg)" : "none", transition: "transform 0.3s ease" }}>+</span>
+            <span aria-hidden style={{ fontSize: 20, color: T, flexShrink: 0, transform: open === i ? "rotate(45deg)" : "none", transition: "transform 0.3s ease" }}>+</span>
           </button>
-          <div className={`faq-answer ${open === i ? "open" : ""}`}>{item.a}</div>
+          <div id={`faq-answer-${i}`} className={`faq-answer ${open === i ? "open" : ""}`}>{item.a}</div>
         </div>
       ))}
     </div>
@@ -404,9 +405,9 @@ export default function HomePage() {
           <SapOfficiel height={112} variant="logo" />
           <div style={{ maxWidth: 440 }}>
             <div className="eyebrow">Statut officiel</div>
-            <h3 className="display" style={{ fontSize: "clamp(21px, 2.5vw, 30px)", marginBottom: 10 }}>
+            <h2 className="display" style={{ fontSize: "clamp(21px, 2.5vw, 30px)", marginBottom: 10 }}>
               Organisme déclaré Services à la Personne
-            </h3>
+            </h2>
             <p style={{ fontSize: 15, color: TEXT2, lineHeight: 1.75 }}>
               Déclaration N° <strong style={{ color: TEXT }}>{DECLARATION_SAP}</strong> auprès de la DEETS Martinique. Toutes nos prestations à domicile ouvrent droit au <strong style={{ color: T }}>crédit d&apos;impôt de 50 %</strong>.
             </p>
@@ -707,7 +708,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <p style={{ textAlign: "center", fontSize: 13.5, color: "#94A3B8" }}>
+          <p style={{ textAlign: "center", fontSize: 13.5, color: "#64748B" }}>
             Hors de ces communes ? <Link href="/contact" style={{ color: TEAL_TEXT, fontWeight: 600 }}>Contactez-nous</Link> — nous étudions chaque demande selon la distance.
           </p>
         </div>

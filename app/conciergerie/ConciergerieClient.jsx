@@ -478,7 +478,7 @@ export default function ConciergeriePage() {
                 </div>
               ))}
             </Reveal>
-            <p style={{ fontSize: 12.5, color: "#94A3B8", textAlign: "center", marginTop: 24 }}>
+            <p style={{ fontSize: 12.5, color: "#64748B", textAlign: "center", marginTop: 24 }}>
               Le % s'applique au chiffre d'affaires locatif encaissé. Sans abonnement fixe : nous sommes rémunérés quand votre bien rapporte.
             </p>
           </div>

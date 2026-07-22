@@ -25,6 +25,16 @@ export default function PinnedFeatureList({ eyebrow, title, intro, items }) {
   const stageRef = useRef(null);
   const [active, setActive] = useState(0);
   const [reduced, setReduced] = useState(false);
+  const [lite, setLite] = useState(false); // mobile/tablette : pas de flou sur le texte défilant (lisibilité)
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 899px)");
+    const apply = () => setLite(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   // ── Scroll : proximité continue par item + item actif ──
   useEffect(() => {
@@ -205,9 +215,9 @@ export default function PinnedFeatureList({ eyebrow, title, intro, items }) {
                 ref={(el) => (itemRefs.current[i] = el)}
                 style={{
                   display: "flex", alignItems: "flex-start", gap: 20,
-                  filter: reduced ? "none" : "blur(calc((1 - var(--proximity, 0)) * 4px)) saturate(calc(0.45 + var(--proximity, 0) * 0.55))",
-                  transform: reduced ? "none" : "scale(calc(0.88 + var(--proximity, 0) * 0.12))",
-                  opacity: reduced ? 1 : "calc(0.28 + var(--proximity, 0) * 0.72)",
+                  filter: (reduced || lite) ? "none" : "blur(calc((1 - var(--proximity, 0)) * 4px)) saturate(calc(0.45 + var(--proximity, 0) * 0.55))",
+                  transform: (reduced || lite) ? "none" : "scale(calc(0.88 + var(--proximity, 0) * 0.12))",
+                  opacity: (reduced || lite) ? 1 : "calc(0.28 + var(--proximity, 0) * 0.72)",
                   transformOrigin: "left center",
                   willChange: "transform, opacity, filter",
                 }}
@@ -216,7 +226,7 @@ export default function PinnedFeatureList({ eyebrow, title, intro, items }) {
                   "--accent": it.color,
                   width: 4, borderRadius: 2, alignSelf: "stretch", flexShrink: 0, minHeight: 90,
                   background: it.color,
-                  opacity: reduced ? 1 : "calc(0.25 + var(--proximity, 0) * 0.75)",
+                  opacity: (reduced || lite) ? 1 : "calc(0.25 + var(--proximity, 0) * 0.75)",
                 }} />
                 <div>
                   <h3 style={{ fontSize: "clamp(21px, 2.4vw, 27px)", fontWeight: 700, color: "#1A2D3D", marginBottom: 12, lineHeight: 1.3 }}>{it.title}</h3>

@@ -1,7 +1,7 @@
 import CoachClient from "./CoachClient";
 
 export const metadata = {
-  title: "Coach en rangement méthode Marie Kondo à domicile en Martinique | J'MTD",
+  title: "Coach en rangement à domicile — Martinique | J'MTD",
   description: "Diagnostic gratuit et accompagnement personnalisé en rangement selon la méthode Marie Kondo, à domicile dans le Centre et le Sud de la Martinique. Formules et tarifs.",
 };
 

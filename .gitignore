@@ -34,3 +34,8 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Logs de developpement local
+dev.log
+dev-err.log
+*.log

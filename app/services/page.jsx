@@ -2,7 +2,7 @@ import ServicesClient from "./ServicesClient";
 import { SERVICES } from "../../lib/data";
 
 export const metadata = {
-  title: "Nos prestations à domicile en Martinique — Ménage, repas, courses | J'MTD",
+  title: "Ménage, repas, courses à domicile — Martinique | J'MTD",
   description: "Ménage, préparation de repas, livraison de courses, assistance administrative et coach rangement à domicile dans le Centre et le Sud de la Martinique. Devis gratuit, crédit d'impôt 50%.",
 };
 

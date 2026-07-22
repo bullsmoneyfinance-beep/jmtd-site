@@ -2,7 +2,7 @@ import FaqClient from "./FaqClient";
 import { FAQ_DATA } from "./faqData";
 
 export const metadata = {
-  title: "FAQ — Questions fréquentes sur nos services à la personne | J'MTD",
+  title: "FAQ — Services à la personne en Martinique | J'MTD",
   description: "Toutes les réponses sur nos tarifs, le crédit d'impôt, nos zones d'intervention et la sécurité de nos services à la personne en Martinique.",
 };
 

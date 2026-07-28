@@ -43,6 +43,8 @@ export async function POST(request) {
           courses:   "🛒 Livraison de courses",
           assistance:"📋 Assistance administrative",
           rangement: "🗂️ Coach en rangement",
+          bureaux:   "🏢 Nettoyage locaux & bureaux",
+          repassage: "👕 Repassage à la pièce",
           jardinage: "🌿 Entretien extérieur & jardinage",
           conciergerie: "🔑 Conciergerie locative (B2B)",
         };

@@ -16,11 +16,13 @@ const OFFER_SCHEMA = {
     "@type": "OfferCatalog",
     name: "Tarifs J'MTD",
     itemListElement: [
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Entretien & Ménage" }, priceCurrency: "EUR", price: "32", priceSpecification: { "@type": "UnitPriceSpecification", price: "32", priceCurrency: "EUR", unitText: "HOUR" } },
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Préparation des repas" }, priceCurrency: "EUR", price: "32", priceSpecification: { "@type": "UnitPriceSpecification", price: "32", priceCurrency: "EUR", unitText: "HOUR" } },
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Livraison de courses" }, priceCurrency: "EUR", price: "28" },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Entretien & Ménage" }, priceCurrency: "EUR", price: "26", priceSpecification: { "@type": "UnitPriceSpecification", price: "26", priceCurrency: "EUR", unitText: "HOUR" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Préparation des repas" }, priceCurrency: "EUR", price: "30", priceSpecification: { "@type": "UnitPriceSpecification", price: "30", priceCurrency: "EUR", unitText: "HOUR" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Livraison de courses" }, priceCurrency: "EUR", price: "26", priceSpecification: { "@type": "UnitPriceSpecification", price: "26", priceCurrency: "EUR", unitText: "HOUR" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Nettoyage locaux & bureaux" }, priceCurrency: "EUR", price: "29", priceSpecification: { "@type": "UnitPriceSpecification", price: "29", priceCurrency: "EUR", unitText: "HOUR" } },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Assistance administrative" }, priceCurrency: "EUR", price: "34", priceSpecification: { "@type": "UnitPriceSpecification", price: "34", priceCurrency: "EUR", unitText: "HOUR" } },
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Entretien extérieur & jardinage" }, priceCurrency: "EUR", price: "36", priceSpecification: { "@type": "UnitPriceSpecification", price: "36", priceCurrency: "EUR", unitText: "HOUR" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Coach en rangement" }, priceCurrency: "EUR", price: "42", priceSpecification: { "@type": "UnitPriceSpecification", price: "42", priceCurrency: "EUR", unitText: "HOUR" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Repassage à la pièce" }, priceCurrency: "EUR", price: "2.60" },
     ],
   },
 };

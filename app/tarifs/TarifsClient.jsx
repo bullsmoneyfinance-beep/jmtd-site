@@ -410,7 +410,7 @@ export default function TarifsPage() {
                   </ul>
                 )}
 
-                <Link href="/contact"
+                <Link href={`/contact?service=${t.id}`}
                   style={{ display: "block", textAlign: "center", padding: "12px", borderRadius: 30, background: t.popular ? `linear-gradient(135deg, ${P}, ${T})` : `${t.color}12`, border: t.popular ? "none" : `1px solid ${t.color}30`, color: t.popular ? "#fff" : t.color, fontWeight: 700, fontSize: 14, textDecoration: "none", marginTop: "auto", transition: "all 0.2s" }}>
                   Demander un devis →
                 </Link>

@@ -19,9 +19,6 @@ const OCEAN = "#12B5B0";   // turquoise océan (accent tropical discret)
 const TEXT = "#1A2D3D";
 const TEXT2 = "#64748B";
 
-/* Tarifs réels par prestation (source /tarifs) — €/h avant crédit d'impôt */
-const PRICES = { entretien: 32, repas: 32, courses: 28, assistance: 34, jardinage: 36 };
-
 /* Couleurs chaudes services à la personne */
 const WARM = "#FFF8F4";
 const WARM_SHADOW = "0 4px 28px rgba(0,0,0,0.06)";

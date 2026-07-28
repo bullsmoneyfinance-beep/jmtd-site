@@ -53,9 +53,10 @@ export default function ContactPage() {
     const service = params.get("service");
     const heures = params.get("heures");
     const zone = params.get("zone");
+    const validServices = [...SERVICES.map(s => s.id), "bureaux", "repassage", "jardinage", "conciergerie"];
     setForm(f => ({
       ...f,
-      service: SERVICES.some(s => s.id === service) ? service : f.service,
+      service: validServices.includes(service) ? service : f.service,
       zone: zone ? zone.slice(0, 60) : f.zone,
       message: /^\d{1,3}$/.test(heures || "")
         ? `Je souhaite environ ${heures} h par mois.`
@@ -188,6 +189,9 @@ export default function ContactPage() {
                     <select id="service" className="inp-focus" style={{ ...inp, color: form.service ? TEXT : "#64748B" }} value={form.service} onChange={set("service")} required>
                       <option value="" style={{ color: "#64748B" }}>Choisir une prestation…</option>
                       {SERVICES.map(s => <option key={s.id} value={s.id} style={{ color: TEXT }}>{s.icon} {s.title}</option>)}
+                      <option value="bureaux" style={{ color: TEXT }}>🏢 Nettoyage locaux & bureaux</option>
+                      <option value="repassage" style={{ color: TEXT }}>👕 Repassage à la pièce</option>
+                      <option value="jardinage" style={{ color: TEXT }}>🌿 Entretien extérieur & jardinage</option>
                       <option value="conciergerie" style={{ color: TEXT }}>🔑 Conciergerie locative (B2B)</option>
                     </select>
                   </Field>

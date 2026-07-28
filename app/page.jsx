@@ -41,8 +41,8 @@ const TICKS = [
   "✦ 50% crédit d'impôt","✦ Centre & Sud Martinique","✦ Réponse en 24h","✦ Devis gratuit",
 ];
 
-// Tarifs réels par prestation (cohérents avec /tarifs) — pas de "18€" trompeur
-const PRIX = { entretien: 32, repas: 32, courses: 28, assistance: 34, jardinage: 36 };
+// Tarifs réels « à partir de » (grille officielle 01/04/2026, tarif le plus engageant) — cohérents avec /tarifs
+const PRIX = { entretien: 26, repas: 30, courses: 26, assistance: 34, rangement: 42 };
 
 function Calculator() {
   const [h, setH] = useState(8);
@@ -433,7 +433,7 @@ export default function HomePage() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
                     style={{ width: "100%", height: 214, objectFit: "cover", display: "block" }} />
                   <div style={{ position: "absolute", bottom: 12, right: 12, background: "rgba(255,255,255,0.97)", backdropFilter: "blur(8px)", borderRadius: 20, padding: "5px 14px", fontSize: 12, fontWeight: 700, color: s.special ? P : T, boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
-                    {s.id === "rangement" ? "Sur devis" : `À partir de ${PRIX[s.id] || 32}€/h`}
+                    {`À partir de ${PRIX[s.id] || 30}€/h`}
                   </div>
                   {s.special && (
                     <div style={{ position: "absolute", top: 14, left: 14, display: "inline-flex", alignItems: "center", gap: 5, background: P, color: "#fff", fontSize: 11, fontWeight: 700, padding: "5px 14px", borderRadius: 20 }}><Icon name="star" size={13} color="#fff" strokeWidth={2.2} /> Spécialité</div>

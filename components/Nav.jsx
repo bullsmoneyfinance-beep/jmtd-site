@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Icon from "./Icon";
-import { PHONE, PHONE_HREF, SERVICES, YOUTUBE, WHATSAPP, TEAL_TEXT } from "../lib/data";
+import { PHONE, PHONE_HREF, SERVICES, WHATSAPP, TEAL_TEXT } from "../lib/data";
 
 const T = "#0DA9A4";       // teal vif — FONDS / dégradés / bordures déco
 const TT = TEAL_TEXT;      // teal accessible — TEXTE / liens / petites icônes

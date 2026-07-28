@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Icon, { IconTile } from "../../components/Icon";
-import { YOUTUBE, PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
+import { PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
 import { ARTICLES } from "./articlesData";
 import useParallax from "../../lib/useParallax";
 
@@ -222,13 +222,12 @@ function ArticleModal({ article, onClose }) {
             <div style={{ background: "linear-gradient(135deg, #1a0000, #2a0000)", borderRadius: 18, padding: "20px 22px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 16 }}>
               <div style={{ width: 48, height: 48, borderRadius: 12, background: "#FF0000", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0, boxShadow: "0 4px 16px rgba(255,0,0,0.4)" }}>▶</div>
               <div style={{ flex: 1, minWidth: 180 }}>
-                <div style={{ fontWeight: 700, color: "#fff", fontSize: 15, marginBottom: 3 }}>Retrouvez ce conseil en vidéo</div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>Plus de détails et démos sur notre chaîne YouTube J&apos;MTD</div>
+                <div style={{ fontWeight: 700, color: "#fff", fontSize: 15, marginBottom: 3 }}>Bientôt ce conseil en vidéo</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>Notre chaîne YouTube J&apos;MTD arrive prochainement</div>
               </div>
-              <a href={YOUTUBE} target="_blank" rel="noopener noreferrer"
-                style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", borderRadius: 30, background: "#FF0000", color: "#fff", fontWeight: 800, fontSize: 13, textDecoration: "none", boxShadow: "0 4px 14px rgba(255,0,0,0.4)", flexShrink: 0, whiteSpace: "nowrap" }}>
-                ▶ Voir la vidéo
-              </a>
+              <span style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", borderRadius: 30, background: "rgba(255,255,255,0.14)", color: "#fff", fontWeight: 800, fontSize: 13, flexShrink: 0, whiteSpace: "nowrap" }}>
+                ▶ À venir
+              </span>
             </div>
 
             {/* Contact CTA */}
@@ -294,12 +293,10 @@ export default function ConseilsPage() {
             Des conseils concrets pour un intérieur impeccable, même sans nous !
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
-            <a href={YOUTUBE} target="_blank" rel="noopener noreferrer"
-              style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 28px", borderRadius: 30, background: "#FF0000", color: "#fff", fontWeight: 800, fontSize: 15, textDecoration: "none", boxShadow: "0 8px 28px rgba(255,0,0,0.3)", transition: "transform 0.2s, box-shadow 0.2s" }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 36px rgba(255,0,0,0.4)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(255,0,0,0.3)"; }}>
-              ▶ Notre chaîne YouTube
-            </a>
+            <span
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 28px", borderRadius: 30, background: "rgba(255,0,0,0.12)", border: "1.5px solid rgba(255,0,0,0.35)", color: "#E23B3B", fontWeight: 800, fontSize: 15 }}>
+              ▶ Chaîne YouTube — à venir
+            </span>
             <a href="#conseils"
               style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 30, background: `${T}10`, border: `1.5px solid ${T}30`, color: TEAL_TEXT, fontWeight: 700, fontSize: 15, textDecoration: "none", transition: "all 0.2s" }}
               onMouseEnter={e => { e.currentTarget.style.background = `${T}18`; }}
@@ -320,17 +317,17 @@ export default function ConseilsPage() {
                 <span style={{ fontSize: 12, fontWeight: 700, color: "#FF6B6B", textTransform: "uppercase", letterSpacing: 1.5 }}>Chaîne YouTube J&apos;MTD</span>
               </div>
               <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(22px, 3vw, 34px)", fontWeight: 700, color: "#F8FAFC", lineHeight: 1.25, margin: 0 }}>
-                Des vidéos conseils{" "}
-                <span style={{ color: "#FF6B6B" }}>chaque semaine</span>
+                Des vidéos conseils,{" "}
+                <span style={{ color: "#FF6B6B" }}>bientôt en ligne</span>
               </h2>
               <p style={{ fontSize: 14, color: "#64748B", lineHeight: 1.8, margin: 0 }}>
-                Tutoriels ménage, astuces rangement, comparatifs produits… On partage tout ce que nos professionnelles ont appris en des années d&apos;expérience.
+                Tutoriels ménage, astuces rangement, comparatifs produits… Nous préparons une chaîne pour partager tout ce que nos professionnelles ont appris en des années d&apos;expérience.
               </p>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                <a href={YOUTUBE} target="_blank" rel="noopener noreferrer"
-                  style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 24px", borderRadius: 30, background: "#FF0000", color: "#fff", fontWeight: 800, fontSize: 14, textDecoration: "none" }}>
-                  ▶ S&apos;abonner gratuitement
-                </a>
+                <span
+                  style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 24px", borderRadius: 30, background: "rgba(255,0,0,0.14)", border: "1px solid rgba(255,0,0,0.4)", color: "#FF6B6B", fontWeight: 800, fontSize: 14 }}>
+                  ▶ Chaîne à venir
+                </span>
               </div>
             </div>
             <div className="yt-banner-right" style={{ background: "linear-gradient(135deg, #1a0000 0%, #2d0000 100%)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden", minHeight: 240 }}>
@@ -339,7 +336,7 @@ export default function ConseilsPage() {
                 <div style={{ width: 96, height: 96, borderRadius: "50%", background: "rgba(255,0,0,0.9)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", boxShadow: "0 0 60px rgba(255,0,0,0.4)", animation: "glowRed 3s ease-in-out infinite" }}>
                   <span style={{ fontSize: 36, marginLeft: 6 }}>▶</span>
                 </div>
-                <div style={{ fontSize: 13, color: "#64748B" }}>Cliquez pour voir nos vidéos</div>
+                <div style={{ fontSize: 13, color: "#64748B" }}>Bientôt en ligne</div>
               </div>
             </div>
           </div>
@@ -418,16 +415,16 @@ export default function ConseilsPage() {
           <div className="reveal">
             <div style={{ fontSize: 56, marginBottom: 20 }}>📺</div>
             <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 16 }}>
-              Abonnez-vous pour ne rien rater
+              Bientôt sur YouTube
             </h2>
             <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.8, marginBottom: 36, maxWidth: 520, margin: "0 auto 36px" }}>
-              Chaque semaine, une nouvelle vidéo avec des astuces exclusives de nos professionnelles. C&apos;est gratuit, en français, depuis la Martinique.
+              Nous préparons une chaîne avec des astuces exclusives de nos professionnelles — gratuite, en français, depuis la Martinique. Elle arrive bientôt !
             </p>
             <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
-              <a href={YOUTUBE} target="_blank" rel="noopener noreferrer"
-                style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 32px", borderRadius: 30, background: "#FF0000", color: "#fff", fontWeight: 800, fontSize: 16, textDecoration: "none", boxShadow: "0 8px 32px rgba(255,0,0,0.3)" }}>
-                ▶ Voir la chaîne YouTube
-              </a>
+              <span
+                style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 32px", borderRadius: 30, background: "rgba(255,0,0,0.1)", border: "1.5px solid rgba(255,0,0,0.35)", color: "#E23B3B", fontWeight: 800, fontSize: 16 }}>
+                ▶ Chaîne YouTube — à venir
+              </span>
               <Link href="/contact"
                 style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none", boxShadow: `0 8px 28px ${T}40` }}>
                 Demander un devis →

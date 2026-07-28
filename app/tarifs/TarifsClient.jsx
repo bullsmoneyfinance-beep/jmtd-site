@@ -73,12 +73,12 @@ const focusCard = (reduced) => reduced ? null : {
 // Prix net après crédit d'impôt 50 % — formatage FR (virgule décimale)
 const net = (v) => (v / 2).toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
-// Formules d'abonnement ménage — dégressif selon le volume hebdomadaire (positionnement premium)
+// Formules d'abonnement ménage — dégressif selon la durée d'engagement (grille officielle : 30/28/27/26 €/h)
 const ABONNEMENTS = [
-  { key: "ponctuel", label: "Ponctuel", tag: "Sans engagement", taux: 32, desc: "À la demande, quand vous voulez", features: ["Intervention à la carte", "Minimum 2h par passage", "Idéal pour un grand ménage"] },
-  { key: "essentiel", label: "Essentiel", tag: "2 h / semaine", taux: 30, desc: "Le rythme confort pour un intérieur toujours net", features: ["Intervenante attitrée", "Créneau fixe réservé", "Produits fournis"] },
-  { key: "confort", label: "Confort", tag: "3 à 4 h / semaine", taux: 29, popular: true, desc: "Notre formule la plus choisie", features: ["Intervenante attitrée", "Priorité sur le planning", "Repassage inclus", "Suivi qualité"] },
-  { key: "premium", label: "Premium", tag: "6 h et + / semaine", taux: 28, desc: "Prise en charge complète de la maison", features: ["Référent dédié", "Planning sur-mesure", "Remplacement garanti", "Bilan mensuel"] },
+  { key: "ponctuel", label: "Ponctuel", tag: "Sans engagement", taux: 30, desc: "À la demande, quand vous voulez", features: ["Intervention à la carte", "Minimum 2h par semaine", "Idéal pour un grand ménage"] },
+  { key: "mensuel", label: "Mensuel", tag: "Engagement 1 mois", taux: 28, desc: "Le rythme confort pour un intérieur toujours net", features: ["Intervenante attitrée", "Créneau fixe réservé", "Produits fournis"] },
+  { key: "trimestriel", label: "Trimestriel", tag: "Engagement 3 mois", taux: 27, popular: true, desc: "Notre formule la plus choisie", features: ["Intervenante attitrée", "Priorité sur le planning", "Suivi qualité"] },
+  { key: "annuel", label: "Annuel", tag: "Engagement 1 an", taux: 26, desc: "Le meilleur tarif, prise en charge complète", features: ["Référent dédié", "Planning sur-mesure", "Remplacement garanti", "Bilan régulier"] },
 ];
 
 const TARIFS = [
@@ -86,11 +86,11 @@ const TARIFS = [
     id: "entretien",
     icon: "entretien",
     title: "Entretien & Ménage",
-    from: 32,
+    from: 26,
     unit: "h",
     popular: true,
-    desc: "Ménage complet, repassage, vitres et surfaces, désinfection. Intervenante attitrée, produits professionnels fournis.",
-    includes: ["Ménage complet du domicile", "Repassage & entretien du linge", "Nettoyage vitres & surfaces", "Sols : aspiration + lavage", "Désinfection pièces humides"],
+    desc: "Ménage complet, vitres et surfaces, désinfection. Intervenante attitrée, produits professionnels fournis.",
+    includes: ["Ménage complet du domicile", "Nettoyage vitres & surfaces", "Sols : aspiration + lavage", "Désinfection pièces humides", "Minimum 2h par semaine"],
     color: TEAL_TEXT,
     note: "Formules d'abonnement dégressives ci-dessous",
   },
@@ -98,23 +98,34 @@ const TARIFS = [
     id: "repas",
     icon: "repas",
     title: "Préparation des repas",
-    from: 32,
+    from: 30,
     unit: "h",
     popular: false,
-    desc: "Cuisine faite maison à votre domicile, selon vos goûts, régimes et contraintes diététiques.",
-    includes: ["Repas équilibrés & savoureux", "Respect des régimes alimentaires", "Aide aux personnes à mobilité réduite", "Rangement & nettoyage après cuisson"],
+    desc: "Cuisine faite maison à votre domicile, temps de courses et commissions inclus, selon vos goûts et régimes.",
+    includes: ["Repas équilibrés & savoureux", "Temps de courses / commissions inclus", "Respect des régimes alimentaires", "Rangement & nettoyage après cuisson"],
     color: P,
   },
   {
     id: "courses",
     icon: "courses",
     title: "Livraison de courses",
-    from: 28,
-    unit: "prestation",
+    from: 26,
+    unit: "h",
     popular: false,
     desc: "Vos commissions faites selon votre liste et livrées chez vous, dans le Centre et le Sud de la Martinique.",
     includes: ["Courses sur liste personnalisée", "Livraison à domicile", "Gestion produits frais & surgelés", "Rangement des courses à domicile"],
     color: "#10B981",
+  },
+  {
+    id: "bureaux",
+    icon: "entretien",
+    title: "Nettoyage locaux & bureaux",
+    from: 29,
+    unit: "h",
+    popular: false,
+    desc: "Entretien professionnel de vos locaux et bureaux. Tarif dégressif selon la fréquence d'intervention.",
+    includes: ["Nettoyage complet des locaux", "Sanitaires & parties communes", "Sols & surfaces de travail", "Fréquence adaptée à votre activité"],
+    color: "#0EA5E9",
   },
   {
     id: "assistance",
@@ -128,32 +139,42 @@ const TARIFS = [
     color: "#F59E0B",
   },
   {
-    id: "jardinage",
-    icon: "jardinage",
-    title: "Entretien extérieur & jardinage",
-    from: 36,
-    unit: "h",
-    popular: false,
-    desc: "Petits travaux de jardinage et entretien des extérieurs de votre domicile.",
-    includes: ["Tonte, taille & désherbage", "Entretien des massifs & terrasses", "Ramassage & évacuation des déchets verts", "Nettoyage des abords"],
-    color: "#16A34A",
-    cap: "Plafond crédit d'impôt : 5 000 €/an/foyer",
-  },
-  {
     id: "rangement",
     icon: "rangement",
     title: "Coach en rangement",
+    from: 42,
+    unit: "h",
+    popular: false,
+    desc: "Rangement guidé et organisation de votre intérieur, pièce par pièce. Diagnostic-conseil offert avant toute prestation.",
+    includes: ["Rangement guidé pièce par pièce", "Tri & désencombrement", "Méthode d'organisation durable", "+ 15€ de frais de déplacement"],
+    color: P,
+  },
+  {
+    id: "repassage",
+    icon: "entretien",
+    title: "Repassage à la pièce",
+    from: null,
+    unit: "pièce",
+    priceLabel: "À la pièce",
+    popular: false,
+    desc: "Repassage soigné, facturé à la pièce. Disponible à Rivière-Salée uniquement.",
+    color: "#8B5CF6",
+    formules: [
+      { label: "Linge délicat", price: "4,50€ / pièce", desc: "Chemises, chemisiers, blouses, jupes plissées, robes, draps" },
+      { label: "Vêtements du quotidien", price: "2,60€ / pièce", desc: "Tarif unique à la pièce, non dégressif" },
+    ],
+  },
+  {
+    id: "jardinage",
+    icon: "jardinage",
+    title: "Entretien extérieur & jardinage",
     from: null,
     unit: null,
+    priceLabel: "Sur devis",
     popular: false,
-    desc: "Méthode Marie Kondo — 3 formules adaptées à votre intérieur et votre rythme.",
-    includes: [],
-    color: P,
-    formules: [
-      { label: "Diagnostic conseil", price: "Offert", desc: "Visite + plan de rangement personnalisé" },
-      { label: "Séance accompagnée", price: "165€ / 3h", desc: "Rangement guidé, pièce par pièce" },
-      { label: "Rangement intégral", price: "Sur devis", desc: "Prise en charge complète du domicile" },
-    ],
+    desc: "Petits travaux de jardinage et entretien des extérieurs de votre domicile — sur devis personnalisé.",
+    includes: ["Tonte, taille & désherbage", "Entretien des massifs & terrasses", "Ramassage & évacuation des déchets verts", "Nettoyage des abords"],
+    color: "#16A34A",
   },
 ];
 
@@ -176,7 +197,7 @@ function SimulateurCredit() {
           <label style={{ fontSize: 12, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, display: "block", marginBottom: 8 }}>
             Taux horaire (€/h)
           </label>
-          <input type="range" min="20" max="40" value={tauxH} onChange={e => setTauxH(+e.target.value)}
+          <input type="range" min="24" max="42" value={tauxH} onChange={e => setTauxH(+e.target.value)}
             style={{ width: "100%", accentColor: T, cursor: "pointer" }} />
           <div style={{ textAlign: "center", fontSize: 22, fontWeight: 800, color: TEAL_TEXT, marginTop: 6 }}>{tauxH}€/h</div>
         </div>
@@ -351,7 +372,7 @@ export default function TarifsPage() {
                         <div style={{ fontSize: 11, color: TEAL_TEXT, fontWeight: 600, marginTop: 1 }}>→ {Math.round(t.from / 2)}€/{t.unit} après crédit d'impôt</div>
                       </div>
                     ) : (
-                      <div style={{ marginTop: 4, fontSize: 13, color: MUTED }}>3 formules disponibles</div>
+                      <div style={{ marginTop: 4, fontSize: 18, fontWeight: 800, color: t.color }}>{t.priceLabel || "Sur devis"}</div>
                     )}
                   </div>
                 </div>
@@ -421,7 +442,7 @@ export default function TarifsPage() {
               Formules d'abonnement
             </h2>
             <p style={{ fontSize: 15, color: MUTED, maxWidth: 560, margin: "0 auto 44px", textAlign: "center" }}>
-              Un tarif dégressif selon votre volume hebdomadaire. Intervenante attitrée et créneau réservé dès la formule Essentiel.
+              Un tarif dégressif selon votre durée d'engagement. Intervenante attitrée et créneau réservé dès la formule mensuelle.
             </p>
           </Reveal>
 

@@ -4,7 +4,7 @@ import { scoreCandidature } from "../../../lib/scoring";
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { prenom, nom, tel, email, commune, postes, experience, transport, dispo_heures, dispo_jours, situation, motivation, discretion, references, formation, infos_plus } = body;
+    const { prenom, nom, tel, email, commune, postes, experience, transport, dispo_heures, dispo_jours, situation, motivation, discretion, references, formation, infos_plus, offreId, offreTitre } = body;
 
     // ── 1. Sauvegarde candidature ──
     const existing = serverGet("jmtd_candidatures", []);
@@ -27,6 +27,8 @@ export async function POST(request) {
       references: references || "",
       formation: formation || "",
       infos_plus: infos_plus || "",
+      offreId: offreId || "",
+      offreTitre: offreTitre || "",
     };
     serverSet("jmtd_candidatures", [candidature, ...existing]);
 
@@ -121,6 +123,7 @@ export async function POST(request) {
 
     <div class="section">
       <div class="sec-title">💼 Profil</div>
+      ${offreTitre ? `<div class="row"><span class="label">Offre visée</span><span class="value">🎯 ${offreTitre}</span></div>` : ""}
       <div class="row"><span class="label">Poste(s)</span><span class="value">${postesStr}</span></div>
       <div class="row"><span class="label">Expérience</span><span class="value">${expStr}</span></div>
       ${body.experience_detail ? `<div style="margin-bottom:10px;"><div class="label" style="margin-bottom:4px;">Détail expérience</div><div class="msg">${body.experience_detail}</div></div>` : ""}

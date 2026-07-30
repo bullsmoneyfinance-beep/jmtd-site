@@ -7,6 +7,7 @@ import { DEMO_EMPS, AMBER, PINK, NAVY, EMERALD, PHONE, EMAIL, ADDRESS, FONDATRIC
 import { scoreCandidature, triageCandidatures, scoreToStars, TIERS, POSTE_LABELS, EXP_LABELS, TRANSPORT_LABELS, DISPO_LABELS } from "../../lib/scoring";
 import ClientsTab from "../../components/admin/ClientsTab";
 import ActiviteTab from "../../components/admin/ActiviteTab";
+import OffresTab from "../../components/admin/OffresTab";
 
 const T = AMBER;   // teal
 const P = PINK;    // rose
@@ -212,6 +213,7 @@ const TABS = [
   { id: "employees",    icon: "👥", label: "Équipe" },
   { id: "quotes",       icon: "📨", label: "Demandes" },
   { id: "candidatures", icon: "🎯", label: "Candidatures" },
+  { id: "offres",       icon: "📢", label: "Offres" },
   { id: "settings",     icon: "⚙️", label: "Paramètres" },
 ];
 
@@ -1107,6 +1109,8 @@ export default function AdminPage() {
 
         {/* ═══ CANDIDATURES ═══ */}
         {tab === "clients" && <ClientsTab />}
+
+        {tab === "offres" && <OffresTab />}
 
         {tab === "activite" && <ActiviteTab />}
 

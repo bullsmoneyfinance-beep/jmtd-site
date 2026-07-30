@@ -1,7 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PHONE, PHONE_HREF, WHATSAPP, TEAL_TEXT } from "../../lib/data";
+import { load } from "../../lib/storage";
+import { DEFAULT_OFFERS } from "./offersData";
 
 const T = "#0DA9A4";
 const P = "#D4197A";
@@ -63,6 +65,7 @@ const DEFAULT_FORM = {
   references: "",
   formation: "",
   infos_plus: "",
+  offreId: "", offreTitre: "",
   rgpd: false,
 };
 
@@ -127,6 +130,12 @@ export default function RecrutementPage() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState("");
+  const [offers, setOffers] = useState(DEFAULT_OFFERS);
+
+  useEffect(() => {
+    load("jmtd_offers", DEFAULT_OFFERS).then(list => { if (Array.isArray(list)) setOffers(list); });
+  }, []);
+  const activeOffers = offers.filter(o => o.statut !== "pourvue");
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
 
@@ -170,6 +179,16 @@ export default function RecrutementPage() {
   const scrollToForm = () => {
     const el = document.getElementById("formulaire");
     if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" });
+  };
+
+  const postulerOffre = (offre) => {
+    setForm(f => ({
+      ...f,
+      offreId: offre.id,
+      offreTitre: offre.titre,
+      postes: offre.poste && !f.postes.includes(offre.poste) ? [...f.postes, offre.poste] : f.postes,
+    }));
+    scrollToForm();
   };
 
   const goNext = () => {
@@ -258,6 +277,65 @@ export default function RecrutementPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Offres en cours ── */}
+      {activeOffers.length > 0 && (
+        <section id="offres" style={{ background: "linear-gradient(180deg, #fff 0%, #F8FAFB 100%)", padding: "64px 24px 44px" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 36 }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${P}0e`, border: `1px solid ${P}28`, borderRadius: 30, padding: "6px 16px", marginBottom: 14 }}>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#E23B3B", flexShrink: 0 }} />
+                <span style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: 1.2 }}>{activeOffers.length} poste{activeOffers.length > 1 ? "s" : ""} à pourvoir</span>
+              </div>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(24px, 3.5vw, 38px)", fontWeight: 700, color: TEXT, marginBottom: 8 }}>Nos offres du moment</h2>
+              <p style={{ fontSize: 15, color: MUTED, maxWidth: 520, margin: "0 auto" }}>Postulez directement à l&apos;une de nos offres — votre candidature nous parvient aussitôt.</p>
+            </div>
+
+            <div style={{ display: "grid", gap: 20 }}>
+              {activeOffers.map(o => (
+                <div key={o.id} style={{ background: "#fff", borderRadius: 22, border: "1px solid rgba(13,169,164,0.14)", borderLeft: `4px solid ${o.urgent ? "#E23B3B" : T}`, boxShadow: "0 8px 34px rgba(13,27,42,0.07)", padding: "28px 26px", position: "relative" }}>
+                  {o.urgent && (
+                    <span style={{ position: "absolute", top: 20, right: 22, display: "inline-flex", alignItems: "center", gap: 5, background: "#E23B3B", color: "#fff", fontSize: 11, fontWeight: 800, padding: "4px 12px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.6 }}>⚡ Urgent</span>
+                  )}
+                  <h3 style={{ fontSize: 20, fontWeight: 800, color: TEXT, marginBottom: 12, paddingRight: 92, lineHeight: 1.3 }}>{o.titre}</h3>
+
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+                    {[["📄", o.contrat], ["📍", o.lieu], ["🕒", o.horaires], ["📅", o.prisePoste]].filter(([, v]) => v).map(([ic, v]) => (
+                      <span key={v} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5, fontWeight: 600, color: "#334155", background: "#F1F5F9", borderRadius: 20, padding: "6px 12px" }}>{ic} {v}</span>
+                    ))}
+                  </div>
+
+                  <p style={{ fontSize: 14.5, color: "#475569", lineHeight: 1.75, marginBottom: o.profil?.length ? 16 : 20 }}>{o.description}</p>
+
+                  {o.profil?.length > 0 && (
+                    <div style={{ marginBottom: 18 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 0.6, marginBottom: 8 }}>Profil recherché</div>
+                      <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 7 }}>
+                        {o.profil.map(p => (
+                          <li key={p} style={{ display: "flex", alignItems: "flex-start", gap: 9, fontSize: 13.5, color: "#334155", lineHeight: 1.55 }}>
+                            <span style={{ color: T, fontWeight: 800, flexShrink: 0 }}>✓</span> {p}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {o.evolution && (
+                    <div style={{ background: `${T}07`, border: `1px solid ${T}18`, borderRadius: 12, padding: "12px 15px", marginBottom: 20, fontSize: 13, color: "#475569", lineHeight: 1.65 }}>
+                      <strong style={{ color: TEXT }}>Évolution :</strong> {o.evolution}
+                    </div>
+                  )}
+
+                  <button onClick={() => postulerOffre(o)}
+                    style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 28px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 800, fontSize: 14.5, border: "none", cursor: "pointer", boxShadow: `0 6px 22px ${T}44` }}>
+                    Postuler à cette offre →
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Processus ── */}
       <section style={{ background: "#F8FAFB", padding: "72px 24px" }}>
@@ -350,6 +428,14 @@ export default function RecrutementPage() {
             <p style={{ fontSize: 15, color: MUTED, maxWidth: 520, margin: "0 auto" }}>
               Prenez le temps de répondre soigneusement à chaque question. C&apos;est votre première impression.
             </p>
+            {form.offreTitre && !sent && (
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginTop: 18, background: `${T}0e`, border: `1px solid ${T}30`, borderRadius: 30, padding: "8px 18px" }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 0.6 }}>Candidature pour</span>
+                <span style={{ fontSize: 13.5, fontWeight: 800, color: TEXT }}>{form.offreTitre}</span>
+                <button onClick={() => setForm(f => ({ ...f, offreId: "", offreTitre: "" }))}
+                  aria-label="Retirer l'offre" style={{ background: "none", border: "none", color: MUTED, cursor: "pointer", fontSize: 16, lineHeight: 1, padding: 0 }}>×</button>
+              </div>
+            )}
           </div>
 
           {sent ? (
@@ -581,6 +667,7 @@ export default function RecrutementPage() {
                           ["Téléphone", form.tel || "—"],
                           ["Commune", form.commune || "—"],
                           ["Poste(s) visé(s)", form.postes.length > 0 ? `${form.postes.length} sélectionné(s)` : "—"],
+                          ...(form.offreTitre ? [["Offre visée", form.offreTitre]] : []),
                         ].map(([k, v]) => (
                           <div key={k} style={{ fontSize: 13 }}>
                             <span style={{ color: MUTED, fontSize: 11 }}>{k} : </span>

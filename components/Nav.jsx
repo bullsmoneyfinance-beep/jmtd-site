@@ -79,7 +79,7 @@ export default function Nav() {
 
   const linkStyle = active => ({
     position: "relative", background: "none", border: "none", cursor: "pointer",
-    padding: "8px 13px", fontSize: 14, fontWeight: active ? 600 : 500,
+    padding: "8px 10px", fontSize: 14, fontWeight: active ? 600 : 500,
     color: active ? "#1A2D3D" : "#64748B", transition: "color 0.2s",
     textDecoration: "none", display: "block", whiteSpace: "nowrap",
   });
@@ -119,11 +119,11 @@ export default function Nav() {
 
         {/* ── Barre principale ── */}
         <div style={{
-          maxWidth: 1200, margin: "0 auto",
+          maxWidth: 1280, margin: "0 auto",
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "0 28px",
+          padding: "0 22px",
           height: scrolled ? 68 : 80,
-          gap: 16,
+          gap: 12,
           transition: "height 0.4s cubic-bezier(0.16,1,0.3,1)",
         }}>
 
@@ -133,7 +133,7 @@ export default function Nav() {
           </Link>
 
           {/* Nav desktop */}
-          <nav className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: 0, flex: 1, justifyContent: "center" }}>
+          <nav className="nav-desktop" style={{ alignItems: "center", gap: 0, flex: 1, justifyContent: "center" }}>
             <Link href="/" className="nav-link-hover" style={linkStyle(pathname === "/")}>Accueil</Link>
 
             {/* Dropdown prestations */}
@@ -168,11 +168,10 @@ export default function Nav() {
               )}
             </div>
 
-            <Link href="/conciergerie" className="nav-link-hover" style={{ ...linkStyle(isActive("/conciergerie")), display: "inline-flex", alignItems: "center", gap: 6 }}><Icon name="cle" size={16} color="currentColor" /> Conciergerie</Link>
-            <Link href="/coach"    className="nav-link-hover" style={linkStyle(isActive("/coach"))}>Coach rangement</Link>
+            <Link href="/conciergerie" className="nav-link-hover" style={linkStyle(isActive("/conciergerie"))}>Conciergerie</Link>
             <Link href="/coaching" className="nav-link-hover" style={linkStyle(isActive("/coaching"))}>Mon coaching</Link>
             <Link href="/tarifs"   className="nav-link-hover" style={linkStyle(isActive("/tarifs"))}>Tarifs</Link>
-            <Link href="/conseils" className="nav-link-hover" style={{ ...linkStyle(isActive("/conseils")), display: "inline-flex", alignItems: "center", gap: 6 }}><Icon name="conseils" size={16} color="currentColor" /> Conseils</Link>
+            <Link href="/conseils" className="nav-link-hover" style={linkStyle(isActive("/conseils"))}>Conseils</Link>
             <Link href="/contact"  className="nav-link-hover" style={linkStyle(isActive("/contact"))}>Contact</Link>
 
             {/* Espace Équipe */}
@@ -215,7 +214,7 @@ export default function Nav() {
 
           {/* CTAs desktop */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-            <Link href="/recrutement" className="hide-mobile"
+            <Link href="/recrutement" className="nav-cta-join"
               aria-label={openPositions > 0 ? `Nous rejoindre — ${openPositions} poste(s) à pourvoir` : "Nous rejoindre"}
               style={{ position: "relative", padding: "9px 16px", borderRadius: 30, border: `1.5px solid ${isActive("/recrutement") ? T : `${T}35`}`, background: isActive("/recrutement") ? `${T}12` : (openPositions > 0 ? `${T}0a` : "transparent"), color: TT, fontWeight: 700, fontSize: 13, textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 8, transition: "all 0.2s" }}>
               {openPositions > 0 && (
@@ -233,8 +232,8 @@ export default function Nav() {
             </Link>
 
             {/* Burger mobile */}
-            <button onClick={() => setMobileOpen(o => !o)} className="show-mobile"
-              aria-label="Menu" aria-expanded={mobileOpen} aria-controls="nav-mobile-panel" style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", gap: 5, padding: 6 }}>
+            <button onClick={() => setMobileOpen(o => !o)} className="nav-burger"
+              aria-label="Menu" aria-expanded={mobileOpen} aria-controls="nav-mobile-panel" style={{ background: "none", border: "none", cursor: "pointer", flexDirection: "column", gap: 5, padding: 6 }}>
               {[0,1,2].map(i => (
                 <span key={i} style={{ width: 22, height: 2, borderRadius: 1, display: "block", transition: "all 0.25s", background: "#1A2D3D", transform: mobileOpen && i===0 ? "rotate(45deg) translate(5px,5px)" : mobileOpen && i===2 ? "rotate(-45deg) translate(5px,-5px)" : "none", opacity: mobileOpen && i===1 ? 0 : 1 }} />
               ))}
@@ -244,7 +243,7 @@ export default function Nav() {
 
         {/* ── Menu mobile déroulant ── */}
         {mobileOpen && (
-          <div id="nav-mobile-panel" style={{ background: "#fff", borderTop: `1px solid rgba(13,169,164,0.1)`, padding: "16px 24px 24px", animation: "slideDown 0.22s ease" }}>
+          <div id="nav-mobile-panel" className="nav-mobile-panel" style={{ background: "#fff", borderTop: `1px solid rgba(13,169,164,0.1)`, padding: "16px 24px 24px", animation: "slideDown 0.22s ease" }}>
             {[["/","home","Accueil"],["/services","maintenance","Nos prestations"],["/conciergerie","cle","Conciergerie locative"],["/coach","rangement","Coach rangement"],["/coaching","sparkles","Mon coaching"],["/tarifs","wallet","Tarifs"],["/conseils","conseils","Conseils & astuces"],["/faq","faq","FAQ"],["/contact","mail","Contact & Devis"],["/recrutement","users","Rejoindre l'équipe"]].map(([href, ic, label]) => (
               <Link key={href} href={href} style={{ display: "flex", alignItems: "center", gap: 11, padding: "13px 0", borderBottom: "1px solid rgba(13,169,164,0.07)", fontSize: 15, color: pathname === href ? T : "#475569", fontWeight: pathname === href ? 600 : 400, textDecoration: "none" }}>
                 <Icon name={ic} size={18} color={pathname === href ? T : "#94A3B8"} /> {label}

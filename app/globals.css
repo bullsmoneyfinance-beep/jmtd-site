@@ -122,6 +122,27 @@ a { color: inherit; text-decoration: none; }
   .site-footer { padding-bottom: 84px; }
 }
 
+/* ── Navigation responsive : le menu complet ne s'affiche que s'il tient ── */
+.nav-desktop  { display: flex; }
+.nav-burger   { display: none !important; }
+.nav-cta-join { display: inline-flex; }
+@media (max-width: 1240px) {
+  .nav-desktop  { display: none !important; }
+  .nav-burger   { display: flex !important; }
+  .nav-cta-join { display: none !important; }
+}
+/* Menu mobile déroulant : toujours scrollable, jamais coupé hors écran */
+.nav-mobile-panel {
+  max-height: calc(100dvh - 116px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+/* Le panneau mobile ne doit jamais rester visible en mode desktop (ex. après redimensionnement) */
+@media (min-width: 1241px) {
+  .nav-mobile-panel { display: none !important; }
+}
+
 /* ── Reveal scroll ── */
 .reveal {
   opacity: 0;

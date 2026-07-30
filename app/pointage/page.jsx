@@ -16,13 +16,6 @@ function dur(s, e)   { const d = Math.floor((e - s) / 60000); return `${Math.flo
 function sameDay(a, b){ const A=new Date(a),B=new Date(b); return A.getDate()===B.getDate()&&A.getMonth()===B.getMonth()&&A.getFullYear()===B.getFullYear(); }
 
 /* ─── Timer live ─── */
-function LiveTimer({ start }) {
-  const [el, setEl] = useState(Date.now() - start);
-  useEffect(() => { const id = setInterval(() => setEl(Date.now() - start), 1000); return () => clearInterval(id); }, [start]);
-  const h = Math.floor(el/3600000), m = Math.floor((el%3600000)/60000), s = Math.floor((el%60000)/1000);
-  return <>{String(h).padStart(2,"0")}:{String(m).padStart(2,"0")}:{String(s).padStart(2,"0")}</>;
-}
-
 /* ─── GPS ─── */
 function getGPS() {
   return new Promise((res, rej) => {
@@ -36,21 +29,18 @@ function getGPS() {
 }
 
 /* ─── Carte RDV ─── */
-function RdvCard({ rdv, active, onStart, onEnd, loading }) {
+function RdvCard({ rdv, onValidate, loading }) {
   const now = Date.now();
   const isToday    = sameDay(rdv.date, now);
-  const isPast     = rdv.date + (rdv.duration||120) * 60000 < now;
-  const isLinked   = active?.appointmentId === rdv.id;
-  const isActive   = rdv.status === "in-progress" || isLinked;
   const isDone     = rdv.status === "done";
   const isCancelled= rdv.status === "cancelled";
-  const canStart   = !active && !isPast && !isDone && !isCancelled;
+  const canValidate= !isDone && !isCancelled;
 
   const statusMap  = { done: [G,"Terminé ✓"], "in-progress": [T,"En cours"], cancelled: ["#EF4444","Annulé"], scheduled: [P,"Programmé"] };
   const [sc, sl]   = statusMap[rdv.status] || [P,"Programmé"];
 
   return (
-    <div style={{ background: isLinked ? `${T}0d` : isDone ? `${G}06` : "rgba(255,255,255,0.04)", border: `1.5px solid ${isLinked ? T+"55" : isDone ? G+"33" : isCancelled ? "#EF444422" : "rgba(255,255,255,0.07)"}`, borderRadius: 20, padding: "20px 18px", marginBottom: 12, opacity: isCancelled ? 0.6 : 1 }}>
+    <div style={{ background: isDone ? `${G}06` : "rgba(255,255,255,0.04)", border: `1.5px solid ${isDone ? G+"33" : isCancelled ? "#EF444422" : "rgba(255,255,255,0.07)"}`, borderRadius: 20, padding: "20px 18px", marginBottom: 12, opacity: isCancelled ? 0.6 : 1 }}>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, marginBottom: 12 }}>
         <div style={{ flex: 1 }}>
@@ -78,29 +68,15 @@ function RdvCard({ rdv, active, onStart, onEnd, loading }) {
         </div>
       )}
 
-      {isLinked && active && (
-        <div style={{ textAlign: "center", padding: "14px 0", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", margin: "0 0 14px" }}>
-          <div style={{ fontSize: 12, color: G, fontWeight: 600, marginBottom: 6 }}>🟢 En cours depuis {fmt(active.start)}</div>
-          <div style={{ fontFamily: "monospace", fontSize: 28, fontWeight: 800, color: T, letterSpacing: 2 }}><LiveTimer start={active.start} /></div>
-        </div>
-      )}
-
-      {isLinked && (
-        <button onClick={onEnd} disabled={loading}
-          style={{ width: "100%", minHeight: 52, borderRadius: 14, border: "none", background: "rgba(239,68,68,0.9)", color: "#fff", fontWeight: 700, fontSize: 16, cursor: loading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
-          {loading ? <><Spinner/> Localisation…</> : <>🔴 Terminer ce service</>}
+      {canValidate && (
+        <button onClick={() => onValidate(rdv)} disabled={loading}
+          style={{ width: "100%", minHeight: 52, borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${G}, ${T})`, color: "#fff", fontWeight: 700, fontSize: 16, cursor: loading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, WebkitTapHighlightColor: "transparent", touchAction: "manipulation", boxShadow: `0 6px 24px ${T}44` }}>
+          {loading ? <><Spinner/> Localisation…</> : <>✅ Valider la prestation terminée</>}
         </button>
       )}
 
-      {canStart && !active && (
-        <button onClick={() => onStart(rdv)} disabled={loading}
-          style={{ width: "100%", minHeight: 52, borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 16, cursor: loading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, WebkitTapHighlightColor: "transparent", touchAction: "manipulation", boxShadow: `0 6px 24px ${T}44` }}>
-          {loading ? <><Spinner/> Localisation…</> : <>🟢 Démarrer ce service</>}
-        </button>
-      )}
-
-      {active && !isLinked && !isDone && !isCancelled && (
-        <div style={{ fontSize: 12, color: "#475569", textAlign: "center", padding: "8px 0", fontStyle: "italic" }}>Un autre service est en cours</div>
+      {isDone && (
+        <div style={{ fontSize: 13, color: G, textAlign: "center", padding: "8px 0", fontWeight: 600 }}>✓ Prestation validée</div>
       )}
     </div>
   );
@@ -116,7 +92,7 @@ export default function PointagePage() {
   const [emp, setEmp]             = useState(null);
   const [sessions, setSessions]   = useState([]);
   const [appointments, setApts]   = useState([]);
-  const [active, setActive]       = useState(null);
+  const active = null;            // validation unique par prestation : plus de session "en cours" (début/fin)
   const [gpsError, setGpsError]   = useState(null);
   const [loading, setLoading]     = useState(false);
   const [tab, setTab]             = useState("pointage");
@@ -129,13 +105,10 @@ export default function PointagePage() {
     Promise.all([
       load("jmtd_sessions", []),
       load("jmtd_appointments", []),
-      load(`jmtd_active_${e.id}`, null),
       load("jmtd_messages", []),
-    ]).then(([s, a, act, msgs]) => {
+    ]).then(([s, a, msgs]) => {
       setSessions(s.filter(x => x.empId === e.id).sort((a,b) => b.start - a.start));
       setApts(a.filter(x => x.empId === e.id).sort((a,b) => a.date - b.date));
-      setActive(act);
-      if (act) setTab("pointage");
       // Messages destinés à cette intervenante ou à toute l'équipe
       const mine = msgs.filter(m => m.toId === "all" || m.toId === e.id).sort((a,b) => b.sentAt - a.sentAt);
       setMyMessages(mine);
@@ -150,44 +123,11 @@ export default function PointagePage() {
     });
   }, []);
 
-  const startFromRdv = useCallback(async (rdv) => {
-    setLoading(true); setGpsError(null);
-    try {
-      const pos = emp.geoloc !== false ? await getGPS() : null;
-      const session = { id: Date.now(), empId: emp.id, empName: emp.name, start: Date.now(), startGps: pos, end: null, endGps: null, appointmentId: rdv.id, clientName: rdv.clientName, service: rdv.service };
-      setActive(session);
-      await save(`jmtd_active_${emp.id}`, session);
-      // Ajoute immédiatement la session (active) à jmtd_sessions → visible dans l'admin en temps réel
-      const allS = await load("jmtd_sessions", []);
-      await save("jmtd_sessions", [...allS.filter(s => s.id !== session.id), session]);
-      const allRdv = await load("jmtd_appointments", []);
-      const upd = allRdv.map(r => r.id === rdv.id ? { ...r, status: "in-progress" } : r);
-      await save("jmtd_appointments", upd);
-      setApts(upd.filter(x => x.empId === emp.id).sort((a,b) => a.date - b.date));
-      setTab("pointage");
-    } catch(e) { setGpsError(String(e)); }
-    setLoading(false);
-  }, [emp]);
-
-  const pointageIn = useCallback(async () => {
-    setLoading(true); setGpsError(null);
-    try {
-      const pos = emp.geoloc !== false ? await getGPS() : null;
-      const session = { id: Date.now(), empId: emp.id, empName: emp.name, start: Date.now(), startGps: pos, end: null, endGps: null };
-      setActive(session);
-      await save(`jmtd_active_${emp.id}`, session);
-      // Ajoute immédiatement la session (active) à jmtd_sessions → visible dans l'admin en temps réel
-      const allS = await load("jmtd_sessions", []);
-      await save("jmtd_sessions", [...allS.filter(s => s.id !== session.id), session]);
-    } catch(e) { setGpsError(String(e)); }
-    setLoading(false);
-  }, [emp]);
-
-  // Mode "tâche terminée" : un seul clic, session complète instantanée (sans durée)
+  // Validation unique d'une prestation terminée : un seul clic, géolocalisation toujours enregistrée, sans durée
   const pointageTache = useCallback(async (rdv = null) => {
     setLoading(true); setGpsError(null);
     try {
-      const pos = emp.geoloc !== false ? await getGPS() : null;
+      const pos = await getGPS();
       const now = Date.now();
       const session = { id: now, empId: emp.id, empName: emp.name, start: now, startGps: pos, end: now, endGps: pos, taskOnly: true, ...(rdv ? { appointmentId: rdv.id, clientName: rdv.clientName, service: rdv.service } : {}) };
       const allS = await load("jmtd_sessions", []);
@@ -203,28 +143,6 @@ export default function PointagePage() {
     } catch(e) { setGpsError(String(e)); }
     setLoading(false);
   }, [emp]);
-
-  const pointageOut = useCallback(async () => {
-    if (!active) return;
-    setLoading(true); setGpsError(null);
-    try {
-      const pos = emp.geoloc !== false ? await getGPS() : null;
-      const closed = { ...active, end: Date.now(), endGps: pos };
-      const allS = await load("jmtd_sessions", []);
-      const updS = [...allS.filter(s => s.id !== closed.id), closed];
-      await save("jmtd_sessions", updS);
-      setSessions(updS.filter(x => x.empId === emp.id).sort((a,b) => b.start - a.start));
-      if (active.appointmentId) {
-        const allR = await load("jmtd_appointments", []);
-        const updR = allR.map(r => r.id === active.appointmentId ? { ...r, status: "done" } : r);
-        await save("jmtd_appointments", updR);
-        setApts(updR.filter(x => x.empId === emp.id).sort((a,b) => a.date - b.date));
-      }
-      setActive(null);
-      await save(`jmtd_active_${emp.id}`, null);
-    } catch(e) { setGpsError(String(e)); }
-    setLoading(false);
-  }, [active, emp]);
 
   const logout = () => { clearSession("jmtd_emp"); router.push("/portail"); };
 
@@ -306,52 +224,18 @@ export default function PointagePage() {
             {/* Grand status ring */}
             <div style={{ textAlign: "center", marginBottom: 32 }}>
               <div style={{ position: "relative", display: "inline-block" }}>
-                {/* Anneau animé */}
-                {active && <div style={{ position: "absolute", inset: -12, borderRadius: "50%", border: `2px solid ${G}33`, animation: "ring 2.5s ease-in-out infinite" }} />}
-                {active && <div style={{ position: "absolute", inset: -24, borderRadius: "50%", border: `1.5px solid ${G}18`, animation: "ring 2.5s ease-in-out infinite 0.4s" }} />}
-
-                {/* Cercle principal */}
-                <div style={{ width: 140, height: 140, borderRadius: "50%", background: active ? `radial-gradient(circle, ${G}20, ${G}08)` : "rgba(255,255,255,0.04)", border: `3px solid ${active ? G : "rgba(255,255,255,0.1)"}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", transition: "all 0.4s ease" }}>
-                  <div style={{ fontSize: 40, marginBottom: 4 }}>{active ? "🟢" : (emp.pointageMode || "arrivee_depart") === "tache_terminee" ? "📍" : "⭕"}</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: active ? G : "#475569" }}>
-                    {active ? "En service" : (emp.pointageMode || "arrivee_depart") === "tache_terminee" ? "Prêt à pointer" : "Hors service"}
-                  </div>
+                <div style={{ width: 140, height: 140, borderRadius: "50%", background: "rgba(255,255,255,0.04)", border: "3px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", transition: "all 0.4s ease" }}>
+                  <div style={{ fontSize: 40, marginBottom: 4 }}>📍</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#475569" }}>Prêt à pointer</div>
                 </div>
               </div>
             </div>
 
-            {/* Timer si actif */}
-            {active && (
-              <div style={{ textAlign: "center", marginBottom: 28 }}>
-                <div style={{ fontFamily: "monospace", fontSize: 42, fontWeight: 800, color: T, letterSpacing: 3, lineHeight: 1 }}>
-                  <LiveTimer start={active.start} />
-                </div>
-                <div style={{ fontSize: 13, color: "#64748B", marginTop: 8 }}>Début à {fmt(active.start)}</div>
-                {active.clientName && (
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 8, padding: "6px 14px", borderRadius: 20, background: `${P}12`, border: `1px solid ${P}30` }}>
-                    <span style={{ fontSize: 13, color: P, fontWeight: 600 }}>📋 {active.clientName}</span>
-                  </div>
-                )}
-                {active.startGps && (
-                  <div style={{ marginTop: 10 }}>
-                    <a href={`https://maps.google.com/?q=${active.startGps.lat},${active.startGps.lng}`} target="_blank" rel="noopener noreferrer"
-                      style={{ fontSize: 12, color: T, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4 }}>
-                      📍 Voir ma position de départ →
-                    </a>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {!active && (
-              <div style={{ textAlign: "center", marginBottom: 28 }}>
-                <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.6 }}>
-                  {(emp.pointageMode || "arrivee_depart") === "tache_terminee"
-                    ? <>Appuyez à chaque fois<br />qu&apos;une tâche est terminée</>
-                    : <>Appuyez sur le bouton<br />pour démarrer votre service</>}
-                </p>
-              </div>
-            )}
+            <div style={{ textAlign: "center", marginBottom: 28 }}>
+              <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.6 }}>
+                Appuyez à chaque fois<br />qu&apos;une prestation est terminée
+              </p>
+            </div>
 
             {/* GPS error */}
             {gpsError && (
@@ -361,40 +245,20 @@ export default function PointagePage() {
             )}
 
             {/* Bouton principal — énorme, impossible à rater */}
-            {(emp.pointageMode || "arrivee_depart") === "tache_terminee" ? (
-              <button onClick={() => pointageTache()} disabled={loading}
-                style={{ width: "100%", minHeight: 64, borderRadius: 20, border: "none", fontSize: 18, fontWeight: 800, cursor: loading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12, transition: "transform 0.15s, box-shadow 0.3s", touchAction: "manipulation",
-                  background: `linear-gradient(135deg, ${G}, ${T})`, color: "#fff", animation: loading ? "none" : "glow 3s infinite" }}
-                onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
-                onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}>
-                {loading ? <><Spinner /> {emp.geoloc !== false ? "Localisation…" : "Enregistrement…"}</> : <>✅ Valider une tâche terminée</>}
-              </button>
-            ) : (
-              <button onClick={active ? pointageOut : pointageIn} disabled={loading}
-                style={{ width: "100%", minHeight: 64, borderRadius: 20, border: "none", fontSize: 18, fontWeight: 800, cursor: loading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12, transition: "transform 0.15s, box-shadow 0.3s", touchAction: "manipulation",
-                  background: active ? "rgba(239,68,68,0.92)" : `linear-gradient(135deg, ${T}, ${P})`,
-                  color: "#fff",
-                  animation: loading ? "none" : active ? "glowRed 3s infinite" : "glow 3s infinite",
-                }}
-                onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
-                onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}>
-                {loading
-                  ? <><Spinner /> {emp.geoloc !== false ? "Localisation GPS…" : "Enregistrement…"}</>
-                  : active
-                    ? <>🔴 Pointer la sortie</>
-                    : <>🟢 Pointer l&apos;entrée</>
-                }
-              </button>
-            )}
+            <button onClick={() => pointageTache()} disabled={loading}
+              style={{ width: "100%", minHeight: 64, borderRadius: 20, border: "none", fontSize: 18, fontWeight: 800, cursor: loading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12, transition: "transform 0.15s, box-shadow 0.3s", touchAction: "manipulation",
+                background: `linear-gradient(135deg, ${G}, ${T})`, color: "#fff", animation: loading ? "none" : "glow 3s infinite" }}
+              onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
+              onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}>
+              {loading ? <><Spinner /> Localisation…</> : <>✅ Valider une prestation terminée</>}
+            </button>
 
             <div style={{ textAlign: "center", marginTop: 12, fontSize: 12, color: "#334155", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }}>
-              {emp.geoloc !== false
-                ? <><span>📍</span> Votre position GPS sera enregistrée au pointage</>
-                : <><span>🔒</span> Pointage sans localisation</>}
+              <span>📍</span> Votre position GPS sera enregistrée à chaque validation
             </div>
 
             {/* Si RDV du jour, afficher raccourci */}
-            {!active && todayRdv.filter(r => r.status === "scheduled").length > 0 && (
+            {todayRdv.filter(r => r.status === "scheduled").length > 0 && (
               <div style={{ marginTop: 24, padding: "16px", background: `${T}08`, border: `1px solid ${T}22`, borderRadius: 16, textAlign: "center" }}>
                 <div style={{ fontSize: 13, color: "#64748B", marginBottom: 8 }}>
                   Vous avez {todayRdv.filter(r => r.status === "scheduled").length} RDV aujourd&apos;hui
@@ -429,14 +293,14 @@ export default function PointagePage() {
             {todayRdv.length > 0 && (
               <>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 10 }}>Aujourd&apos;hui</div>
-                {todayRdv.map(rdv => <RdvCard key={rdv.id} rdv={rdv} active={active} onStart={startFromRdv} onEnd={pointageOut} loading={loading} />)}
+                {todayRdv.map(rdv => <RdvCard key={rdv.id} rdv={rdv} onValidate={pointageTache} loading={loading} />)}
               </>
             )}
 
             {upcomingRdv.length > 0 && (
               <>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: 1.2, margin: "20px 0 10px" }}>Prochains</div>
-                {upcomingRdv.map(rdv => <RdvCard key={rdv.id} rdv={rdv} active={active} onStart={startFromRdv} onEnd={pointageOut} loading={loading} />)}
+                {upcomingRdv.map(rdv => <RdvCard key={rdv.id} rdv={rdv} onValidate={pointageTache} loading={loading} />)}
               </>
             )}
 

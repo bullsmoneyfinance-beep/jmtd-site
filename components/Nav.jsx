@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Icon from "./Icon";
 import { PHONE, PHONE_HREF, SERVICES, WHATSAPP, TEAL_TEXT } from "../lib/data";
+import { load } from "../lib/storage";
+import { DEFAULT_OFFERS } from "../app/recrutement/offersData";
 
 const T = "#0DA9A4";       // teal vif — FONDS / dégradés / bordures déco
 const TT = TEAL_TEXT;      // teal accessible — TEXTE / liens / petites icônes
@@ -38,7 +40,15 @@ export default function Nav() {
   const [mobileOpen,  setMobileOpen]  = useState(false);
   const [svcOpen,     setSvcOpen]     = useState(false);
   const [teamOpen,    setTeamOpen]    = useState(false);
+  const [openPositions, setOpenPositions] = useState(0);
   const teamRef = useRef(null);
+
+  /* nombre d'offres d'emploi actives (pour l'indicateur "on recrute") */
+  useEffect(() => {
+    load("jmtd_offers", DEFAULT_OFFERS).then(list => {
+      if (Array.isArray(list)) setOpenPositions(list.filter(o => o.statut !== "pourvue").length);
+    });
+  }, []);
 
   /* scroll — masque la banderole dès 60px */
   useEffect(() => {
@@ -205,6 +215,17 @@ export default function Nav() {
 
           {/* CTAs desktop */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+            <Link href="/recrutement" className="hide-mobile"
+              aria-label={openPositions > 0 ? `Nous rejoindre — ${openPositions} poste(s) à pourvoir` : "Nous rejoindre"}
+              style={{ position: "relative", padding: "9px 16px", borderRadius: 30, border: `1.5px solid ${isActive("/recrutement") ? T : `${T}35`}`, background: isActive("/recrutement") ? `${T}12` : (openPositions > 0 ? `${T}0a` : "transparent"), color: TT, fontWeight: 700, fontSize: 13, textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 8, transition: "all 0.2s" }}>
+              {openPositions > 0 && (
+                <span style={{ position: "relative", display: "inline-flex", width: 8, height: 8, flexShrink: 0 }}>
+                  <span aria-hidden style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "#16A34A", animation: "joinPing 1.8s ease-out infinite" }} />
+                  <span style={{ position: "relative", width: 8, height: 8, borderRadius: "50%", background: "#16A34A" }} />
+                </span>
+              )}
+              Nous rejoindre
+            </Link>
             <Link href="/contact"
               style={{ padding: "10px 20px", borderRadius: 30, background: `linear-gradient(135deg,${T},${P})`, color: "#fff", fontWeight: 700, fontSize: 13, textDecoration: "none", boxShadow: `0 4px 18px ${T}40`, whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6, transition: "transform 0.2s, box-shadow 0.2s" }}>
               <span className="hide-mobile">Devis gratuit</span>

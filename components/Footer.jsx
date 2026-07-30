@@ -9,14 +9,14 @@ const P = "#D4197A";
 
 export default function Footer() {
   return (
-    <footer style={{ background: "#F8FAFB", borderTop: "1px solid rgba(13,169,164,0.1)", paddingBottom: 80 }}>
+    <footer className="site-footer" style={{ background: "#F8FAFB", borderTop: "1px solid rgba(13,169,164,0.1)" }}>
       {/* Wave accent */}
       <div style={{ height: 4, background: `linear-gradient(90deg, ${T}, ${P}, ${T})`, backgroundSize: "200% 100%", animation: "shimmerText 4s linear infinite" }} />
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "56px 24px 32px", display: "flex", gap: 40, flexWrap: "wrap", justifyContent: "space-between" }}>
+      <div className="footer-grid">
 
         {/* Brand */}
-        <div style={{ minWidth: 220, maxWidth: 280 }}>
+        <div style={{ maxWidth: 320 }}>
           <Logo size="md" tagline style={{ marginBottom: 12 }} />
           <p style={{ fontSize: 13, color: "#64748B", lineHeight: 1.8, marginBottom: 12 }}>
             Société de services à la personne basée à Rivière-Salée, Martinique. Fondée par {FONDATRICE}.

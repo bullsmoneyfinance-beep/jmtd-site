@@ -84,7 +84,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "16px 24px 0", borderTop: "1px solid rgba(13,169,164,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-        <span style={{ fontSize: 11, color: "#94A3B8" }}>© 2025 J&apos;MTD — Tous droits réservés · SIRET {SIRET}</span>
+        <span style={{ fontSize: 11, color: "#94A3B8" }}>© {new Date().getFullYear()} J&apos;MTD — Tous droits réservés · SIRET {SIRET}</span>
         <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
           <Link href="/mentions-legales" style={{ fontSize: 11, color: "#94A3B8", textDecoration: "none", transition: "color 0.15s" }}
             onMouseEnter={e => e.target.style.color = T} onMouseLeave={e => e.target.style.color = "#94A3B8"}>

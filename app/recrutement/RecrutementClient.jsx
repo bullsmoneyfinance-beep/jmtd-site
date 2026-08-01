@@ -53,6 +53,12 @@ const inp = {
   fontFamily: "inherit", transition: "border-color 0.2s, box-shadow 0.2s",
 };
 
+/* Longueurs minimales des réponses rédigées — calées sur le palier "bon" du scoring
+   (lib/scoring.js : motivation 200/100/50, discrétion 100/60/30). Auparavant le
+   formulaire acceptait le palier le plus faible, d'où des réponses trop courtes. */
+const MIN_MOTIVATION = 150;
+const MIN_DISCRETION = 80;
+
 const DEFAULT_FORM = {
   prenom: "", nom: "", tel: "", email: "", commune: "",
   postes: [],
@@ -166,8 +172,8 @@ export default function RecrutementPage() {
     }
     if (s === 3) {
       if (!form.situation) e.situation = true;
-      if (form.motivation.trim().length < 50) e.motivation = true;
-      if (form.discretion.trim().length < 30) e.discretion = true;
+      if (form.motivation.trim().length < MIN_MOTIVATION) e.motivation = true;
+      if (form.discretion.trim().length < MIN_DISCRETION) e.discretion = true;
     }
     if (s === 4) {
       if (!form.rgpd) e.rgpd = true;
@@ -626,25 +632,25 @@ export default function RecrutementPage() {
                     </div>
 
                     <div style={{ marginBottom: 20 }}>
-                      <Label htmlFor="recru-motivation">Pourquoi souhaitez-vous rejoindre J&apos;MTD ? * (minimum 50 caractères)</Label>
+                      <Label htmlFor="recru-motivation">Pourquoi souhaitez-vous rejoindre J&apos;MTD ? * (minimum {MIN_MOTIVATION} caractères)</Label>
                       <textarea id="recru-motivation" className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 120, ...errStyle("motivation") }}
                         placeholder="Expliquez ce qui vous attire dans ce métier, pourquoi J'MTD spécifiquement, vos objectifs professionnels…"
                         value={form.motivation} onChange={set("motivation")} rows={4} />
-                      <div style={{ fontSize: 11, color: form.motivation.length >= 50 ? T : "#94A3B8", marginTop: 6, textAlign: "right", fontWeight: 600, transition: "color 0.2s" }}>
-                        {form.motivation.length} / 50 caractères minimum
+                      <div style={{ fontSize: 11, color: form.motivation.length >= MIN_MOTIVATION ? T : "#94A3B8", marginTop: 6, textAlign: "right", fontWeight: 600, transition: "color 0.2s" }}>
+                        {form.motivation.length} / {MIN_MOTIVATION} caractères minimum
                       </div>
                     </div>
 
                     <div>
-                      <Label htmlFor="recru-discretion">Qu&apos;est-ce que la discrétion représente pour vous dans ce métier ? * (minimum 30 caractères)</Label>
+                      <Label htmlFor="recru-discretion">Qu&apos;est-ce que la discrétion représente pour vous dans ce métier ? * (minimum {MIN_DISCRETION} caractères)</Label>
                       <div style={{ fontSize: 12, color: MUTED, marginBottom: 8, lineHeight: 1.6 }}>
                         Nos intervenantes entrent dans la vie privée de nos clients. Nous avons besoin de savoir comment vous concevez la confidentialité au quotidien.
                       </div>
                       <textarea id="recru-discretion" className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 100, ...errStyle("discretion") }}
                         placeholder="Expliquez concrètement comment vous gérez la discrétion dans un contexte professionnel à domicile…"
                         value={form.discretion} onChange={set("discretion")} rows={3} />
-                      <div style={{ fontSize: 11, color: form.discretion.length >= 30 ? T : "#94A3B8", marginTop: 6, textAlign: "right", fontWeight: 600, transition: "color 0.2s" }}>
-                        {form.discretion.length} / 30 caractères minimum
+                      <div style={{ fontSize: 11, color: form.discretion.length >= MIN_DISCRETION ? T : "#94A3B8", marginTop: 6, textAlign: "right", fontWeight: 600, transition: "color 0.2s" }}>
+                        {form.discretion.length} / {MIN_DISCRETION} caractères minimum
                       </div>
                     </div>
                   </div>

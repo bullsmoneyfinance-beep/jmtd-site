@@ -263,14 +263,15 @@ export default function HomePage() {
               <span style={{ fontSize: 13, color: TEAL_TEXT, fontWeight: 700 }}>Déclaré Services à la Personne · N° {DECLARATION_SAP}</span>
             </div>
 
-            <h1 className="anim-fade-up delay-1 display" style={{ fontSize: "clamp(40px, 5.4vw, 72px)", marginBottom: 26, letterSpacing: -1.8 }}>
-              Confiez votre quotidien,<br />
-              profitez de{" "}
-              <span style={{ background: `linear-gradient(120deg, ${T}, ${OCEAN} 45%, ${P})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>votre vie.</span>
+            <h1 className="anim-fade-up delay-1 display" style={{ fontSize: "clamp(29px, 3.5vw, 45px)", marginBottom: 20, letterSpacing: -0.8, lineHeight: 1.12 }}>
+              Ménagez-vous,<br />
+              laissez-nous effectuer vos{" "}
+              <span style={{ background: `linear-gradient(120deg, ${T}, ${OCEAN} 45%, ${P})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>tâches ménagères</span>{" "}
+              ponctuelles et quotidiennes.
             </h1>
 
             <p className="anim-fade-up delay-2" style={{ fontSize: 18, color: TEXT2, lineHeight: 1.75, marginBottom: 14, maxWidth: 480 }}>
-              Ménage, repas, courses, coach rangement. Nos intervenantes <strong style={{ color: TEXT }}>sélectionnées, formées et discrètes</strong> s&apos;occupent de votre maison — vous récupérez du temps pour votre famille et vos loisirs, dans le Centre et le Sud de la Martinique.
+              Ménage, repas, courses, coach rangement. Nos intervenantes <strong style={{ color: TEXT }}>sélectionnées, formées et discrètes</strong> s&apos;occupent de votre domicile ou de vos locaux professionnels — vous récupérez du temps pour votre famille et vos loisirs, dans le Centre et le Sud de la Martinique.
             </p>
             <p className="anim-fade-up delay-2" style={{ marginBottom: 38 }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 15, color: TEAL_TEXT, fontWeight: 700, background: `${T}14`, borderRadius: 20, padding: "5px 14px" }}><Icon name="credit" size={16} color={TEAL_TEXT} /> 50% remboursé par crédit d&apos;impôt SAP</span>
@@ -397,7 +398,7 @@ export default function HomePage() {
             intro="Vous nous invitez chez vous. C'est une responsabilité que nous prenons très au sérieux."
             items={[
               { icon: "lock",   title: "Personnel rigoureusement sélectionné", text: "Chaque intervenante passe par un entretien approfondi, une vérification des références et une formation aux standards J'MTD avant sa première intervention.", color: T, to: OCEAN },
-              { icon: "clock",  title: "Vous récupérez votre temps", text: "Ménage, repas, courses… Confiez-nous les tâches qui vous pèsent et retrouvez du temps pour ce qui compte vraiment : votre famille, vos loisirs, vous-même.", color: P, to: "#E0559E" },
+              { icon: "clock",  title: "Ménagez-vous", text: "Ménage, repas, courses… Laissez-nous vos tâches ménagères, ponctuelles ou quotidiennes, et gardez votre énergie pour ce qui compte vraiment : votre famille, vos loisirs, vous-même.", color: P, to: "#E0559E" },
               { icon: "credit", title: "50% remboursé par l'État", text: "Notre déclaration SAP vous permet de récupérer la moitié de vos dépenses via le crédit d'impôt. Nous vous remettons une attestation fiscale chaque année.", color: T, to: OCEAN },
             ]}
           />

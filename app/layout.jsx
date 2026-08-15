@@ -55,7 +55,7 @@ export const metadata = {
       { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/logo.png", sizes: "any" },
     ],
-    // apple-touch-icon : généré par app/apple-icon.jsx (carré 180×180, opaque)
+    // iOS : app/apple-icon.png (convention de fichier Next — prioritaire sur ce champ)
   },
   // « Ajouter à l'écran d'accueil » sur iOS : sans ceci, le site s'ouvre dans
   // Safari avec la barre d'adresse au lieu de se lancer en plein écran.

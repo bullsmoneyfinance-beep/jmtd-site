@@ -1,11 +1,20 @@
 /**
- * Rendu de l'icône de marque J'MTD (carré, opaque) — partagé entre
- * l'apple-touch-icon iOS et les icônes du manifeste (Android / Chrome).
- * Les proportions sont exprimées en fraction de la taille pour rester
- * nettes de 180 px à 512 px.
+ * Rendu de l'icône d'application J'MTD — partagé entre l'apple-touch-icon iOS
+ * et les icônes du manifeste (Android / Chrome).
+ *
+ * On utilise le logo officiel (public/logo.png, 1054×784) posé sur un carré blanc :
+ *  - iOS exige une icône CARRÉE et OPAQUE ;
+ *  - le logo est plus large que haut, on le contient sans le déformer ;
+ *  - une marge est conservée car iOS arrondit fortement les coins (~22 %),
+ *    ce qui rognerait la signature « Société de services sur mesure ».
+ *
+ * @param {string} src  logo en data URI (base64)
+ * @param {number} size côté de l'icône en pixels
  */
-export function BrandIcon({ size = 180 }) {
-  const u = size / 180; // unité d'échelle
+export function BrandIcon({ src, size = 180 }) {
+  const largeur = Math.round(size * 0.92);          // marge latérale de sécurité
+  const hauteur = Math.round(largeur * (784 / 1054)); // ratio d'origine préservé
+
   return (
     <div
       style={{
@@ -14,33 +23,11 @@ export function BrandIcon({ size = 180 }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(140deg, #0DA9A4 0%, #12B5B0 45%, #D4197A 100%)",
-        fontFamily: "Arial, Helvetica, sans-serif",
-        position: "relative",
+        background: "#ffffff",
       }}
     >
-      {/* Reflet doux en haut à gauche */}
-      <div
-        style={{
-          position: "absolute",
-          top: -50 * u,
-          left: -40 * u,
-          width: 190 * u,
-          height: 190 * u,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(255,255,255,0.30) 0%, transparent 70%)",
-          display: "flex",
-        }}
-      />
-      {/* Lockup J'm TD */}
-      <div style={{ display: "flex", alignItems: "flex-end", position: "relative" }}>
-        <span style={{ fontSize: 52 * u, fontWeight: 900, color: "#fff", fontStyle: "italic", lineHeight: 1, letterSpacing: -1 * u }}>
-          J&apos;m
-        </span>
-        <span style={{ fontSize: 72 * u, fontWeight: 900, color: "#fff", lineHeight: 1, letterSpacing: -4 * u, marginBottom: -4 * u }}>
-          TD
-        </span>
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} width={largeur} height={hauteur} alt="J'MTD" />
     </div>
   );
 }

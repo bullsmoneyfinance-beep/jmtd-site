@@ -34,14 +34,36 @@ export default function CookieBanner() {
   return (
     <>
       <style>{`
-        @keyframes slideUpCookie {
+        /* Desktop : le bandeau est centré par translateX(-50%) — l'animation doit
+           conserver ce décalage, sinon la carte saute horizontalement. */
+        @keyframes slideUpCookieCentre {
+          from { opacity: 0; transform: translate(-50%, 20px); }
+          to   { opacity: 1; transform: translate(-50%, 0); }
+        }
+        @keyframes slideUpCookieMobile {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: none; }
         }
         @media (max-width: 640px) {
-          .cookie-box { flex-direction: column !important; gap: 16px !important; padding: 20px 18px !important; border-radius: 20px 20px 0 0 !important; bottom: 0 !important; left: 0 !important; right: 0 !important; max-width: 100% !important; }
+          .cookie-box {
+            /* transform:none est INDISPENSABLE : sans lui, le translateX(-50%)
+               du style desktop décale la carte hors de l'écran à gauche. */
+            transform: none !important;
+            animation-name: slideUpCookieMobile !important;
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 14px !important;
+            padding: 16px !important;
+            border-radius: 18px !important;
+            left: 12px !important;
+            right: 12px !important;
+            width: auto !important;
+            max-width: none !important;
+            /* Au-dessus de la barre de navigation fixe (64px) et de la barre d'accueil iOS */
+            bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+          }
           .cookie-btns { flex-direction: row !important; width: 100%; }
-          .cookie-btns button { flex: 1 !important; }
+          .cookie-btns button { flex: 1 !important; min-height: 44px; }
         }
       `}</style>
 
@@ -63,7 +85,7 @@ export default function CookieBanner() {
           gap: 20,
           maxWidth: 680,
           width: "calc(100% - 32px)",
-          animation: "slideUpCookie 0.4s cubic-bezier(0.16,1,0.3,1)",
+          animation: "slideUpCookieCentre 0.4s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
         {/* Icon */}

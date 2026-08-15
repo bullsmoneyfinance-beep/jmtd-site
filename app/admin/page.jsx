@@ -337,9 +337,9 @@ export default function AdminPage() {
     await save("jmtd_quotes", updated);
   }
 
-  /* ── Candidature status ── */
-  async function setCandidatureStatus(id, status) {
-    const updated = candidatures.map(c => c.id === id ? { ...c, status } : c);
+  /* ── Candidature : statut & évaluation recruteur (§ 8 du questionnaire) ── */
+  async function patchCandidature(id, patch) {
+    const updated = candidatures.map(c => c.id === id ? { ...c, ...patch } : c);
     setCandidatures(updated);
     // Sync via API (server-side store)
     try {
@@ -350,6 +350,7 @@ export default function AdminPage() {
       });
     } catch { /* ignore */ }
   }
+  const setCandidatureStatus = (id, status) => patchCandidature(id, { status });
 
   /* ── Messages ── */
   const [msgForm, setMsgForm] = useState({ toId: "all", text: "", priority: "normal" });
@@ -1211,8 +1212,9 @@ export default function AdminPage() {
                             <div style={{ display: "flex", gap: 16, flexWrap: "wrap", fontSize: 12, color: "#64748B" }}>
                               <span>📍 {c.commune}</span>
                               <span>💼 {EXP_LABELS[c.experience] || c.experience || "—"}</span>
-                              <span>{TRANSPORT_LABELS[c.transport] || "🚗 —"}</span>
+                              <span>{c.vehicule ? (c.vehicule === "oui" ? "🚗 Véhicule" : c.permis === "oui" ? "🪪 Permis, sans véhicule" : "🚶 Sans véhicule") : (TRANSPORT_LABELS[c.transport] || "🚗 —")}</span>
                               <span>⏰ {DISPO_LABELS[c.dispo_heures] || "—"}</span>
+                              {c.prise_poste && <span>📆 {c.prise_poste}</span>}
                             </div>
                             {/* Détail du score */}
                             <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
@@ -1245,23 +1247,21 @@ export default function AdminPage() {
                           ))}
                         </div>
 
-                        {/* Motivation + Discrétion */}
+                        {/* Motivation (aperçu direct — le reste dans le questionnaire dépliable) */}
                         {c.motivation && (
-                          <div style={{ marginBottom: 10 }}>
+                          <div style={{ marginBottom: 12 }}>
                             <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 }}>Motivation</div>
                             <div style={{ fontSize: 13, color: "#94A3B8", background: "rgba(255,255,255,0.03)", borderLeft: `2px solid ${T}`, borderRadius: "0 8px 8px 0", padding: "8px 12px", lineHeight: 1.65 }}>
                               {c.motivation}
                             </div>
                           </div>
                         )}
-                        {c.discretion && (
-                          <div style={{ marginBottom: 14 }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 }}>Discrétion</div>
-                            <div style={{ fontSize: 13, color: "#94A3B8", background: "rgba(255,255,255,0.03)", borderLeft: "2px solid #8B5CF6", borderRadius: "0 8px 8px 0", padding: "8px 12px", lineHeight: 1.65 }}>
-                              {c.discretion}
-                            </div>
-                          </div>
-                        )}
+
+                        {/* Questionnaire complet — dépliable */}
+                        <CandidatureQuestionnaire c={c} />
+
+                        {/* § 8 — Évaluation du recruteur (interne) */}
+                        <EvaluationRecruteur c={c} onPatch={patchCandidature} />
 
                         {/* Actions */}
                         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
@@ -1517,5 +1517,159 @@ export default function AdminPage() {
         </div>
       )}
     </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Questionnaire de recrutement — restitution complète (dépliable)
+   Reprend les § 2 à 7 du questionnaire papier J'MTD.
+   ───────────────────────────────────────────────────────────── */
+const COMP_LABELS = {
+  surfaces: "Dépoussiérage / surfaces", sols: "Nettoyage des sols",
+  sanitaires: "Sanitaires & cuisine", linge: "Linge / repassage",
+  materiel: "Organisation produits & matériel", consignes: "Respect consignes produits",
+  gestion_temps: "Gestion du temps", autonomie: "Autonomie",
+};
+const NIV_STYLE = {
+  maitrisee:     { label: "Maîtrisée",     color: "#10B981" },
+  a_renforcer:   { label: "À renforcer",   color: "#F59E0B" },
+  non_pratiquee: { label: "Non pratiquée", color: "#64748B" },
+};
+
+const QUESTIONNAIRE_SECTIONS = [
+  { titre: "💼 Parcours et expérience", champs: [
+    ["1. Parcours professionnel", "parcours"],
+    ["2. Expérience en services à la personne", "exp_sap"],
+    ["3. Logements / locaux entretenus", "types_lieux"],
+    ["4. Tâches maîtrisées", "taches_maitrisees"],
+    ["5. Expérience auprès de personnes fragiles", "exp_personnes_fragiles"],
+    ["6. Formations / certifications", "certifications"],
+  ]},
+  { titre: "🎯 Mises en situation", champs: [
+    ["7. Plusieurs tâches en temps limité", "situ_temps"],
+    ["8. Produit habituel indisponible", "situ_produit"],
+    ["9. Objet cassé chez un client", "situ_casse"],
+    ["10. Demande hors consignes", "situ_hors_consignes"],
+    ["11. Situation préoccupante (personne âgée)", "situ_alerte"],
+  ]},
+  { titre: "🤝 Savoir-être et relation client", champs: [
+    ["12. Travail bien fait", "travail_bien_fait"],
+    ["13. Qualités indispensables à domicile", "qualites"],
+    ["14. Réaction à une réclamation", "reclamation"],
+    ["15. Discrétion et confidentialité", "discretion"],
+  ]},
+  { titre: "⭐ Motivation", champs: [
+    ["16. Pourquoi J'MTD ?", "motivation"],
+    ["17. Pourquoi ce métier ?", "interet_metier"],
+    ["18. Attentes vis-à-vis du poste", "attentes"],
+  ]},
+];
+
+function CandidatureQuestionnaire({ c }) {
+  const comps = c.competences || {};
+  const aDesReponses = QUESTIONNAIRE_SECTIONS.some(s => s.champs.some(([, k]) => c[k]));
+  if (!aDesReponses && !Object.keys(comps).length) return null;
+
+  return (
+    <details style={{ marginBottom: 14, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12 }}>
+      <summary style={{ cursor: "pointer", padding: "10px 14px", fontSize: 12.5, fontWeight: 700, color: "#94A3B8" }}>
+        📄 Questionnaire de recrutement complet
+      </summary>
+      <div style={{ padding: "4px 14px 16px" }}>
+        {Object.keys(comps).length > 0 && (
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 8 }}>🧰 Compétences techniques</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {Object.entries(comps).map(([k, v]) => {
+                const st = NIV_STYLE[v] || { label: v, color: "#64748B" };
+                return (
+                  <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 8, fontSize: 11, background: `${st.color}14`, border: `1px solid ${st.color}33`, color: "#CBD5E1" }}>
+                    {COMP_LABELS[k] || k}
+                    <span style={{ fontWeight: 800, color: st.color }}>{st.label}</span>
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {QUESTIONNAIRE_SECTIONS.map(sec => {
+          const remplis = sec.champs.filter(([, k]) => c[k]);
+          if (!remplis.length) return null;
+          return (
+            <div key={sec.titre} style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 8 }}>{sec.titre}</div>
+              {remplis.map(([label, k]) => (
+                <div key={k} style={{ marginBottom: 10 }}>
+                  <div style={{ fontSize: 11.5, fontWeight: 700, color: "#CBD5E1", marginBottom: 3 }}>{label}</div>
+                  <div style={{ fontSize: 12.5, color: "#94A3B8", background: "rgba(255,255,255,0.03)", borderLeft: "2px solid rgba(255,255,255,0.14)", borderRadius: "0 8px 8px 0", padding: "7px 11px", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+                    {c[k]}
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+
+        {(c.secteurs || c.plages_horaires) && (
+          <div style={{ fontSize: 12, color: "#64748B", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 10 }}>
+            {c.secteurs && <div>📍 Secteurs acceptés : <span style={{ color: "#94A3B8" }}>{c.secteurs}</span></div>}
+            {c.plages_horaires && <div>🕐 Plages horaires : <span style={{ color: "#94A3B8" }}>{c.plages_horaires}</span></div>}
+          </div>
+        )}
+      </div>
+    </details>
+  );
+}
+
+/* § 8 — Évaluation du recruteur (interne, remplie après l'entretien) */
+const AVIS_OPTIONS = [
+  { v: "tres_favorable", label: "Très favorable", color: "#10B981" },
+  { v: "favorable",      label: "Favorable",      color: "#84CC16" },
+  { v: "a_revoir",       label: "À revoir",       color: "#F59E0B" },
+  { v: "defavorable",    label: "Défavorable",    color: "#EF4444" },
+];
+
+function EvaluationRecruteur({ c, onPatch }) {
+  const [note, setNote] = useState(c.eval_commentaire || "");
+  const [saved, setSaved] = useState(false);
+
+  const saveNote = () => {
+    onPatch(c.id, { eval_commentaire: note });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1800);
+  };
+
+  const avisActuel = AVIS_OPTIONS.find(a => a.v === c.eval_avis);
+
+  return (
+    <details style={{ marginBottom: 14, background: "rgba(245,158,11,0.04)", border: "1px solid rgba(245,158,11,0.18)", borderRadius: 12 }}>
+      <summary style={{ cursor: "pointer", padding: "10px 14px", fontSize: 12.5, fontWeight: 700, color: "#F59E0B" }}>
+        ✍️ Évaluation du recruteur {avisActuel ? `— ${avisActuel.label}` : "(à remplir après l'entretien)"}
+      </summary>
+      <div style={{ padding: "4px 14px 16px" }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 8 }}>Avis</div>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+          {AVIS_OPTIONS.map(a => (
+            <button key={a.v} type="button" onClick={() => onPatch(c.id, { eval_avis: a.v })}
+              style={{ padding: "7px 13px", borderRadius: 20, fontSize: 11.5, cursor: "pointer", fontWeight: c.eval_avis === a.v ? 800 : 600,
+                border: `1px solid ${c.eval_avis === a.v ? a.color : "rgba(255,255,255,0.12)"}`,
+                background: c.eval_avis === a.v ? `${a.color}1f` : "rgba(255,255,255,0.03)",
+                color: c.eval_avis === a.v ? a.color : "#94A3B8" }}>
+              {a.label}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>Observations</div>
+        <textarea value={note} onChange={e => setNote(e.target.value)} rows={3}
+          placeholder="Présentation, ponctualité, expression, points à confirmer…"
+          style={{ width: "100%", padding: "10px 12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#F8FAFC", fontSize: 12.5, outline: "none", fontFamily: "inherit", boxSizing: "border-box", resize: "vertical" }} />
+        <button type="button" onClick={saveNote}
+          style={{ marginTop: 8, padding: "8px 16px", borderRadius: 8, background: saved ? "rgba(16,185,129,0.18)" : "rgba(255,255,255,0.06)", border: `1px solid ${saved ? "rgba(16,185,129,0.4)" : "rgba(255,255,255,0.12)"}`, color: saved ? "#10B981" : "#94A3B8", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
+          {saved ? "✓ Enregistré" : "Enregistrer l'observation"}
+        </button>
+      </div>
+    </details>
   );
 }

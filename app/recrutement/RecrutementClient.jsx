@@ -58,16 +58,46 @@ const inp = {
    formulaire acceptait le palier le plus faible, d'où des réponses trop courtes. */
 const MIN_MOTIVATION = 150;
 const MIN_DISCRETION = 80;
+const MIN_LONG  = 80;   // mises en situation & savoir-être : on attend un vrai raisonnement
+const MIN_COURT = 40;   // questions factuelles (parcours, types de lieux…)
 
 const DEFAULT_FORM = {
+  // § 1 — Identification
   prenom: "", nom: "", tel: "", email: "", commune: "",
+  secteurs: "",
   postes: [],
-  experience: "", experience_detail: "",
-  transport: "", transport_detail: "",
+  // § 2 — Parcours et expérience professionnelle
+  experience: "",
+  parcours: "",              // Q1
+  exp_sap: "",               // Q2
+  types_lieux: "",           // Q3
+  taches_maitrisees: "",     // Q4
+  exp_personnes_fragiles: "",// Q5
+  certifications: "",        // Q6
+  // § 3 — Compétences techniques (auto-évaluation)
+  competences: {},
+  // § 4 — Mises en situation
+  situ_temps: "",            // Q7
+  situ_produit: "",          // Q8
+  situ_casse: "",            // Q9
+  situ_hors_consignes: "",   // Q10
+  situ_alerte: "",           // Q11
+  // § 5 — Savoir-être et relation client
+  travail_bien_fait: "",     // Q12
+  qualites: "",              // Q13
+  reclamation: "",           // Q14
+  discretion: "",            // Q15
+  // § 6 — Disponibilités et conditions d'exercice
   dispo_heures: "", dispo_jours: [],
+  plages_horaires: "",
+  mobilite: "", permis: "", vehicule: "",
+  prise_poste: "",
+  // § 7 — Motivation
+  motivation: "",            // Q16
+  interet_metier: "",        // Q17
+  attentes: "",              // Q18
+  // Divers
   situation: "",
-  motivation: "",
-  discretion: "",
   references: "",
   formation: "",
   infos_plus: "",
@@ -75,11 +105,33 @@ const DEFAULT_FORM = {
   rgpd: false,
 };
 
+/* Parcours calqué sur le questionnaire de recrutement J'MTD (aide ménagère) */
 const STEPS = [
   { n: 1, label: "Coordonnées" },
-  { n: 2, label: "Profil" },
-  { n: 3, label: "Motivations" },
-  { n: 4, label: "Finalisation" },
+  { n: 2, label: "Parcours" },
+  { n: 3, label: "Compétences" },
+  { n: 4, label: "Situations" },
+  { n: 5, label: "Savoir-être" },
+  { n: 6, label: "Disponibilités" },
+  { n: 7, label: "Motivation" },
+  { n: 8, label: "Finalisation" },
+];
+
+/* § 3 du questionnaire — grille d'auto-évaluation des compétences techniques */
+const COMPETENCES = [
+  { id: "surfaces",     label: "Dépoussiérage et nettoyage des surfaces" },
+  { id: "sols",         label: "Nettoyage des sols" },
+  { id: "sanitaires",   label: "Nettoyage des sanitaires et de la cuisine" },
+  { id: "linge",        label: "Entretien du linge / repassage" },
+  { id: "materiel",     label: "Organisation des produits et du matériel" },
+  { id: "consignes",    label: "Respect des consignes d'utilisation des produits" },
+  { id: "gestion_temps",label: "Gestion du temps et priorisation des tâches" },
+  { id: "autonomie",    label: "Capacité à travailler de manière autonome" },
+];
+const NIVEAUX = [
+  { id: "maitrisee",     label: "Maîtrisée",     color: "#16A34A" },
+  { id: "a_renforcer",   label: "À renforcer",   color: "#F59E0B" },
+  { id: "non_pratiquee", label: "Non pratiquée", color: "#94A3B8" },
 ];
 
 function Label({ children, htmlFor }) {
@@ -91,8 +143,21 @@ function Label({ children, htmlFor }) {
 }
 
 function StepBar({ step }) {
+  const cur = STEPS.find(s => s.n === step);
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 28, padding: "4px 0" }}>
+    <>
+      {/* Mobile : progression compacte (8 pastilles ne tiennent pas sur 375px) */}
+      <div className="step-bar-compact" style={{ display: "none", marginBottom: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+          <span style={{ fontSize: 13, fontWeight: 800, color: TEXT }}>{cur?.label}</span>
+          <span style={{ fontSize: 12, color: MUTED, fontWeight: 600 }}>Étape {step} / {STEPS.length}</span>
+        </div>
+        <div style={{ height: 6, borderRadius: 3, background: "#E2E8F0", overflow: "hidden" }}>
+          <div style={{ width: `${(step / STEPS.length) * 100}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${T}, ${P})`, transition: "width 0.4s cubic-bezier(0.16,1,0.3,1)" }} />
+        </div>
+      </div>
+
+      <div className="step-bar-full" style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 28, padding: "4px 0" }}>
       {STEPS.map((s, i) => (
         <div key={s.n} style={{ display: "flex", alignItems: "center" }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
@@ -112,10 +177,52 @@ function StepBar({ step }) {
             </span>
           </div>
           {i < STEPS.length - 1 && (
-            <div className="step-bar-connector" style={{ width: 56, height: 2, margin: "0 6px", marginBottom: 20, background: step > i + 1 ? T : "#E2E8F0", transition: "background 0.4s ease", flexShrink: 0 }} />
+            <div className="step-bar-connector" style={{ width: 26, height: 2, margin: "0 5px", marginBottom: 20, background: step > i + 1 ? T : "#E2E8F0", transition: "background 0.4s ease", flexShrink: 0 }} />
           )}
         </div>
       ))}
+      </div>
+    </>
+  );
+}
+
+/* Question ouverte avec compteur de caractères — mutualisée (15 questions du questionnaire) */
+function TextQ({ id, num, label, hint, value, onChange, min = 0, required, placeholder, rows = 3, invalid }) {
+  const len = (value || "").length;
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <Label htmlFor={id}>
+        {num ? `${num}. ` : ""}{label}{(min > 0 || required) ? " *" : ""}
+      </Label>
+      {hint && <div style={{ fontSize: 12, color: MUTED, marginBottom: 8, lineHeight: 1.6 }}>{hint}</div>}
+      <textarea id={id} className="inp-focus" rows={rows}
+        style={{ ...inp, resize: "vertical", minHeight: rows * 26 + 30, ...(invalid ? { borderColor: "#EF4444", boxShadow: "0 0 0 3px rgba(239,68,68,0.12)" } : {}) }}
+        placeholder={placeholder} value={value} onChange={onChange} />
+      {min > 0 && (
+        <div style={{ fontSize: 11, color: len >= min ? T : "#94A3B8", marginTop: 6, textAlign: "right", fontWeight: 600, transition: "color 0.2s" }}>
+          {len} / {min} caractères minimum
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Choix Oui / Non compact (§ 6 du questionnaire) */
+function YesNo({ label, value, onChange, invalid }) {
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <Label>{label} *</Label>
+      <div role="group" style={{ display: "flex", gap: 10, ...(invalid ? { outline: "2px solid #EF4444", borderRadius: 8, padding: 4 } : {}) }}>
+        {[{ v: "oui", l: "Oui" }, { v: "non", l: "Non" }].map(o => (
+          <button key={o.v} type="button" onClick={() => onChange(o.v)} aria-pressed={value === o.v}
+            style={{ flex: 1, padding: "11px 18px", borderRadius: 12, cursor: "pointer", fontSize: 14, fontWeight: value === o.v ? 700 : 500, transition: "all 0.15s",
+              border: `1.5px solid ${value === o.v ? T : "rgba(13,169,164,0.22)"}`,
+              background: value === o.v ? `${T}12` : "transparent",
+              color: value === o.v ? T : MUTED }}>
+            {o.l}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -157,30 +264,46 @@ export default function RecrutementPage() {
 
   const validateStep = s => {
     const e = {};
+    const req    = k => { if (!String(form[k] || "").trim()) e[k] = true; };
+    const reqLen = (k, min) => { if (String(form[k] || "").trim().length < min) e[k] = true; };
+
     if (s === 1) {
-      if (!form.prenom.trim()) e.prenom = true;
-      if (!form.nom.trim()) e.nom = true;
-      if (!form.tel.trim()) e.tel = true;
-      if (!form.commune.trim()) e.commune = true;
+      ["prenom", "nom", "tel", "commune", "secteurs"].forEach(req);
+      if (form.postes.length === 0) e.postes = true;
     }
     if (s === 2) {
-      if (form.postes.length === 0) e.postes = true;
-      if (!form.experience) e.experience = true;
-      if (!form.transport) e.transport = true;
-      if (!form.dispo_heures) e.dispo_heures = true;
-      if (form.dispo_jours.length === 0) e.dispo_jours = true;
+      req("experience");
+      reqLen("parcours", MIN_COURT);
+      ["exp_sap", "types_lieux", "exp_personnes_fragiles"].forEach(req);
+      reqLen("taches_maitrisees", MIN_COURT);
     }
     if (s === 3) {
-      if (!form.situation) e.situation = true;
-      if (form.motivation.trim().length < MIN_MOTIVATION) e.motivation = true;
-      if (form.discretion.trim().length < MIN_DISCRETION) e.discretion = true;
+      if (COMPETENCES.some(c => !form.competences[c.id])) e.competences = true;
     }
     if (s === 4) {
+      ["situ_temps", "situ_produit", "situ_casse", "situ_hors_consignes", "situ_alerte"].forEach(k => reqLen(k, MIN_LONG));
+    }
+    if (s === 5) {
+      ["travail_bien_fait", "qualites", "reclamation"].forEach(k => reqLen(k, MIN_LONG));
+      reqLen("discretion", MIN_DISCRETION);
+    }
+    if (s === 6) {
+      if (form.dispo_jours.length === 0) e.dispo_jours = true;
+      ["plages_horaires", "dispo_heures", "mobilite", "permis", "vehicule", "prise_poste"].forEach(req);
+    }
+    if (s === 7) {
+      reqLen("motivation", MIN_MOTIVATION);
+      reqLen("interet_metier", MIN_LONG);
+      reqLen("attentes", MIN_LONG);
+    }
+    if (s === 8) {
       if (!form.rgpd) e.rgpd = true;
     }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
+
+  const setCompetence = (id, niveau) => setForm(f => ({ ...f, competences: { ...f.competences, [id]: niveau } }));
 
   const scrollToForm = () => {
     const el = document.getElementById("formulaire");
@@ -213,18 +336,23 @@ export default function RecrutementPage() {
 
   const submit = async e => {
     e.preventDefault();
-    if (!validateStep(4)) return;
+    if (!validateStep(STEPS.length)) return;
     setLoading(true);
+    setSubmitError("");
     try {
-      await fetch("/api/recrutement", {
+      const res = await fetch("/api/recrutement", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-    } catch { /* silently fail */ }
-    setLoading(false);
-    setSent(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+      if (!res.ok) throw new Error("bad-status");
+      setSent(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      setSubmitError(`Envoi impossible pour le moment. Réessayez, ou contactez-nous directement au ${PHONE}.`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const errStyle = key => errors[key] ? { borderColor: "#EF4444", boxShadow: "0 0 0 3px rgba(239,68,68,0.12)" } : {};
@@ -247,9 +375,15 @@ export default function RecrutementPage() {
           .recru-section { padding: 32px 16px 80px !important; }
           .step-bar-label { display: none !important; }
         }
-        @media (max-width: 420px) {
-          .step-bar-circle { width: 30px !important; height: 30px !important; font-size: 12px !important; }
-          .step-bar-connector { width: 22px !important; margin: 0 3px !important; margin-bottom: 0 !important; }
+        /* 8 étapes : pastilles en desktop, progression compacte en dessous */
+        @media (max-width: 900px) {
+          .step-bar-full { display: none !important; }
+          .step-bar-compact { display: block !important; }
+        }
+        /* Grille de compétences : empilée sur mobile */
+        .comp-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+        @media (max-width: 620px) {
+          .comp-row { grid-template-columns: 1fr; gap: 8px; }
         }
       `}</style>
 
@@ -511,22 +645,19 @@ export default function RecrutementPage() {
                         <input id="recru-email" className="inp-focus" style={inp} placeholder="votre@email.fr" type="email" value={form.email} onChange={set("email")} />
                       </div>
                     </div>
-                    <div>
+                    <div style={{ marginBottom: 14 }}>
                       <Label htmlFor="recru-commune">Commune de résidence *</Label>
                       <input id="recru-commune" className="inp-focus" style={{ ...inp, ...errStyle("commune") }} placeholder="Rivière-Salée, Fort-de-France, Le Diamant…" value={form.commune} onChange={set("commune")} />
                     </div>
-                  </div>
-                )}
 
-                {/* ══ ÉTAPE 2 — Profil ══ */}
-                {step === 2 && (
-                  <div style={{ animation: "stepIn 0.32s cubic-bezier(0.16,1,0.3,1) both" }}>
-                    <SectionTitle
-                      title="💼 Votre profil professionnel"
-                      subtitle="Dites-nous sur quels postes vous souhaitez intervenir et vos disponibilités."
-                    />
+                    <div style={{ marginBottom: 20 }}>
+                      <Label htmlFor="recru-secteurs">Secteur(s) de déplacement accepté(s) *</Label>
+                      <input id="recru-secteurs" className="inp-focus" style={{ ...inp, ...errStyle("secteurs") }}
+                        placeholder="Ex : Le Lamentin, Rivière-Salée, Ducos, Fort-de-France…"
+                        value={form.secteurs} onChange={set("secteurs")} />
+                    </div>
 
-                    <fieldset style={{ border: "none", padding: 0, margin: "0 0 20px" }}>
+                    <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
                       <legend style={{ display: "block", fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 7, padding: 0 }}>Poste(s) souhaité(s) * — plusieurs choix possibles</legend>
                       <div style={{ display: "flex", flexDirection: "column", gap: 10, ...(errors.postes ? { outline: "2px solid #EF4444", borderRadius: 12, padding: 8 } : {}) }}>
                         {POSTES.map(p => (
@@ -539,9 +670,19 @@ export default function RecrutementPage() {
                         ))}
                       </div>
                     </fieldset>
+                  </div>
+                )}
 
-                    <div style={{ marginBottom: 14 }}>
-                      <Label htmlFor="recru-experience">Avez-vous une expérience dans les services à la personne ? *</Label>
+                {/* ══ ÉTAPE 2 — Parcours et expérience (§ 2 du questionnaire) ══ */}
+                {step === 2 && (
+                  <div style={{ animation: "stepIn 0.32s cubic-bezier(0.16,1,0.3,1) both" }}>
+                    <SectionTitle
+                      title="💼 Parcours et expérience professionnelle"
+                      subtitle="Répondez avec vos mots — il n'y a pas de mauvaise réponse, nous cherchons à vous connaître."
+                    />
+
+                    <div style={{ marginBottom: 20 }}>
+                      <Label htmlFor="recru-experience">Expérience dans les services à la personne *</Label>
                       <select id="recru-experience" className="inp-focus" style={{ ...inp, ...errStyle("experience") }} value={form.experience} onChange={set("experience")}>
                         <option value="">Sélectionner…</option>
                         <option value="aucune">Non, c&apos;est ma première expérience</option>
@@ -552,47 +693,137 @@ export default function RecrutementPage() {
                       </select>
                     </div>
 
-                    {form.experience && form.experience !== "aucune" && (
-                      <div style={{ marginBottom: 14 }}>
-                        <Label htmlFor="recru-experience-detail">Décrivez brièvement votre expérience</Label>
-                        <textarea id="recru-experience-detail" className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 80 }}
-                          placeholder="Type d'employeur, missions principales, ce que vous en avez appris…"
-                          value={form.experience_detail} onChange={set("experience_detail")} rows={3} />
+                    <TextQ num={1} id="recru-parcours" label="Présentez brièvement votre parcours professionnel." min={MIN_COURT} invalid={errors.parcours}
+                      placeholder="Vos précédents emplois, vos missions principales, la durée…"
+                      value={form.parcours} onChange={set("parcours")} />
+
+                    <TextQ num={2} id="recru-exp-sap" label="Avez-vous déjà travaillé comme aide ménagère, agent(e) d'entretien ou dans les services à la personne ? Si oui, précisez." required invalid={errors.exp_sap}
+                      placeholder="Si ce n'est pas le cas, indiquez simplement « non »."
+                      value={form.exp_sap} onChange={set("exp_sap")} rows={2} />
+
+                    <TextQ num={3} id="recru-types-lieux" label="Quels types de logements ou de locaux avez-vous déjà entretenus ?" required invalid={errors.types_lieux}
+                      placeholder="Maisons, appartements, bureaux, cabinets, locations saisonnières…"
+                      value={form.types_lieux} onChange={set("types_lieux")} rows={2} />
+
+                    <TextQ num={4} id="recru-taches" label="Quelles tâches maîtrisez-vous particulièrement bien ?" min={MIN_COURT} invalid={errors.taches_maitrisees}
+                      placeholder="Ce que vous faites le mieux, ce dont vous êtes fier(ère)…"
+                      value={form.taches_maitrisees} onChange={set("taches_maitrisees")} />
+
+                    <TextQ num={5} id="recru-fragiles" label="Avez-vous déjà travaillé auprès de personnes âgées, fragiles ou en situation de dépendance ?" required invalid={errors.exp_personnes_fragiles}
+                      placeholder="Si ce n'est pas le cas, indiquez simplement « non »."
+                      value={form.exp_personnes_fragiles} onChange={set("exp_personnes_fragiles")} rows={2} />
+
+                    <TextQ num={6} id="recru-certifs" label="Avez-vous des formations, certifications ou expériences utiles pour ce poste ?"
+                      hint="Optionnel — diplômes, formations hygiène, secourisme, expérience personnelle…"
+                      placeholder="Laissez vide si vous n'en avez pas."
+                      value={form.certifications} onChange={set("certifications")} rows={2} />
+                  </div>
+                )}
+
+                {/* ══ ÉTAPE 3 — Compétences techniques (§ 3) ══ */}
+                {step === 3 && (
+                  <div style={{ animation: "stepIn 0.32s cubic-bezier(0.16,1,0.3,1) both" }}>
+                    <SectionTitle
+                      title="🧰 Vos compétences techniques"
+                      subtitle="Auto-évaluez-vous honnêtement. « À renforcer » n'est pas éliminatoire : nous formons nos intervenantes."
+                    />
+
+                    {errors.competences && (
+                      <div role="alert" style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 12, padding: "12px 16px", fontSize: 13, color: "#B91C1C", marginBottom: 18 }}>
+                        Merci de vous positionner sur chacune des {COMPETENCES.length} compétences.
                       </div>
                     )}
 
-                    <div style={{ marginBottom: 14 }}>
-                      <Label htmlFor="recru-transport">Avez-vous un moyen de transport personnel ? *</Label>
-                      <select id="recru-transport" className="inp-focus" style={{ ...inp, ...errStyle("transport") }} value={form.transport} onChange={set("transport")}>
-                        <option value="">Sélectionner…</option>
-                        <option value="voiture">Oui, voiture</option>
-                        <option value="scooter">Oui, scooter / moto</option>
-                        <option value="velo">Oui, vélo / trottinette</option>
-                        <option value="non">Non, je n&apos;en ai pas</option>
-                      </select>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                      {COMPETENCES.map(c => {
+                        const val = form.competences[c.id];
+                        return (
+                          <div key={c.id} className="comp-row" style={{ padding: "12px 14px", borderRadius: 12, border: `1.5px solid ${val ? `${T}30` : "rgba(13,169,164,0.16)"}`, background: val ? `${T}06` : "transparent", transition: "all 0.15s" }}>
+                            <span style={{ fontSize: 13.5, fontWeight: 600, color: TEXT, lineHeight: 1.45 }}>{c.label}</span>
+                            <div role="group" aria-label={c.label} style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                              {NIVEAUX.map(n => (
+                                <button key={n.id} type="button" onClick={() => setCompetence(c.id, n.id)} aria-pressed={val === n.id}
+                                  style={{ padding: "7px 12px", borderRadius: 20, fontSize: 12, fontWeight: val === n.id ? 800 : 500, cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s",
+                                    border: `1.5px solid ${val === n.id ? n.color : "rgba(13,169,164,0.2)"}`,
+                                    background: val === n.id ? `${n.color}16` : "transparent",
+                                    color: val === n.id ? n.color : MUTED }}>
+                                  {n.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
+                  </div>
+                )}
 
-                    {form.transport === "non" && (
-                      <div style={{ marginBottom: 14, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 12, padding: "12px 16px", fontSize: 13, color: "#EF4444" }}>
-                        ⚠️ Un moyen de transport est fortement recommandé pour intervenir chez nos clients en Martinique. Précisez comment vous comptez vous déplacer.
-                        <textarea className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 60, marginTop: 10 }}
-                          placeholder="Comment vous déplacez-vous ?" value={form.transport_detail} onChange={set("transport_detail")} rows={2} />
-                      </div>
-                    )}
+                {/* ══ ÉTAPE 4 — Mises en situation (§ 4) ══ */}
+                {step === 4 && (
+                  <div style={{ animation: "stepIn 0.32s cubic-bezier(0.16,1,0.3,1) both" }}>
+                    <SectionTitle
+                      title="🎯 Mises en situation professionnelles"
+                      subtitle="Ces situations arrivent réellement chez nos clients. Dites-nous comment vous réagiriez."
+                    />
 
-                    <div style={{ marginBottom: 14 }}>
-                      <Label htmlFor="recru-dispo-heures">Nombre d&apos;heures disponibles par semaine *</Label>
-                      <select id="recru-dispo-heures" className="inp-focus" style={{ ...inp, ...errStyle("dispo_heures") }} value={form.dispo_heures} onChange={set("dispo_heures")}>
-                        <option value="">Sélectionner…</option>
-                        <option value="moins10">Moins de 10h/semaine</option>
-                        <option value="10-20">10 à 20h/semaine</option>
-                        <option value="20-30">20 à 30h/semaine</option>
-                        <option value="30-35">30 à 35h/semaine</option>
-                        <option value="temps-plein">Temps plein (35h+)</option>
-                      </select>
-                    </div>
+                    <TextQ num={7} id="recru-situ-temps" label="Un client vous demande de réaliser plusieurs tâches dans un temps limité. Comment organisez-vous votre intervention ?" min={MIN_LONG} invalid={errors.situ_temps}
+                      value={form.situ_temps} onChange={set("situ_temps")}
+                      placeholder="Comment vous priorisez, ce que vous faites en premier, ce que vous dites au client…" />
 
-                    <div>
+                    <TextQ num={8} id="recru-situ-produit" label="Vous constatez qu'un produit habituellement utilisé n'est plus disponible. Que faites-vous ?" min={MIN_LONG} invalid={errors.situ_produit}
+                      value={form.situ_produit} onChange={set("situ_produit")}
+                      placeholder="Votre réflexe immédiat, qui vous prévenez…" />
+
+                    <TextQ num={9} id="recru-situ-casse" label="Vous cassez accidentellement un objet chez un client. Quelle est votre réaction ?" min={MIN_LONG} invalid={errors.situ_casse}
+                      value={form.situ_casse} onChange={set("situ_casse")}
+                      placeholder="Ce que vous faites sur le moment et ensuite…" />
+
+                    <TextQ num={10} id="recru-situ-hors" label="Un client vous demande une tâche qui ne figure pas dans les consignes prévues. Comment réagissez-vous ?" min={MIN_LONG} invalid={errors.situ_hors_consignes}
+                      value={form.situ_hors_consignes} onChange={set("situ_hors_consignes")}
+                      placeholder="Comment vous conciliez le service au client et le cadre de la mission…" />
+
+                    <TextQ num={11} id="recru-situ-alerte" label="Vous remarquez une situation inhabituelle ou préoccupante chez une personne âgée. Que faites-vous ?" min={MIN_LONG} invalid={errors.situ_alerte}
+                      value={form.situ_alerte} onChange={set("situ_alerte")}
+                      placeholder="Ce que vous observez, qui vous alertez, ce que vous ne faites pas…" />
+                  </div>
+                )}
+
+                {/* ══ ÉTAPE 5 — Savoir-être et relation client (§ 5) ══ */}
+                {step === 5 && (
+                  <div style={{ animation: "stepIn 0.32s cubic-bezier(0.16,1,0.3,1) both" }}>
+                    <SectionTitle
+                      title="🤝 Savoir-être et relation client"
+                      subtitle="Chez J'MTD, la manière de travailler compte autant que le travail lui-même."
+                    />
+
+                    <TextQ num={12} id="recru-travail-bien-fait" label="Pour vous, que signifie « travail bien fait » ?" min={MIN_LONG} invalid={errors.travail_bien_fait}
+                      value={form.travail_bien_fait} onChange={set("travail_bien_fait")}
+                      placeholder="Ce qui fait, selon vous, la différence entre une intervention correcte et une intervention réussie…" />
+
+                    <TextQ num={13} id="recru-qualites" label="Quelles qualités sont indispensables pour intervenir au domicile d'un client ?" min={MIN_LONG} invalid={errors.qualites}
+                      value={form.qualites} onChange={set("qualites")}
+                      placeholder="Les qualités humaines et professionnelles que vous jugez essentielles…" />
+
+                    <TextQ num={14} id="recru-reclamation" label="Comment réagissez-vous face à une remarque ou une réclamation d'un client ?" min={MIN_LONG} invalid={errors.reclamation}
+                      value={form.reclamation} onChange={set("reclamation")}
+                      placeholder="Votre attitude, ce que vous dites, ce que vous faites ensuite…" />
+
+                    <TextQ num={15} id="recru-discretion" label="Comment garantissez-vous la discrétion et la confidentialité au domicile des clients ?" min={MIN_DISCRETION} invalid={errors.discretion}
+                      hint="Nos intervenantes entrent dans la vie privée de nos clients. C'est un point sur lequel nous sommes intransigeants."
+                      value={form.discretion} onChange={set("discretion")}
+                      placeholder="Concrètement, au quotidien : ce que vous faites et ce que vous ne faites jamais…" />
+                  </div>
+                )}
+
+                {/* ══ ÉTAPE 6 — Disponibilités et conditions d'exercice (§ 6) ══ */}
+                {step === 6 && (
+                  <div style={{ animation: "stepIn 0.32s cubic-bezier(0.16,1,0.3,1) both" }}>
+                    <SectionTitle
+                      title="📅 Disponibilités et conditions d'exercice"
+                      subtitle="Ces informations nous permettent de vérifier la compatibilité avec nos plannings clients."
+                    />
+
+                    <div style={{ marginBottom: 18 }}>
                       <Label htmlFor="recru-jours-group">Jours disponibles * — plusieurs choix possibles</Label>
                       <div id="recru-jours-group" role="group" aria-label="Jours disponibles" style={{ display: "flex", gap: 10, flexWrap: "wrap", ...(errors.dispo_jours ? { outline: "2px solid #EF4444", borderRadius: 8, padding: 4 } : {}) }}>
                         {JOURS.map(j => (
@@ -604,75 +835,89 @@ export default function RecrutementPage() {
                         ))}
                       </div>
                     </div>
-                  </div>
-                )}
 
-                {/* ══ ÉTAPE 3 — Motivations ══ */}
-                {step === 3 && (
-                  <div style={{ animation: "stepIn 0.32s cubic-bezier(0.16,1,0.3,1) both" }}>
-                    <SectionTitle
-                      title="💬 Vos motivations"
-                      subtitle="La section la plus importante. Prenez le temps d'y répondre sincèrement."
-                    />
-
-                    <div style={{ background: `${T}06`, border: `1px solid ${T}18`, borderRadius: 12, padding: "14px 18px", marginBottom: 24, fontSize: 13, color: MUTED, lineHeight: 1.7 }}>
-                      💡 Les réponses trop courtes ou génériques ne seront pas retenues. Soyez concret et personnel dans vos réponses.
+                    <div style={{ marginBottom: 18 }}>
+                      <Label htmlFor="recru-plages">Plages horaires possibles *</Label>
+                      <input id="recru-plages" className="inp-focus" style={{ ...inp, ...errStyle("plages_horaires") }}
+                        placeholder="Ex : 8h–12h et 14h–17h, ou « matin uniquement »…"
+                        value={form.plages_horaires} onChange={set("plages_horaires")} />
                     </div>
 
-                    <div style={{ marginBottom: 20 }}>
-                      <Label htmlFor="recru-situation">Votre situation actuelle *</Label>
-                      <select id="recru-situation" className="inp-focus" style={{ ...inp, ...errStyle("situation") }} value={form.situation} onChange={set("situation")}>
+                    <div style={{ marginBottom: 18 }}>
+                      <Label htmlFor="recru-dispo-heures">Nombre d&apos;heures disponibles par semaine *</Label>
+                      <select id="recru-dispo-heures" className="inp-focus" style={{ ...inp, ...errStyle("dispo_heures") }} value={form.dispo_heures} onChange={set("dispo_heures")}>
                         <option value="">Sélectionner…</option>
-                        <option value="chomage">En recherche d&apos;emploi (chômage)</option>
-                        <option value="partiel">En poste à temps partiel, je cherche un complément</option>
-                        <option value="reconversion">En reconversion professionnelle</option>
-                        <option value="retraite">Retraité(e), je souhaite un emploi léger</option>
-                        <option value="autre">Autre situation</option>
+                        <option value="moins10">Moins de 10h/semaine</option>
+                        <option value="10-20">10 à 20h/semaine</option>
+                        <option value="20-30">20 à 30h/semaine</option>
+                        <option value="30-35">30 à 35h/semaine</option>
+                        <option value="temps-plein">Temps plein (35h+)</option>
                       </select>
                     </div>
 
-                    <div style={{ marginBottom: 20 }}>
-                      <Label htmlFor="recru-motivation">Pourquoi souhaitez-vous rejoindre J&apos;MTD ? * (minimum {MIN_MOTIVATION} caractères)</Label>
-                      <textarea id="recru-motivation" className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 120, ...errStyle("motivation") }}
-                        placeholder="Expliquez ce qui vous attire dans ce métier, pourquoi J'MTD spécifiquement, vos objectifs professionnels…"
-                        value={form.motivation} onChange={set("motivation")} rows={4} />
-                      <div style={{ fontSize: 11, color: form.motivation.length >= MIN_MOTIVATION ? T : "#94A3B8", marginTop: 6, textAlign: "right", fontWeight: 600, transition: "color 0.2s" }}>
-                        {form.motivation.length} / {MIN_MOTIVATION} caractères minimum
+                    <YesNo label="Mobilité pour effectuer les interventions" value={form.mobilite} onChange={v => setForm(f => ({ ...f, mobilite: v }))} invalid={errors.mobilite} />
+                    <YesNo label="Permis de conduire" value={form.permis} onChange={v => setForm(f => ({ ...f, permis: v }))} invalid={errors.permis} />
+                    <YesNo label="Véhicule personnel disponible pour les déplacements professionnels" value={form.vehicule} onChange={v => setForm(f => ({ ...f, vehicule: v }))} invalid={errors.vehicule} />
+
+                    {form.vehicule === "non" && (
+                      <div style={{ background: "rgba(245,158,11,0.07)", border: "1px solid rgba(245,158,11,0.28)", borderRadius: 12, padding: "12px 16px", fontSize: 13, color: "#92400E", lineHeight: 1.6, marginBottom: 18 }}>
+                        ⚠️ Nos interventions se font au domicile des clients, réparties sur plusieurs communes. Sans véhicule personnel, certaines missions ne pourront pas vous être confiées.
                       </div>
-                    </div>
+                    )}
 
                     <div>
-                      <Label htmlFor="recru-discretion">Qu&apos;est-ce que la discrétion représente pour vous dans ce métier ? * (minimum {MIN_DISCRETION} caractères)</Label>
-                      <div style={{ fontSize: 12, color: MUTED, marginBottom: 8, lineHeight: 1.6 }}>
-                        Nos intervenantes entrent dans la vie privée de nos clients. Nous avons besoin de savoir comment vous concevez la confidentialité au quotidien.
-                      </div>
-                      <textarea id="recru-discretion" className="inp-focus" style={{ ...inp, resize: "vertical", minHeight: 100, ...errStyle("discretion") }}
-                        placeholder="Expliquez concrètement comment vous gérez la discrétion dans un contexte professionnel à domicile…"
-                        value={form.discretion} onChange={set("discretion")} rows={3} />
-                      <div style={{ fontSize: 11, color: form.discretion.length >= MIN_DISCRETION ? T : "#94A3B8", marginTop: 6, textAlign: "right", fontWeight: 600, transition: "color 0.2s" }}>
-                        {form.discretion.length} / {MIN_DISCRETION} caractères minimum
-                      </div>
+                      <Label htmlFor="recru-prise-poste">Date possible de prise de poste *</Label>
+                      <input id="recru-prise-poste" className="inp-focus" style={{ ...inp, ...errStyle("prise_poste") }}
+                        placeholder="Ex : immédiatement, dès le 1er septembre, sous 1 mois…"
+                        value={form.prise_poste} onChange={set("prise_poste")} />
                     </div>
                   </div>
                 )}
 
-                {/* ══ ÉTAPE 4 — Finalisation ══ */}
-                {step === 4 && (
+                {/* ══ ÉTAPE 7 — Motivation (§ 7) ══ */}
+                {step === 7 && (
+                  <div style={{ animation: "stepIn 0.32s cubic-bezier(0.16,1,0.3,1) both" }}>
+                    <SectionTitle
+                      title="⭐ Votre motivation"
+                      subtitle="Prenez le temps de répondre soigneusement — c'est ce qui fera la différence."
+                    />
+
+                    <TextQ num={16} id="recru-motivation" label="Pourquoi souhaitez-vous rejoindre J'MTD ?" min={MIN_MOTIVATION} invalid={errors.motivation}
+                      value={form.motivation} onChange={set("motivation")} rows={4}
+                      placeholder="Ce qui vous attire chez nous en particulier, ce que vous avez compris de notre façon de travailler…" />
+
+                    <TextQ num={17} id="recru-interet-metier" label="Pourquoi le métier d'aide ménagère vous intéresse-t-il ?" min={MIN_LONG} invalid={errors.interet_metier}
+                      value={form.interet_metier} onChange={set("interet_metier")}
+                      placeholder="Ce qui vous plaît dans ce métier, ce que vous y trouvez…" />
+
+                    <TextQ num={18} id="recru-attentes" label="Qu'attendez-vous de votre futur poste et de l'entreprise ?" min={MIN_LONG} invalid={errors.attentes}
+                      value={form.attentes} onChange={set("attentes")}
+                      placeholder="Vos attentes en matière d'organisation, d'accompagnement, d'évolution…" />
+                  </div>
+                )}
+
+                {/* ══ ÉTAPE 8 — Finalisation ══ */}
+                {step === 8 && (
                   <div style={{ animation: "stepIn 0.32s cubic-bezier(0.16,1,0.3,1) both" }}>
                     <SectionTitle
                       title="📝 Pour finir"
-                      subtitle="Quelques informations complémentaires et votre candidature est prête."
+                      subtitle="Vérifiez votre récapitulatif, puis validez votre candidature."
                     />
 
-                    {/* Récapitulatif rapide */}
+                    {/* Récapitulatif */}
                     <div style={{ background: `${T}07`, border: `1px solid ${T}20`, borderRadius: 14, padding: "16px 20px", marginBottom: 28 }}>
                       <div style={{ fontSize: 11, fontWeight: 700, color: TEAL_TEXT, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 12 }}>📋 Récapitulatif de votre candidature</div>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                      <div className="recru-form-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                         {[
                           ["Candidat·e", `${form.prenom} ${form.nom}`],
                           ["Téléphone", form.tel || "—"],
                           ["Commune", form.commune || "—"],
+                          ["Secteurs acceptés", form.secteurs || "—"],
                           ["Poste(s) visé(s)", form.postes.length > 0 ? `${form.postes.length} sélectionné(s)` : "—"],
+                          ["Jours disponibles", form.dispo_jours.length > 0 ? form.dispo_jours.join(", ") : "—"],
+                          ["Véhicule", form.vehicule === "oui" ? "Oui" : form.vehicule === "non" ? "Non" : "—"],
+                          ["Prise de poste", form.prise_poste || "—"],
+                          ["Compétences maîtrisées", `${Object.values(form.competences).filter(v => v === "maitrisee").length} / ${COMPETENCES.length}`],
                           ...(form.offreTitre ? [["Offre visée", form.offreTitre]] : []),
                         ].map(([k, v]) => (
                           <div key={k} style={{ fontSize: 13 }}>
@@ -710,6 +955,12 @@ export default function RecrutementPage() {
                         value={form.infos_plus} onChange={set("infos_plus")} rows={3} />
                     </div>
 
+                    {/* § 9 — Protection des données et non-discrimination */}
+                    <div style={{ background: "#F8FAFB", border: "1px solid rgba(13,169,164,0.14)", borderRadius: 12, padding: "14px 16px", marginBottom: 18, fontSize: 12, color: MUTED, lineHeight: 1.7 }}>
+                      <strong style={{ color: TEXT, display: "block", marginBottom: 5 }}>Protection des données et non-discrimination</strong>
+                      Les informations recueillies sont destinées à l&apos;évaluation de votre candidature au regard des exigences du poste. Les questions sont limitées aux éléments nécessaires à l&apos;appréciation des compétences, de l&apos;expérience, de la disponibilité et des conditions d&apos;exercice. J&apos;MTD respecte les principes applicables en matière de protection des données personnelles et de non-discrimination dans le recrutement.
+                    </div>
+
                     {/* RGPD */}
                     <div style={{ borderTop: `1px solid rgba(13,169,164,0.12)`, paddingTop: 20, marginBottom: 8 }}>
                       <label style={{ display: "flex", alignItems: "flex-start", gap: 12, cursor: "pointer", padding: "14px 16px", background: `${T}06`, border: `1.5px solid ${errors.rgpd ? "#EF4444" : `${T}20`}`, borderRadius: 12, transition: "border-color 0.2s" }}>
@@ -735,12 +986,12 @@ export default function RecrutementPage() {
                     </button>
                   ) : <div />}
 
-                  {step < 4 ? (
+                  {step < STEPS.length ? (
                     <button type="button" onClick={goNext}
                       style={{ padding: "14px 36px", borderRadius: 30, background: `linear-gradient(135deg, ${T}, ${P})`, color: "#fff", fontWeight: 700, fontSize: 15, cursor: "pointer", border: "none", boxShadow: `0 6px 24px ${T}40`, transition: "transform 0.2s, box-shadow 0.2s" }}
                       onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 10px 32px ${T}55`; }}
                       onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 6px 24px ${T}40`; }}>
-                      Continuer — étape {step + 1}/4 →
+                      Continuer — étape {step + 1}/{STEPS.length} →
                     </button>
                   ) : (
                     <button type="submit" disabled={loading}
@@ -767,7 +1018,7 @@ export default function RecrutementPage() {
                 )}
 
                 <p style={{ fontSize: 12, color: "#94A3B8", textAlign: "center", marginTop: 16, lineHeight: 1.7 }}>
-                  Étape {step}/4 · * Champs obligatoires · Réponse sous 48 à 72h ouvrées · Candidature traitée confidentiellement
+                  Étape {step}/{STEPS.length} · * Champs obligatoires · Réponse sous 48 à 72h ouvrées · Candidature traitée confidentiellement
                 </p>
               </form>
             </div>

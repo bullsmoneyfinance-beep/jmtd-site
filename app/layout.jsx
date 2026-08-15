@@ -55,9 +55,29 @@ export const metadata = {
       { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/logo.png", sizes: "any" },
     ],
-    apple: [{ url: "/logo.png" }],
+    // apple-touch-icon : généré par app/apple-icon.jsx (carré 180×180, opaque)
   },
+  // « Ajouter à l'écran d'accueil » sur iOS : sans ceci, le site s'ouvre dans
+  // Safari avec la barre d'adresse au lieu de se lancer en plein écran.
+  appleWebApp: {
+    capable: true,
+    title: "J'MTD",
+    statusBarStyle: "default",
+  },
+  formatDetection: { telephone: false },
   manifest: "/manifest.webmanifest",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Permet au contenu de passer sous l'encoche / la barre d'accueil,
+  // que l'on compense ensuite avec les env(safe-area-inset-*) en CSS.
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B1523" },
+  ],
 };
 
 const LOCAL_BUSINESS_SCHEMA = {

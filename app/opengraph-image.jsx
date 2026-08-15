@@ -98,7 +98,7 @@ export default async function Image() {
           {/* Badges de confiance */}
           <div style={{ display: "flex", gap: 18 }}>
             {[
-              { icon: "⭐", text: "5 / 5 Google" },
+              { icon: "🏠", text: "+200 foyers accompagnés" },
               { icon: "💳", text: "50% crédit d'impôt" },
               { icon: "📍", text: "Centre & Sud Martinique" },
             ].map((b) => (

@@ -37,7 +37,7 @@ export default function FloatingCTA() {
 
       {/* WhatsApp fixe sur mobile — au-dessus de la barre de navigation */}
       <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp J'MTD"
-        className="show-mobile"
+        className="show-mobile floating-cta"
         style={{
           position: "fixed", bottom: 72, right: 16, zIndex: 500,
           width: 52, height: 52, borderRadius: "50%", background: "#25D366",

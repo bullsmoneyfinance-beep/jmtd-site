@@ -9,9 +9,11 @@ export default function manifest() {
     theme_color: "#0DA9A4",
     orientation: "portrait",
     lang: "fr",
+    // Icônes carrées réelles (logo.png est rectangulaire : il était déformé)
     icons: [
-      { src: "/logo.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
-      { src: "/logo.png", sizes: "512x512", type: "image/png", purpose: "any maskable" },
+      { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
     shortcuts: [
       {

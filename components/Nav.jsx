@@ -92,7 +92,7 @@ export default function Nav() {
         .nav-link-hover:hover { color: ${TT} !important; }
       `}</style>
 
-      <header style={{
+      <header className="site-header" style={{
         position: "sticky", top: 0, zIndex: 200,
         background: scrolled ? "rgba(255,255,255,0.98)" : "rgba(255,255,255,0.92)",
         backdropFilter: "blur(28px)", WebkitBackdropFilter: "blur(28px)",

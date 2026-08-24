@@ -398,8 +398,13 @@ a { color: inherit; text-decoration: none; }
   .nav-top-strip { padding: 4px 12px !important; }
   .nav-top-strip span { font-size: 11px !important; }
 
-  /* Bottom mobile bar height */
-  .mobile-bottom-bar { height: 64px !important; padding-bottom: env(safe-area-inset-bottom, 0) !important; }
+  /* Bottom mobile bar : 64px de boutons + la barre d'accueil iOS EN PLUS.
+     (Avant : height 64px !important avec le padding pris DEDANS → en mode app,
+     l'inset de ~34px écrasait les boutons qui débordaient de la barre.) */
+  .mobile-bottom-bar {
+    height: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  }
 
   /* Process steps */
   .process-step { padding: 18px 16px !important; }
@@ -452,13 +457,8 @@ a { color: inherit; text-decoration: none; }
   .admin-mobile-bar { display: none !important; }
 }
 
-/* ── Mobile bottom safe area ── */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  .mobile-bottom-bar {
-    padding-bottom: env(safe-area-inset-bottom);
-    height: calc(64px + env(safe-area-inset-bottom));
-  }
-}
+/* ── Mobile bottom safe area : géré par la règle .mobile-bottom-bar (≤768px)
+      ci-dessus — une seule source de vérité pour la hauteur de la barre. ── */
 
 /* ══════════════════════════════════════════════════════════════
    iOS — « Ajouter à l'écran d'accueil »
@@ -489,6 +489,12 @@ a { color: inherit; text-decoration: none; }
    On impose donc 16 px minimum sur mobile (écart invisible, zoom supprimé). */
 @media (max-width: 768px) {
   input, select, textarea { font-size: 16px !important; }
+
+  /* Ressenti « application » : pas de flash gris au toucher */
+  a, button { -webkit-tap-highlight-color: transparent; }
+
+  /* Libellés de la barre du bas : jamais coupés ni sur deux lignes */
+  .mobile-bottom-bar a { white-space: nowrap; overflow: hidden; min-width: 0; }
 
   /* Zones tactiles : 44 px recommandés par Apple (doigt ≠ souris) */
   .nav-burger {

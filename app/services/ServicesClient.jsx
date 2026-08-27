@@ -41,6 +41,8 @@ function useFocusRack() {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReduced(mq.matches);
     if (mq.matches) return;
+    // Mobile (<900px) : effets focus-rack neutralisés en CSS — inutile d'écrire --proximity à chaque frame
+    if (window.matchMedia("(max-width: 899px)").matches) return;
 
     let raf = null;
     const update = () => {

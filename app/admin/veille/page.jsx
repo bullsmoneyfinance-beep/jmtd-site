@@ -78,7 +78,7 @@ export default function VeillePage() {
   const categories = [...new Set(items.map(i => i.categorie))];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#060E18" }}>
+    <div style={{ minHeight: "100dvh", background: "#060E18" }}>
       {/* Header */}
       <div className="veille-header" style={{ background: "#0D1B2A", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>

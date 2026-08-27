@@ -33,6 +33,8 @@ function useFocusRack() {
     if (typeof window === "undefined") return;
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mq.matches) { setReduced(true); return; }
+    // Mobile (<900px) : effets focus-rack neutralisés en CSS — inutile d'écrire --proximity à chaque frame
+    if (window.matchMedia("(max-width: 899px)").matches) return;
     const items = Array.from(document.querySelectorAll("[data-focus]"));
     if (!items.length) return;
     let raf = null;

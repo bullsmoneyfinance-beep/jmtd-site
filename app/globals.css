@@ -505,6 +505,34 @@ a { color: inherit; text-decoration: none; }
   .nav-strip a   { padding: 6px 4px; }
 }
 
+/* ══════════════════════════════════════════════════════════════
+   Performance mobile (Android surtout) — fluidité du scroll.
+   Sur Chrome Android, backdrop-filter est recomposité à CHAQUE frame
+   de défilement, et les flous pilotés par --proximity repeignent les
+   cartes en continu : c'est la source principale des saccades.
+   Même seuil (900px) que le mode « lite » de PinnedFeatureList.
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 899px) {
+  /* Header + barre du bas : fond déjà à 98 % d'opacité → fond plein,
+     rendu quasi identique, coût de scroll divisé. */
+  .site-header, .mobile-bottom-bar {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #ffffff !important;
+  }
+  /* Focus-rack (coach, tarifs, services, conciergerie) : le flou/l'échelle
+     recalculés par frame deviennent des cartes nettes et statiques. */
+  [data-focus], .svc-item, .cg-focus {
+    filter: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    will-change: auto !important;
+  }
+  /* Halos d'ambiance : on fige leur dérive (la couche floutée reste
+     décorative mais n'est plus recomposée en boucle). */
+  .tf-orb, .pfl-orb { animation: none !important; }
+}
+
 /* Mode application (lancé depuis l'écran d'accueil) */
 @media (display-mode: standalone) {
   /* Pas de rebond blanc en haut/bas lors du sur-défilement */

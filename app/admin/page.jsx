@@ -466,7 +466,7 @@ export default function AdminPage() {
   })();
 
   if (loading) return (
-    <div style={{ minHeight: "100vh", background: "#060E18", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ minHeight: "100dvh", background: "#060E18", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ textAlign: "center" }}>
         <div style={{ width: 40, height: 40, border: `3px solid ${T}33`, borderTopColor: T, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
         <div style={{ color: "#475569", fontSize: 14 }}>Chargement…</div>
@@ -481,7 +481,7 @@ export default function AdminPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", minHeight: "100dvh", background: "#060E18", display: "flex" }}>
+    <div style={{ minHeight: "100dvh", minHeight: "100dvh", background: "#060E18", display: "flex" }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
@@ -575,7 +575,7 @@ export default function AdminPage() {
       {/* ── Sidebar ── */}
       <aside className="admin-sidebar" style={{
         width: 230, flexShrink: 0, background: "#0B1523", borderRight: "1px solid rgba(255,255,255,0.05)",
-        display: "flex", flexDirection: "column", position: "sticky", top: 0, height: "100vh", overflowY: "auto",
+        display: "flex", flexDirection: "column", position: "sticky", top: 0, height: "100dvh", overflowY: "auto",
       }}>
         {/* Logo */}
         <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>

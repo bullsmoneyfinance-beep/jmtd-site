@@ -8,11 +8,14 @@
  *  - une marge est conservée car iOS arrondit fortement les coins (~22 %),
  *    ce qui rognerait la signature « Société de services sur mesure ».
  *
- * @param {string} src  logo en data URI (base64)
- * @param {number} size côté de l'icône en pixels
+ * @param {string} src   logo en data URI (base64)
+ * @param {number} size  côté de l'icône en pixels
+ * @param {number} scale fraction de la largeur occupée par le logo.
+ *   0.92 par défaut (icônes classiques) ; ~0.58 pour la variante « maskable »
+ *   Android, rognée en cercle sur ~80 % du carré par le lanceur.
  */
-export function BrandIcon({ src, size = 180 }) {
-  const largeur = Math.round(size * 0.92);          // marge latérale de sécurité
+export function BrandIcon({ src, size = 180, scale = 0.92 }) {
+  const largeur = Math.round(size * scale);
   const hauteur = Math.round(largeur * (784 / 1054)); // ratio d'origine préservé
 
   return (

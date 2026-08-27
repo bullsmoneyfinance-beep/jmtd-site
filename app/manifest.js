@@ -3,6 +3,8 @@ export default function manifest() {
     name: "J'MTD — Services à la personne Martinique",
     short_name: "J'MTD",
     description: "Entretien, repas, courses, coach rangement à domicile en Martinique. Déclaré SAP — 50% crédit d'impôt.",
+    id: "/",
+    scope: "/",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",
@@ -13,7 +15,9 @@ export default function manifest() {
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
       { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      // Variante « maskable » : Android rogne en cercle sur ~80 % du carré →
+      // logo réduit à 58 % pour rester entier (icon-512 serait coupé).
+      { src: "/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
     shortcuts: [
       {

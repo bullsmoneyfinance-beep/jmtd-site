@@ -112,6 +112,27 @@ export default function PinnedFeatureList({ eyebrow, title, intro, items }) {
 
   const cur = items[active] || items[0];
 
+  /* ── Carrousel mobile (slides à balayage) ──
+     Sur mobile, la scène épinglée sort de l'écran avant que la liste ne défile :
+     l'effet « slides » était invisible. Sous 900px on remplace scène + liste par
+     un carrousel scroll-snap natif (aucun JS par frame — l'index des points est
+     recalculé uniquement pendant le balayage du carrousel). */
+  const carouselRef = useRef(null);
+  const [mActive, setMActive] = useState(0);
+  const onCarouselScroll = () => {
+    const el = carouselRef.current;
+    if (!el || !el.firstElementChild) return;
+    const w = el.firstElementChild.getBoundingClientRect().width + 14; // largeur carte + gap
+    const idx = Math.max(0, Math.min(items.length - 1, Math.round(el.scrollLeft / w)));
+    setMActive(m => (m === idx ? m : idx));
+  };
+  const goToSlide = (i) => {
+    const el = carouselRef.current;
+    if (!el || !el.firstElementChild) return;
+    const w = el.firstElementChild.getBoundingClientRect().width + 14;
+    el.scrollTo({ left: i * w, behavior: "smooth" });
+  };
+
   return (
     <>
       <div style={{ position: "relative" }}>
@@ -131,6 +152,7 @@ export default function PinnedFeatureList({ eyebrow, title, intro, items }) {
             <h2 className="display" style={{ fontSize: "clamp(28px, 3.6vw, 44px)", marginBottom: 16 }}>{title}</h2>
             <p style={{ fontSize: 16.5, color: "#64748B", maxWidth: 400, lineHeight: 1.8, marginBottom: 28 }}>{intro}</p>
 
+            <div className="pfl-stage-wrap">
             <div
               ref={stageRef}
               className="pfl-stage"
@@ -205,6 +227,39 @@ export default function PinnedFeatureList({ eyebrow, title, intro, items }) {
                 <div style={{ height: "100%", width: `${((active + 1) / items.length) * 100}%`, background: `linear-gradient(90deg, ${cur.color}, ${cur.to})`, borderRadius: 2, transition: "width 0.5s cubic-bezier(0.16,1,0.3,1), background 0.5s ease" }} />
               </div>
             </div>
+            </div>{/* /.pfl-stage-wrap */}
+
+            {/* ── Slides mobile : carrousel à balayage (remplace scène + liste sous 900px) ── */}
+            <div ref={carouselRef} onScroll={onCarouselScroll} className="pfl-carousel"
+              role="group" aria-roledescription="carrousel" aria-label={eyebrow}>
+              {items.map((it, i) => (
+                <div key={it.title} className="pfl-card" role="group" aria-label={`${i + 1} sur ${items.length}`}
+                  style={{ background: `linear-gradient(135deg, ${it.color}, ${it.to})` }}>
+                  {/* Texture lumineuse + scrim, comme la scène desktop */}
+                  <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 15% 0%, rgba(255,255,255,0.22), transparent 55%)", pointerEvents: "none" }} />
+                  <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 55%)", pointerEvents: "none" }} />
+                  {/* Grand numéro en fond */}
+                  <div aria-hidden style={{ position: "absolute", right: 2, bottom: -34, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700, fontSize: 120, color: "rgba(255,255,255,0.16)", lineHeight: 1, pointerEvents: "none" }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
+                  <div style={{ position: "relative" }}>
+                    <IconTile name={it.icon} size={52} icon={24} from="rgba(255,255,255,0.26)" to="rgba(255,255,255,0.10)" radius={14} color="#fff" />
+                    <p className="display" style={{ fontSize: 20, fontWeight: 700, color: "#fff", lineHeight: 1.25, margin: "16px 0 10px" }}>{it.title}</p>
+                    <p style={{ fontSize: 14, color: "rgba(255,255,255,0.92)", lineHeight: 1.7, margin: 0 }}>{it.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Points de navigation */}
+            <div className="pfl-dots" role="tablist" aria-label="Aller à la slide">
+              {items.map((it, i) => (
+                <button key={it.title} type="button" role="tab" aria-selected={mActive === i} aria-label={`Slide ${i + 1} : ${it.title}`}
+                  onClick={() => goToSlide(i)}
+                  style={{ width: mActive === i ? 26 : 9, height: 9, borderRadius: 5, border: "none", padding: 0, cursor: "pointer",
+                    background: mActive === i ? `linear-gradient(90deg, ${it.color}, ${it.to})` : "rgba(26,45,61,0.18)",
+                    transition: "width 0.3s cubic-bezier(0.16,1,0.3,1), background 0.3s" }} />
+              ))}
+            </div>
           </div>
 
           {/* ── Colonne défilante : effet de MISE AU POINT ── */}
@@ -252,14 +307,52 @@ export default function PinnedFeatureList({ eyebrow, title, intro, items }) {
 
         .pfl-accent:hover { box-shadow: 0 0 14px var(--accent); }
 
+        /* Carrousel mobile : inexistant en desktop */
+        .pfl-carousel, .pfl-dots { display: none; }
+
         @media (max-width: 900px) {
-          .pfl-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
-          .pfl-intro { position: static !important; top: auto !important; text-align: center; }
+          .pfl-grid { grid-template-columns: 1fr !important; gap: 0 !important; }
+          /* min-width:0 : sans lui, le carrousel gonfle la colonne de grille
+             (dimensionnement circulaire des flex-basis en %) */
+          .pfl-intro { position: static !important; top: auto !important; text-align: center; min-width: 0; max-width: 100%; }
           .pfl-intro p { margin-left: auto; margin-right: auto; }
-          .pfl-stage { max-width: 420px; margin: 0 auto; }
-        }
-        @media (max-width: 480px) {
-          .pfl-stage { height: 240px !important; }
+
+          /* La scène épinglée et la liste laissent place aux slides à balayage :
+             la scène sortait de l'écran avant que la liste ne défile — l'effet
+             « slides » était invisible sur mobile. */
+          .pfl-stage-wrap { display: none; }
+          .pfl-items { display: none !important; }
+
+          .pfl-carousel {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding: 6px 2px 10px;
+            margin: 0 -2px;
+            text-align: left;
+          }
+          .pfl-carousel::-webkit-scrollbar { display: none; }
+          .pfl-card {
+            position: relative;
+            overflow: hidden;
+            flex: 0 0 84%;
+            max-width: 84%;
+            scroll-snap-align: center;
+            border-radius: 24px;
+            padding: 22px 22px 26px;
+            min-height: 250px;
+            box-shadow: 0 14px 36px rgba(13, 27, 42, 0.16);
+          }
+          .pfl-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+          }
         }
         @media (prefers-reduced-motion: reduce) {
           .pfl-sheen, .pfl-icon-breathe, .pfl-orb { animation: none !important; }
